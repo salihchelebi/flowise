@@ -8,6 +8,7 @@ Starts Flowise from [DockerHub Image](https://hub.docker.com/r/flowiseai/flowise
 2. `docker compose up -d`
 3. Open [http://localhost:3000](http://localhost:3000)
 4. You can bring the containers down by `docker compose stop`
+5. axdas
 
 ## 🌱 Env Variables
 
