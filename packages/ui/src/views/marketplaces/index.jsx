@@ -304,16 +304,14 @@ const Marketplace = () => {
         if (filter.frameworkFilter.length > 0)
             filteredData = filteredData.filter((data) => (data.framework || []).some((item) => filter.frameworkFilter.includes(item)))
         if (filter.search) {
-            filteredData = filteredData.filter(
-                    (data) => {
-                        const localized = data.templateName ? translateMarketplace(data) : data
-                        return (
+            filteredData = filteredData.filter((data) => {
+                const localized = data.templateName ? translateMarketplace(data) : data
+                return (
                     (data.categories ? data.categories.join(',') : '').toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
                     (localized.templateName || '').toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
                     (localized.description && localized.description.toLowerCase().indexOf(filter.search.toLowerCase()) > -1)
-                        )
-                    }
-            )
+                )
+            })
         }
 
         const usecases = []
@@ -634,7 +632,11 @@ const Marketplace = () => {
                         {hasPermission('templates:marketplace') && hasPermission('templates:custom') && (
                             <Stack direction='row' justifyContent='space-between' sx={{ mb: 2 }}>
                                 <Tabs value={activeTabValue} onChange={handleTabChange} textColor='primary' aria-label='tabs'>
-                                    <PermissionTab permissionId='templates:marketplace' value={0} label={t('marketplace.communityTemplates')} />
+                                    <PermissionTab
+                                        permissionId='templates:marketplace'
+                                        value={0}
+                                        label={t('marketplace.communityTemplates')}
+                                    />
                                     <PermissionTab permissionId='templates:custom' value={1} label={t('marketplace.myTemplates')} />
                                 </Tabs>
                                 <Autocomplete

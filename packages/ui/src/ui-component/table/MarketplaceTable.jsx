@@ -154,115 +154,116 @@ export const MarketplaceTable = ({
                                     .map((rawRow, index) => {
                                         const row = rawRow.templateName ? translateMarketplace(rawRow) : rawRow
                                         return (
-                                        <StyledTableRow key={index}>
-                                            <StyledTableCell key='0'>
-                                                <Typography
-                                                    sx={{
-                                                        display: '-webkit-box',
-                                                        fontSize: 14,
-                                                        fontWeight: 500,
-                                                        WebkitLineClamp: 2,
-                                                        WebkitBoxOrient: 'vertical',
-                                                        textOverflow: 'ellipsis',
-                                                        overflow: 'hidden'
-                                                    }}
-                                                >
-                                                    <Button onClick={() => openTemplate(row)} sx={{ textAlign: 'left' }}>
-                                                        {row.templateName || row.name}
-                                                    </Button>
-                                                </Typography>
-                                            </StyledTableCell>
-                                            <StyledTableCell key='1'>
-                                                <Typography>{row.type}</Typography>
-                                            </StyledTableCell>
-                                            <StyledTableCell key='2'>
-                                                <Typography sx={{ overflowWrap: 'break-word', whiteSpace: 'pre-line' }}>
-                                                    {row.description || ''}
-                                                </Typography>
-                                            </StyledTableCell>
-                                            <StyledTableCell key='3'>
-                                                <Stack flexDirection='row' sx={{ gap: 1, flexWrap: 'wrap' }}>
-                                                    {row.framework &&
-                                                        row.framework.length > 0 &&
-                                                        row.framework.map((framework, index) => (
-                                                            <Chip
-                                                                variant='outlined'
-                                                                key={index}
-                                                                size='small'
-                                                                label={framework}
-                                                                style={{ marginRight: 3, marginBottom: 3 }}
-                                                            />
-                                                        ))}
-                                                </Stack>
-                                            </StyledTableCell>
-                                            <StyledTableCell key='4'>
-                                                <Stack flexDirection='row' sx={{ gap: 1, flexWrap: 'wrap' }}>
-                                                    {row.usecases &&
-                                                        row.usecases.length > 0 &&
-                                                        row.usecases.map((usecase, index) => (
-                                                            <Chip
-                                                                variant='outlined'
-                                                                key={index}
-                                                                size='small'
-                                                                label={usecase}
-                                                                style={{ marginRight: 3, marginBottom: 3 }}
-                                                            />
-                                                        ))}
-                                                </Stack>
-                                            </StyledTableCell>
-                                            <StyledTableCell key='5'>
-                                                <Typography>
-                                                    {row.badge &&
-                                                        row.badge
-                                                            .split(';')
-                                                            .map((tag, index) => (
+                                            <StyledTableRow key={index}>
+                                                <StyledTableCell key='0'>
+                                                    <Typography
+                                                        sx={{
+                                                            display: '-webkit-box',
+                                                            fontSize: 14,
+                                                            fontWeight: 500,
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            textOverflow: 'ellipsis',
+                                                            overflow: 'hidden'
+                                                        }}
+                                                    >
+                                                        <Button onClick={() => openTemplate(row)} sx={{ textAlign: 'left' }}>
+                                                            {row.templateName || row.name}
+                                                        </Button>
+                                                    </Typography>
+                                                </StyledTableCell>
+                                                <StyledTableCell key='1'>
+                                                    <Typography>{row.type}</Typography>
+                                                </StyledTableCell>
+                                                <StyledTableCell key='2'>
+                                                    <Typography sx={{ overflowWrap: 'break-word', whiteSpace: 'pre-line' }}>
+                                                        {row.description || ''}
+                                                    </Typography>
+                                                </StyledTableCell>
+                                                <StyledTableCell key='3'>
+                                                    <Stack flexDirection='row' sx={{ gap: 1, flexWrap: 'wrap' }}>
+                                                        {row.framework &&
+                                                            row.framework.length > 0 &&
+                                                            row.framework.map((framework, index) => (
                                                                 <Chip
-                                                                    color={
-                                                                        tag === 'POPULAR'
-                                                                            ? 'primary'
-                                                                            : tag === 'DEPRECATED'
-                                                                            ? 'warning'
-                                                                            : 'error'
-                                                                    }
+                                                                    variant='outlined'
                                                                     key={index}
                                                                     size='small'
-                                                                    label={tag.toUpperCase()}
-                                                                    style={{ marginRight: 5, marginBottom: 5 }}
+                                                                    label={framework}
+                                                                    style={{ marginRight: 3, marginBottom: 3 }}
                                                                 />
                                                             ))}
-                                                </Typography>
-                                            </StyledTableCell>
-                                            <StyledTableCell key='6' colSpan={row.shared ? 2 : undefined}>
-                                                {row.shared ? (
-                                                    <Typography>{t('marketplace.table.sharedTemplate')}</Typography>
-                                                ) : (
-                                                    <>
-                                                        {onShare && (
-                                                            <PermissionIconButton
-                                                                display={'feat:workspaces'}
-                                                                permissionId={'templates:custom-share'}
-                                                                title={t('marketplace.table.share')}
-                                                                color='primary'
-                                                                onClick={() => onShare(row)}
-                                                            >
-                                                                <IconShare />
-                                                            </PermissionIconButton>
-                                                        )}
-                                                        {onDelete && (
-                                                            <PermissionIconButton
-                                                                permissionId={'templates:custom-delete'}
-                                                                title={t('marketplace.table.delete')}
-                                                                color='error'
-                                                                onClick={() => onDelete(row)}
-                                                            >
-                                                                <IconTrash />
-                                                            </PermissionIconButton>
-                                                        )}
-                                                    </>
-                                                )}
-                                            </StyledTableCell>
-                                        </StyledTableRow>
-                                    )})}
+                                                    </Stack>
+                                                </StyledTableCell>
+                                                <StyledTableCell key='4'>
+                                                    <Stack flexDirection='row' sx={{ gap: 1, flexWrap: 'wrap' }}>
+                                                        {row.usecases &&
+                                                            row.usecases.length > 0 &&
+                                                            row.usecases.map((usecase, index) => (
+                                                                <Chip
+                                                                    variant='outlined'
+                                                                    key={index}
+                                                                    size='small'
+                                                                    label={usecase}
+                                                                    style={{ marginRight: 3, marginBottom: 3 }}
+                                                                />
+                                                            ))}
+                                                    </Stack>
+                                                </StyledTableCell>
+                                                <StyledTableCell key='5'>
+                                                    <Typography>
+                                                        {row.badge &&
+                                                            row.badge
+                                                                .split(';')
+                                                                .map((tag, index) => (
+                                                                    <Chip
+                                                                        color={
+                                                                            tag === 'POPULAR'
+                                                                                ? 'primary'
+                                                                                : tag === 'DEPRECATED'
+                                                                                  ? 'warning'
+                                                                                  : 'error'
+                                                                        }
+                                                                        key={index}
+                                                                        size='small'
+                                                                        label={tag.toUpperCase()}
+                                                                        style={{ marginRight: 5, marginBottom: 5 }}
+                                                                    />
+                                                                ))}
+                                                    </Typography>
+                                                </StyledTableCell>
+                                                <StyledTableCell key='6' colSpan={row.shared ? 2 : undefined}>
+                                                    {row.shared ? (
+                                                        <Typography>{t('marketplace.table.sharedTemplate')}</Typography>
+                                                    ) : (
+                                                        <>
+                                                            {onShare && (
+                                                                <PermissionIconButton
+                                                                    display={'feat:workspaces'}
+                                                                    permissionId={'templates:custom-share'}
+                                                                    title={t('marketplace.table.share')}
+                                                                    color='primary'
+                                                                    onClick={() => onShare(row)}
+                                                                >
+                                                                    <IconShare />
+                                                                </PermissionIconButton>
+                                                            )}
+                                                            {onDelete && (
+                                                                <PermissionIconButton
+                                                                    permissionId={'templates:custom-delete'}
+                                                                    title={t('marketplace.table.delete')}
+                                                                    color='error'
+                                                                    onClick={() => onDelete(row)}
+                                                                >
+                                                                    <IconTrash />
+                                                                </PermissionIconButton>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </StyledTableCell>
+                                            </StyledTableRow>
+                                        )
+                                    })}
                             </>
                         )}
                     </TableBody>

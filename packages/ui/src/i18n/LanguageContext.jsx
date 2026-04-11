@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import en from './locales/en'
 import tr from './locales/tr'
@@ -13,7 +13,7 @@ const getValueByPath = (obj, path) => path.split('.').reduce((acc, part) => (acc
 
 const interpolate = (value, params = {}) => {
     if (typeof value !== 'string') return value
-    return value.replace(/\{(\w+)\}/g, (_, key) => (params[key] ?? `{${key}}`))
+    return value.replace(/\{(\w+)\}/g, (_, key) => params[key] ?? `{${key}}`)
 }
 
 const getInitialLanguage = () => {
@@ -33,37 +33,43 @@ const LanguageContext = createContext({
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguageState] = useState(getInitialLanguage)
 
-    const setLanguage = (nextLanguage) => {
+    const setLanguage = useCallback((nextLanguage) => {
         const safe = SUPPORTED_LANGUAGES.includes(nextLanguage) ? nextLanguage : DEFAULT_LANGUAGE
         setLanguageState(safe)
         localStorage.setItem(STORAGE_KEY, safe)
-    }
+    }, [])
 
-    const t = (key, params) => {
-        const current = getValueByPath(dict[language], key)
-        if (current !== undefined) return interpolate(current, params)
-        const fallback = getValueByPath(dict.en, key)
-        if (fallback !== undefined) return interpolate(fallback, params)
-        return key
-    }
+    const t = useCallback(
+        (key, params) => {
+            const current = getValueByPath(dict[language], key)
+            if (current !== undefined) return interpolate(current, params)
+            const fallback = getValueByPath(dict.en, key)
+            if (fallback !== undefined) return interpolate(fallback, params)
+            return key
+        },
+        [language]
+    )
 
-    const translateMarketplace = (template) => {
-        const templateName = template?.templateName
-        if (!templateName) return template
-        const entry = t(`marketplace.templates.${templateName}`)
-        if (!entry || typeof entry !== 'object') return template
-        return {
-            ...template,
-            templateName: entry.name || template.templateName,
-            description: entry.description || template.description,
-            usecases: (template.usecases || []).map((usecase) => {
-                const translatedUsecase = t(`marketplace.usecasesMap.${usecase}`)
-                return translatedUsecase === `marketplace.usecasesMap.${usecase}` ? usecase : translatedUsecase
-            })
-        }
-    }
+    const translateMarketplace = useCallback(
+        (template) => {
+            const templateName = template?.templateName
+            if (!templateName) return template
+            const entry = t(`marketplace.templates.${templateName}`)
+            if (!entry || typeof entry !== 'object') return template
+            return {
+                ...template,
+                templateName: entry.name || template.templateName,
+                description: entry.description || template.description,
+                usecases: (template.usecases || []).map((usecase) => {
+                    const translatedUsecase = t(`marketplace.usecasesMap.${usecase}`)
+                    return translatedUsecase === `marketplace.usecasesMap.${usecase}` ? usecase : translatedUsecase
+                })
+            }
+        },
+        [t]
+    )
 
-    const value = useMemo(() => ({ language, setLanguage, t, translateMarketplace }), [language])
+    const value = useMemo(() => ({ language, setLanguage, t, translateMarketplace }), [language, setLanguage, t, translateMarketplace])
 
     return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
 }

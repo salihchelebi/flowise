@@ -100,7 +100,9 @@ const FeatureCards = () => {
                                 {card.icon}
                                 <span className='text-xs uppercase'>{card.iconText}</span>
                             </FeatureIcon>
-                            {card.deprecating && <Chip label={t('assistants.deprecating')} size='small' color='warning' sx={{ fontWeight: 600 }} />}
+                            {card.deprecating && (
+                                <Chip label={t('assistants.deprecating')} size='small' color='warning' sx={{ fontWeight: 600 }} />
+                            )}
                         </Stack>
                         <h2 className='text-2xl font-bold mb-2'>{card.title}</h2>
                         <p className='text-gray-600'>{card.description}</p>

@@ -101,7 +101,8 @@ const en = {
         },
         openai: {
             title: 'OpenAI Assistant',
-            description: 'Create assistant using OpenAI Assistant API. This option is being deprecated; consider using Custom Assistant instead.'
+            description:
+                'Create assistant using OpenAI Assistant API. This option is being deprecated; consider using Custom Assistant instead.'
         },
         deprecating: 'Deprecating'
     }
