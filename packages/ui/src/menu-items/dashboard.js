@@ -68,7 +68,7 @@ const dashboard = {
             children: [
                 {
                     id: 'chatflows',
-                    title: 'Chatflows',
+                    title: 'Sohbet Akışları',
                     type: 'item',
                     url: '/chatflows',
                     icon: icons.IconHierarchy,
@@ -77,7 +77,7 @@ const dashboard = {
                 },
                 {
                     id: 'agentflows',
-                    title: 'Agentflows',
+                    title: 'Ajan Akışları',
                     type: 'item',
                     url: '/agentflows',
                     icon: icons.IconUsersGroup,
@@ -86,7 +86,7 @@ const dashboard = {
                 },
                 {
                     id: 'executions',
-                    title: 'Executions',
+                    title: 'Çalıştırmalar',
                     type: 'item',
                     url: '/executions',
                     icon: icons.IconListCheck,
@@ -95,7 +95,7 @@ const dashboard = {
                 },
                 {
                     id: 'assistants',
-                    title: 'Assistants',
+                    title: 'Asistanlar',
                     type: 'item',
                     url: '/assistants',
                     icon: icons.IconRobot,
@@ -104,7 +104,7 @@ const dashboard = {
                 },
                 {
                     id: 'marketplaces',
-                    title: 'Marketplaces',
+                    title: 'Pazaryerleri',
                     type: 'item',
                     url: '/marketplaces',
                     icon: icons.IconBuildingStore,
@@ -113,7 +113,7 @@ const dashboard = {
                 },
                 {
                     id: 'tools',
-                    title: 'Tools',
+                    title: 'Araçlar',
                     type: 'item',
                     url: '/tools',
                     icon: icons.IconTool,
@@ -122,7 +122,7 @@ const dashboard = {
                 },
                 {
                     id: 'credentials',
-                    title: 'Credentials',
+                    title: 'Kimlik Bilgileri',
                     type: 'item',
                     url: '/credentials',
                     icon: icons.IconLock,
@@ -131,7 +131,7 @@ const dashboard = {
                 },
                 {
                     id: 'variables',
-                    title: 'Variables',
+                    title: 'Değişkenler',
                     type: 'item',
                     url: '/variables',
                     icon: icons.IconVariable,
@@ -140,7 +140,7 @@ const dashboard = {
                 },
                 {
                     id: 'apikey',
-                    title: 'API Keys',
+                    title: 'API Anahtarları',
                     type: 'item',
                     url: '/apikey',
                     icon: icons.IconKey,
@@ -149,7 +149,7 @@ const dashboard = {
                 },
                 {
                     id: 'document-stores',
-                    title: 'Document Stores',
+                    title: 'Doküman Depoları',
                     type: 'item',
                     url: '/document-stores',
                     icon: icons.IconFiles,
@@ -160,12 +160,12 @@ const dashboard = {
         },
         {
             id: 'evaluations',
-            title: 'Evaluations',
+            title: 'Değerlendirmeler',
             type: 'group',
             children: [
                 {
                     id: 'datasets',
-                    title: 'Datasets',
+                    title: 'Veri Setleri',
                     type: 'item',
                     url: '/datasets',
                     icon: icons.IconDatabase,
@@ -175,7 +175,7 @@ const dashboard = {
                 },
                 {
                     id: 'evaluators',
-                    title: 'Evaluators',
+                    title: 'Değerlendiriciler',
                     type: 'item',
                     url: '/evaluators',
                     icon: icons.IconTestPipe,
@@ -185,7 +185,7 @@ const dashboard = {
                 },
                 {
                     id: 'evaluations',
-                    title: 'Evaluations',
+                    title: 'Değerlendirmeler',
                     type: 'item',
                     url: '/evaluations',
                     icon: icons.IconChartHistogram,
@@ -197,12 +197,12 @@ const dashboard = {
         },
         {
             id: 'management',
-            title: 'User & Workspace Management',
+            title: 'Kullanıcı ve Çalışma Alanı Yönetimi',
             type: 'group',
             children: [
                 {
                     id: 'sso',
-                    title: 'SSO Config',
+                    title: 'SSO Yapılandırması',
                     type: 'item',
                     url: '/sso-config',
                     icon: icons.IconShieldLock,
@@ -212,7 +212,7 @@ const dashboard = {
                 },
                 {
                     id: 'roles',
-                    title: 'Roles',
+                    title: 'Roller',
                     type: 'item',
                     url: '/roles',
                     icon: icons.IconLockCheck,
@@ -222,7 +222,7 @@ const dashboard = {
                 },
                 {
                     id: 'users',
-                    title: 'Users',
+                    title: 'Kullanıcılar',
                     type: 'item',
                     url: '/users',
                     icon: icons.IconUsers,
@@ -232,7 +232,7 @@ const dashboard = {
                 },
                 {
                     id: 'workspaces',
-                    title: 'Workspaces',
+                    title: 'Çalışma Alanları',
                     type: 'item',
                     url: '/workspaces',
                     icon: icons.IconStack2,
@@ -242,7 +242,7 @@ const dashboard = {
                 },
                 {
                     id: 'login-activity',
-                    title: 'Login Activity',
+                    title: 'Oturum Açma Geçmişi',
                     type: 'item',
                     url: '/login-activity',
                     icon: icons.IconClipboardList,
@@ -254,12 +254,12 @@ const dashboard = {
         },
         {
             id: 'others',
-            title: 'Others',
+            title: 'Diğerleri',
             type: 'group',
             children: [
                 {
                     id: 'logs',
-                    title: 'Logs',
+                    title: 'Kayıtlar',
                     type: 'item',
                     url: '/logs',
                     icon: icons.IconList,
@@ -278,7 +278,7 @@ const dashboard = {
                 // },
                 {
                     id: 'account',
-                    title: 'Account Settings',
+                    title: 'Hesap Ayarları',
                     type: 'item',
                     url: '/account',
                     icon: icons.IconSettings,
