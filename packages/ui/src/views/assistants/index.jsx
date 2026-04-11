@@ -14,16 +14,16 @@ import { IconRobotFace, IconBrandOpenai } from '@tabler/icons-react'
 
 const cards = [
     {
-        title: 'Custom Assistant',
-        description: 'Create custom assistant using your choice of LLMs',
+        title: 'Özel Asistan',
+        description: "Seçtiğiniz LLM'leri kullanarak özel asistan oluşturun",
         icon: <IconRobotFace />,
-        iconText: 'Custom',
+        iconText: 'Özel',
         gradient: 'linear-gradient(135deg, #fff8e14e 0%, #ffcc802f 100%)'
     },
     {
         title: 'OpenAI Assistant',
         description:
-            'Create assistant using OpenAI Assistant API. This option is being deprecated; consider using Custom Assistant instead.',
+            "OpenAI Assistant API kullanarak asistan oluşturun. Bu seçenek kullanımdan kaldırılıyor; bunun yerine Özel Asistan kullanmayı düşünün.",
         icon: <IconBrandOpenai />,
         iconText: 'OpenAI',
         gradient: 'linear-gradient(135deg, #c9ffd85f 0%, #a0f0b567 100%)',
@@ -100,7 +100,7 @@ const FeatureCards = () => {
                                 {card.icon}
                                 <span className='text-xs uppercase'>{card.iconText}</span>
                             </FeatureIcon>
-                            {card.deprecating && <Chip label='Deprecating' size='small' color='warning' sx={{ fontWeight: 600 }} />}
+                            {card.deprecating && <Chip label='Kaldırılıyor' size='small' color='warning' sx={{ fontWeight: 600 }} />}
                         </Stack>
                         <h2 className='text-2xl font-bold mb-2'>{card.title}</h2>
                         <p className='text-gray-600'>{card.description}</p>
@@ -119,8 +119,8 @@ const Assistants = () => {
             <MainCard>
                 <Stack flexDirection='column' sx={{ gap: 3 }}>
                     <ViewHeader
-                        title='Assistants'
-                        description='Chat assistants with instructions, tools, and files to respond to user queries'
+                        title='Asistanlar'
+                        description='Kullanıcı sorgularına yanıt vermek için talimatlar, araçlar ve dosyalar kullanan sohbet asistanları'
                     />
                     <FeatureCards />
                 </Stack>
