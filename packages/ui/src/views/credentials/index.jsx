@@ -245,9 +245,9 @@ const Credentials = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Search Credentials'
-                            title='Credentials'
-                            description='API keys, tokens, and secrets for 3rd party integrations'
+                            searchPlaceholder='Kimlik bilgisi ara [ Ctrl + F ]'
+                            title='Kimlik Bilgileri'
+                            description='Üçüncü taraf entegrasyonlar için API anahtarları, tokenlar ve gizli bilgiler'
                         >
                             <StyledPermissionButton
                                 permissionId='credentials:create'
@@ -256,7 +256,7 @@ const Credentials = () => {
                                 onClick={listCredential}
                                 startIcon={<IconPlus />}
                             >
-                                Add Credential
+                                Kimlik Bilgisi Ekle
                             </StyledPermissionButton>
                         </ViewHeader>
                         {!isLoading && credentials.length <= 0 ? (
@@ -285,9 +285,9 @@ const Credentials = () => {
                                         }}
                                     >
                                         <TableRow>
-                                            <StyledTableCell>Name</StyledTableCell>
-                                            <StyledTableCell>Last Updated</StyledTableCell>
-                                            <StyledTableCell>Created</StyledTableCell>
+                                            <StyledTableCell>Ad</StyledTableCell>
+                                            <StyledTableCell>Son Güncelleme</StyledTableCell>
+                                            <StyledTableCell>Oluşturulma</StyledTableCell>
                                             <StyledTableCell style={{ width: '5%' }}> </StyledTableCell>
                                             <StyledTableCell style={{ width: '5%' }}> </StyledTableCell>
                                             <StyledTableCell style={{ width: '5%' }}> </StyledTableCell>

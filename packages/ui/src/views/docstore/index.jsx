@@ -329,8 +329,8 @@ const Documents = () => {
                         onSearchChange={onSearchChange}
                         search={hasDocStores}
                         searchPlaceholder='Search Name'
-                        title='Document Store'
-                        description='Store and upsert documents for LLM retrieval (RAG)'
+                        title='Doküman Deposu'
+                        description='LLM erişimi (RAG) için doküman depola ve güncelle'
                     >
                         {hasDocStores && (
                             <ToggleButtonGroup
@@ -374,7 +374,7 @@ const Documents = () => {
                             startIcon={<IconPlus />}
                             id='btn_createVariable'
                         >
-                            Add New
+                            Yeni Ekle
                         </StyledPermissionButton>
                     </ViewHeader>
                     {!hasDocStores ? (
@@ -386,7 +386,7 @@ const Documents = () => {
                                     alt='doc_store_empty'
                                 />
                             </Box>
-                            <div>No Document Stores Created Yet</div>
+                            <div>Henüz doküman deposu oluşturulmadı</div>
                         </Stack>
                     ) : (
                         <React.Fragment>

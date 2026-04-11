@@ -14,16 +14,16 @@ import { IconRobotFace, IconBrandOpenai } from '@tabler/icons-react'
 
 const cards = [
     {
-        title: 'Custom Assistant',
-        description: 'Create custom assistant using your choice of LLMs',
+        title: 'Özel Asistan',
+        description: 'Seçtiğin LLM ile özel asistan oluştur',
         icon: <IconRobotFace />,
         iconText: 'Custom',
         gradient: 'linear-gradient(135deg, #fff8e14e 0%, #ffcc802f 100%)'
     },
     {
-        title: 'OpenAI Assistant',
+        title: 'OpenAI Asistanı',
         description:
-            'Create assistant using OpenAI Assistant API. This option is being deprecated; consider using Custom Assistant instead.',
+            'Bu seçenek kullanımdan kaldırılıyor; bunun yerine Özel Asistan kullan.',
         icon: <IconBrandOpenai />,
         iconText: 'OpenAI',
         gradient: 'linear-gradient(135deg, #c9ffd85f 0%, #a0f0b567 100%)',
@@ -119,8 +119,8 @@ const Assistants = () => {
             <MainCard>
                 <Stack flexDirection='column' sx={{ gap: 3 }}>
                     <ViewHeader
-                        title='Assistants'
-                        description='Chat assistants with instructions, tools, and files to respond to user queries'
+                        title='Asistanlar'
+                        description='Kullanıcı sorularına talimatlar, araçlar ve dosyalarla yanıt veren sohbet asistanları'
                     />
                     <FeatureCards />
                 </Stack>

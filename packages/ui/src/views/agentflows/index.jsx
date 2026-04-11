@@ -178,9 +178,9 @@ const Agentflows = () => {
                     <ViewHeader
                         onSearchChange={onSearchChange}
                         search={true}
-                        searchPlaceholder='Search Name or Category'
-                        title='Agentflows'
-                        description='Multi-agent systems, workflow orchestration'
+                        searchPlaceholder='Ad veya kategori ara [ Ctrl'
+                        title='Ajan Akışları'
+                        description='Çok ajanlı sistemler, iş akışı orkestrasyonu'
                     >
                         <ToggleButtonGroup
                             sx={{ borderRadius: 2, maxHeight: 40 }}
@@ -255,7 +255,7 @@ const Agentflows = () => {
                             startIcon={<IconPlus />}
                             sx={{ borderRadius: 2, height: 40 }}
                         >
-                            Add New
+                            Yeni Ekle
                         </StyledPermissionButton>
                     </ViewHeader>
 
@@ -344,7 +344,7 @@ const Agentflows = () => {
                                     alt='AgentsEmptySVG'
                                 />
                             </Box>
-                            <div>No Agents Yet</div>
+                            <div>Henüz ajan yok</div>
                         </Stack>
                     )}
                 </Stack>

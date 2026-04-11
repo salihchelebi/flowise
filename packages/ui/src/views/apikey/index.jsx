@@ -389,9 +389,9 @@ const APIKey = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Search API Keys'
-                            title='API Keys'
-                            description='Flowise API & SDK authentication keys'
+                            searchPlaceholder='API anahtarı ara [ Ctrl + F ]'
+                            title='API Anahtarları'
+                            description='Flowise API ve SDK kimlik doğrulama anahtarları'
                         >
                             <StyledPermissionButton
                                 permissionId={'apikeys:create'}
@@ -401,7 +401,7 @@ const APIKey = () => {
                                 startIcon={<IconPlus />}
                                 id='btn_createApiKey'
                             >
-                                Create Key
+                                Anahtar Oluştur
                             </StyledPermissionButton>
                         </ViewHeader>
                         {!isLoading && apiKeys?.length <= 0 ? (
@@ -431,11 +431,11 @@ const APIKey = () => {
                                             }}
                                         >
                                             <TableRow>
-                                                <StyledTableCell>Key Name</StyledTableCell>
+                                                <StyledTableCell>Anahtar Adı</StyledTableCell>
                                                 <StyledTableCell>API Key</StyledTableCell>
-                                                <StyledTableCell>Permissions</StyledTableCell>
-                                                <StyledTableCell>Usage</StyledTableCell>
-                                                <StyledTableCell>Updated</StyledTableCell>
+                                                <StyledTableCell>İzinler</StyledTableCell>
+                                                <StyledTableCell>Kullanım</StyledTableCell>
+                                                <StyledTableCell>Güncellendi</StyledTableCell>
                                                 <Available permission={'apikeys:update,apikeys:create'}>
                                                     <StyledTableCell> </StyledTableCell>
                                                 </Available>

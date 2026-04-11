@@ -222,12 +222,12 @@ const Variables = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Search Variables'
-                            title='Variables'
-                            description='Create and manage global variables'
+                            searchPlaceholder='Değişken ara [ Ctrl + F ]'
+                            title='Değişkenler'
+                            description='Genel değişkenleri oluştur ve yönet'
                         >
                             <Button variant='outlined' sx={{ borderRadius: 2, height: '100%' }} onClick={() => setShowHowToDialog(true)}>
-                                How To Use
+                                Nasıl Kullanılır
                             </Button>
                             <StyledPermissionButton
                                 permissionId={'variables:create'}
@@ -237,7 +237,7 @@ const Variables = () => {
                                 startIcon={<IconPlus />}
                                 id='btn_createVariable'
                             >
-                                Add Variable
+                                Değişken Ekle
                             </StyledPermissionButton>
                         </ViewHeader>
                         {!isLoading && variables.length === 0 ? (
@@ -249,7 +249,7 @@ const Variables = () => {
                                         alt='VariablesEmptySVG'
                                     />
                                 </Box>
-                                <div>No Variables Yet</div>
+                                <div>Henüz değişken yok</div>
                             </Stack>
                         ) : (
                             <>

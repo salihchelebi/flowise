@@ -161,9 +161,9 @@ const Tools = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Search Tools'
-                            title='Tools'
-                            description='External functions or APIs the agent can use to take action'
+                            searchPlaceholder='Araç ara [ Ctrl + F ]'
+                            title='Araçlar'
+                            description="Ajanın işlem yapmak için kullanabileceği harici işlevler veya API'ler"
                         >
                             <ToggleButtonGroup
                                 sx={{ borderRadius: 2, maxHeight: 40 }}
@@ -206,7 +206,7 @@ const Tools = () => {
                                     startIcon={<IconFileUpload />}
                                     sx={{ borderRadius: 2, height: 40 }}
                                 >
-                                    Load
+                                    Yükle
                                 </PermissionButton>
                                 <input
                                     style={{ display: 'none' }}
@@ -225,7 +225,7 @@ const Tools = () => {
                                     startIcon={<IconPlus />}
                                     sx={{ borderRadius: 2, height: 40 }}
                                 >
-                                    Create
+                                    Oluştur
                                 </StyledPermissionButton>
                             </ButtonGroup>
                         </ViewHeader>
@@ -264,7 +264,7 @@ const Tools = () => {
                                         alt='ToolEmptySVG'
                                     />
                                 </Box>
-                                <div>No Tools Created Yet</div>
+                                <div>Henüz araç oluşturulmadı</div>
                             </Stack>
                         )}
                     </Stack>

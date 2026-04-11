@@ -236,18 +236,18 @@ const AgentExecutions = () => {
                 <ErrorBoundary error={error} />
             ) : (
                 <Stack flexDirection='column' sx={{ gap: 3 }}>
-                    <ViewHeader title='Agent Executions' description='Monitor and manage agentflows executions' />
+                    <ViewHeader title='Ajan Çalıştırmaları' description='Ajan akışı çalıştırmalarını izle ve yönet' />
 
                     {/* Filter Section */}
                     <Box sx={{ mb: 2, width: '100%' }}>
                         <Grid container spacing={2} alignItems='center'>
                             <Grid item xs={12} md={2}>
                                 <FormControl fullWidth size='small'>
-                                    <InputLabel id='state-select-label'>State</InputLabel>
+                                    <InputLabel id='state-select-label'>Durum</InputLabel>
                                     <Select
                                         labelId='state-select-label'
                                         value={filters.state}
-                                        label='State'
+                                        label='Durum'
                                         onChange={(e) => handleFilterChange('state', e.target.value)}
                                         size='small'
                                         sx={{
@@ -281,7 +281,7 @@ const AgentExecutions = () => {
                                     customInput={
                                         <TextField
                                             size='small'
-                                            label='Start date'
+                                            label='Başlangıç tarihi'
                                             fullWidth
                                             sx={{
                                                 '& .MuiOutlinedInput-notchedOutline': {
@@ -305,7 +305,7 @@ const AgentExecutions = () => {
                                     customInput={
                                         <TextField
                                             size='small'
-                                            label='End date'
+                                            label='Bitiş tarihi'
                                             fullWidth
                                             sx={{
                                                 '& .MuiOutlinedInput-notchedOutline': {
@@ -333,7 +333,7 @@ const AgentExecutions = () => {
                             <Grid sx={{ ml: -1 }} item xs={12} md={2}>
                                 <TextField
                                     fullWidth
-                                    label='Session ID'
+                                    label='Oturum Kimliği'
                                     value={filters.sessionId}
                                     onChange={(e) => handleFilterChange('sessionId', e.target.value)}
                                     size='small'
@@ -352,10 +352,10 @@ const AgentExecutions = () => {
                                         onClick={() => applyFilters(currentPage, pageLimit)}
                                         size='small'
                                     >
-                                        Apply
+                                        Uygula
                                     </Button>
                                     <Button variant='outlined' onClick={resetFilters} size='small'>
-                                        Reset
+                                        Sıfırla
                                     </Button>
                                     <Available permissions={['executions:delete']}>
                                         <Tooltip title='Delete selected executions'>
@@ -453,7 +453,7 @@ const AgentExecutions = () => {
                                     alt='execution_empty'
                                 />
                             </Box>
-                            <div>No Executions Yet</div>
+                            <div>Henüz çalıştırma yok</div>
                         </Stack>
                     )}
                 </Stack>

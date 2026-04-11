@@ -485,7 +485,7 @@ const Marketplace = () => {
                                         }}
                                     >
                                         <InputLabel size='small' id='filter-badge-label'>
-                                            Tag
+                                            Etiket
                                         </InputLabel>
                                         <Select
                                             labelId='filter-badge-label'
@@ -494,7 +494,7 @@ const Marketplace = () => {
                                             multiple
                                             value={badgeFilter}
                                             onChange={handleBadgeFilterChange}
-                                            input={<OutlinedInput label='Tag' />}
+                                            input={<OutlinedInput label='Etiket' />}
                                             renderValue={(selected) => selected.join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
@@ -521,7 +521,7 @@ const Marketplace = () => {
                                         }}
                                     >
                                         <InputLabel size='small' id='type-badge-label'>
-                                            Type
+                                            Tür
                                         </InputLabel>
                                         <Select
                                             size='small'
@@ -530,7 +530,7 @@ const Marketplace = () => {
                                             multiple
                                             value={typeFilter}
                                             onChange={handleTypeFilterChange}
-                                            input={<OutlinedInput label='Type' />}
+                                            input={<OutlinedInput label='Tür' />}
                                             renderValue={(selected) => selected.join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
@@ -557,7 +557,7 @@ const Marketplace = () => {
                                         }}
                                     >
                                         <InputLabel size='small' id='type-fw-label'>
-                                            Framework
+                                            Çatı
                                         </InputLabel>
                                         <Select
                                             size='small'
@@ -566,7 +566,7 @@ const Marketplace = () => {
                                             multiple
                                             value={frameworkFilter}
                                             onChange={handleFrameworkFilterChange}
-                                            input={<OutlinedInput label='Framework' />}
+                                            input={<OutlinedInput label='Çatı' />}
                                             renderValue={(selected) => selected.join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
@@ -587,9 +587,9 @@ const Marketplace = () => {
                             }
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Search Name/Description/Node'
-                            title='Marketplace'
-                            description='Explore and use pre-built templates'
+                            searchPlaceholder='Ad/Açıklama/Düğüm Ara [ Ctrl + F ]'
+                            title='Pazaryeri'
+                            description='Hazır şablonları keşfet ve kullan'
                         >
                             <ToggleButtonGroup
                                 sx={{ borderRadius: 2, height: '100%' }}
@@ -650,7 +650,7 @@ const Marketplace = () => {
                                             </li>
                                         )
                                     }}
-                                    renderInput={(params) => <TextField {...params} label='Usecases' />}
+                                    renderInput={(params) => <TextField {...params} label='Kullanım Alanları' />}
                                     sx={{
                                         width: 300
                                     }}
