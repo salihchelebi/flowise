@@ -138,9 +138,9 @@ const Chatflows = () => {
                     <ViewHeader
                         onSearchChange={onSearchChange}
                         search={true}
-                        searchPlaceholder='Search Name or Category'
-                        title='Chatflows'
-                        description='Build single-agent systems, chatbots and simple LLM flows'
+                        searchPlaceholder='Ad veya Kategori Ara'
+                        title='Sohbet Akışları'
+                        description='Tek ajanlı sistemler, sohbet botları ve basit LLM akışları oluştur'
                     >
                         <ToggleButtonGroup
                             sx={{ borderRadius: 2, maxHeight: 40 }}
@@ -158,7 +158,7 @@ const Chatflows = () => {
                                 }}
                                 variant='contained'
                                 value='card'
-                                title='Card View'
+                                title='Kart Görünümü'
                             >
                                 <IconLayoutGrid />
                             </ToggleButton>
@@ -170,7 +170,7 @@ const Chatflows = () => {
                                 }}
                                 variant='contained'
                                 value='list'
-                                title='List View'
+                                title='Liste Görünümü'
                             >
                                 <IconList />
                             </ToggleButton>
@@ -182,7 +182,7 @@ const Chatflows = () => {
                             startIcon={<IconPlus />}
                             sx={{ borderRadius: 2, height: 40 }}
                         >
-                            Add New
+                            Yeni Ekle
                         </StyledPermissionButton>
                     </ViewHeader>
 
@@ -226,7 +226,7 @@ const Chatflows = () => {
                                     alt='WorkflowEmptySVG'
                                 />
                             </Box>
-                            <div>No Chatflows Yet</div>
+                            <div>Henüz sohbet akışı yok</div>
                         </Stack>
                     )}
                 </Stack>
