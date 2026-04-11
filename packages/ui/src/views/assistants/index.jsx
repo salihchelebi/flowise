@@ -8,28 +8,10 @@ import { useTheme, styled } from '@mui/material/styles'
 // project imports
 import MainCard from '@/ui-component/cards/MainCard'
 import ViewHeader from '@/layout/MainLayout/ViewHeader'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 // icons
 import { IconRobotFace, IconBrandOpenai } from '@tabler/icons-react'
-
-const cards = [
-    {
-        title: 'Özel Asistan',
-        description: 'Seçtiğin LLM ile özel asistan oluştur',
-        icon: <IconRobotFace />,
-        iconText: 'Custom',
-        gradient: 'linear-gradient(135deg, #fff8e14e 0%, #ffcc802f 100%)'
-    },
-    {
-        title: 'OpenAI Asistanı',
-        description:
-            'Bu seçenek kullanımdan kaldırılıyor; bunun yerine Özel Asistan kullan.',
-        icon: <IconBrandOpenai />,
-        iconText: 'OpenAI',
-        gradient: 'linear-gradient(135deg, #c9ffd85f 0%, #a0f0b567 100%)',
-        deprecating: true
-    }
-]
 
 const StyledCard = styled(Card)(({ gradient }) => ({
     height: '300px',
@@ -57,6 +39,24 @@ const FeatureCards = () => {
     const navigate = useNavigate()
     const theme = useTheme()
     const customization = useSelector((state) => state.customization)
+    const { t } = useLanguage()
+    const cards = [
+        {
+            title: t('assistants.custom.title'),
+            description: t('assistants.custom.description'),
+            icon: <IconRobotFace />,
+            iconText: 'Custom',
+            gradient: 'linear-gradient(135deg, #fff8e14e 0%, #ffcc802f 100%)'
+        },
+        {
+            title: t('assistants.openai.title'),
+            description: t('assistants.openai.description'),
+            icon: <IconBrandOpenai />,
+            iconText: 'OpenAI',
+            gradient: 'linear-gradient(135deg, #c9ffd85f 0%, #a0f0b567 100%)',
+            deprecating: true
+        }
+    ]
 
     const onCardClick = (index) => {
         if (index === 0) navigate('/assistants/custom')
@@ -100,7 +100,7 @@ const FeatureCards = () => {
                                 {card.icon}
                                 <span className='text-xs uppercase'>{card.iconText}</span>
                             </FeatureIcon>
-                            {card.deprecating && <Chip label='Deprecating' size='small' color='warning' sx={{ fontWeight: 600 }} />}
+                            {card.deprecating && <Chip label={t('assistants.deprecating')} size='small' color='warning' sx={{ fontWeight: 600 }} />}
                         </Stack>
                         <h2 className='text-2xl font-bold mb-2'>{card.title}</h2>
                         <p className='text-gray-600'>{card.description}</p>
@@ -114,14 +114,12 @@ const FeatureCards = () => {
 // ==============================|| ASSISTANTS ||============================== //
 
 const Assistants = () => {
+    const { t } = useLanguage()
     return (
         <>
             <MainCard>
                 <Stack flexDirection='column' sx={{ gap: 3 }}>
-                    <ViewHeader
-                        title='Asistanlar'
-                        description='Kullanıcı sorularına talimatlar, araçlar ve dosyalarla yanıt veren sohbet asistanları'
-                    />
+                    <ViewHeader title={t('pages.assistants.title')} description={t('pages.assistants.description')} />
                     <FeatureCards />
                 </Stack>
             </MainCard>

@@ -45,6 +45,7 @@ import useConfirm from '@/hooks/useConfirm'
 
 // utils
 import useNotifier from '@/utils/useNotifier'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 // Icons
 import APIEmptySVG from '@/assets/images/api_empty.svg'
@@ -75,6 +76,7 @@ const StyledTableRow = styled(TableRow)(() => ({
 function APIKeyRow(props) {
     const [open, setOpen] = useState(false)
     const theme = useTheme()
+    const { t } = useLanguage()
 
     const permissions = props.apiKey.permissions || []
 
@@ -389,9 +391,9 @@ const APIKey = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='API anahtarı ara [ Ctrl + F ]'
-                            title='API Anahtarları'
-                            description='Flowise API ve SDK kimlik doğrulama anahtarları'
+                            searchPlaceholder={t('placeholders.searchApiKeys')}
+                            title={t('pages.apikeys.title')}
+                            description={t('pages.apikeys.description')}
                         >
                             <StyledPermissionButton
                                 permissionId={'apikeys:create'}
@@ -401,7 +403,7 @@ const APIKey = () => {
                                 startIcon={<IconPlus />}
                                 id='btn_createApiKey'
                             >
-                                Anahtar Oluştur
+                                {t('buttons.createKey')}
                             </StyledPermissionButton>
                         </ViewHeader>
                         {!isLoading && apiKeys?.length <= 0 ? (
@@ -413,7 +415,7 @@ const APIKey = () => {
                                         alt='APIEmptySVG'
                                     />
                                 </Box>
-                                <div>No API Keys Yet</div>
+                                <div>{t('emptyStates.noApiKeys')}</div>
                             </Stack>
                         ) : (
                             <>
@@ -431,11 +433,11 @@ const APIKey = () => {
                                             }}
                                         >
                                             <TableRow>
-                                                <StyledTableCell>Anahtar Adı</StyledTableCell>
+                                                <StyledTableCell>{t('common.keyName')}</StyledTableCell>
                                                 <StyledTableCell>API Key</StyledTableCell>
-                                                <StyledTableCell>İzinler</StyledTableCell>
-                                                <StyledTableCell>Kullanım</StyledTableCell>
-                                                <StyledTableCell>Güncellendi</StyledTableCell>
+                                                <StyledTableCell>{t('common.permissions')}</StyledTableCell>
+                                                <StyledTableCell>{t('common.usage')}</StyledTableCell>
+                                                <StyledTableCell>{t('common.updated')}</StyledTableCell>
                                                 <Available permission={'apikeys:update,apikeys:create'}>
                                                     <StyledTableCell> </StyledTableCell>
                                                 </Available>

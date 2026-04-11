@@ -68,7 +68,8 @@ const dashboard = {
             children: [
                 {
                     id: 'chatflows',
-                    title: 'Sohbet Akışları',
+                    title: 'Chatflows',
+                    titleKey: 'menu.chatflows',
                     type: 'item',
                     url: '/chatflows',
                     icon: icons.IconHierarchy,
@@ -77,7 +78,8 @@ const dashboard = {
                 },
                 {
                     id: 'agentflows',
-                    title: 'Ajan Akışları',
+                    title: 'Agentflows',
+                    titleKey: 'menu.agentflows',
                     type: 'item',
                     url: '/agentflows',
                     icon: icons.IconUsersGroup,
@@ -86,7 +88,8 @@ const dashboard = {
                 },
                 {
                     id: 'executions',
-                    title: 'Çalıştırmalar',
+                    title: 'Executions',
+                    titleKey: 'menu.executions',
                     type: 'item',
                     url: '/executions',
                     icon: icons.IconListCheck,
@@ -95,7 +98,8 @@ const dashboard = {
                 },
                 {
                     id: 'assistants',
-                    title: 'Asistanlar',
+                    title: 'Assistants',
+                    titleKey: 'menu.assistants',
                     type: 'item',
                     url: '/assistants',
                     icon: icons.IconRobot,
@@ -104,7 +108,8 @@ const dashboard = {
                 },
                 {
                     id: 'marketplaces',
-                    title: 'Pazaryeri',
+                    title: 'Marketplaces',
+                    titleKey: 'menu.marketplaces',
                     type: 'item',
                     url: '/marketplaces',
                     icon: icons.IconBuildingStore,
@@ -113,7 +118,8 @@ const dashboard = {
                 },
                 {
                     id: 'tools',
-                    title: 'Araçlar',
+                    title: 'Tools',
+                    titleKey: 'menu.tools',
                     type: 'item',
                     url: '/tools',
                     icon: icons.IconTool,
@@ -122,7 +128,8 @@ const dashboard = {
                 },
                 {
                     id: 'credentials',
-                    title: 'Kimlik Bilgileri',
+                    title: 'Credentials',
+                    titleKey: 'menu.credentials',
                     type: 'item',
                     url: '/credentials',
                     icon: icons.IconLock,
@@ -131,7 +138,8 @@ const dashboard = {
                 },
                 {
                     id: 'variables',
-                    title: 'Değişkenler',
+                    title: 'Variables',
+                    titleKey: 'menu.variables',
                     type: 'item',
                     url: '/variables',
                     icon: icons.IconVariable,
@@ -140,7 +148,8 @@ const dashboard = {
                 },
                 {
                     id: 'apikey',
-                    title: 'API Anahtarları',
+                    title: 'API Keys',
+                    titleKey: 'menu.apiKeys',
                     type: 'item',
                     url: '/apikey',
                     icon: icons.IconKey,
@@ -149,7 +158,8 @@ const dashboard = {
                 },
                 {
                     id: 'document-stores',
-                    title: 'Doküman Depoları',
+                    title: 'Document Stores',
+                    titleKey: 'menu.documentStores',
                     type: 'item',
                     url: '/document-stores',
                     icon: icons.IconFiles,

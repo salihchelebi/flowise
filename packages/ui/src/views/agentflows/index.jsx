@@ -27,6 +27,7 @@ import useApi from '@/hooks/useApi'
 // const
 import { AGENTFLOW_ICONS, baseURL } from '@/store/constant'
 import { useError } from '@/store/context/ErrorContext'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 // icons
 import { IconAlertTriangle, IconLayoutGrid, IconList, IconPlus, IconX } from '@tabler/icons-react'
@@ -36,6 +37,7 @@ import { IconAlertTriangle, IconLayoutGrid, IconList, IconPlus, IconX } from '@t
 const Agentflows = () => {
     const navigate = useNavigate()
     const theme = useTheme()
+    const { t } = useLanguage()
     const customization = useSelector((state) => state.customization)
 
     const [isLoading, setLoading] = useState(true)
@@ -178,9 +180,9 @@ const Agentflows = () => {
                     <ViewHeader
                         onSearchChange={onSearchChange}
                         search={true}
-                        searchPlaceholder='Ad veya kategori ara [ Ctrl'
-                        title='Ajan Akışları'
-                        description='Çok ajanlı sistemler, iş akışı orkestrasyonu'
+                        searchPlaceholder={t('placeholders.searchNameOrCategory')}
+                        title={t('pages.agentflows.title')}
+                        description={t('pages.agentflows.description')}
                     >
                         <ToggleButtonGroup
                             sx={{ borderRadius: 2, maxHeight: 40 }}
@@ -255,7 +257,7 @@ const Agentflows = () => {
                             startIcon={<IconPlus />}
                             sx={{ borderRadius: 2, height: 40 }}
                         >
-                            Yeni Ekle
+                            {t('buttons.addNew')}
                         </StyledPermissionButton>
                     </ViewHeader>
 
@@ -344,7 +346,7 @@ const Agentflows = () => {
                                     alt='AgentsEmptySVG'
                                 />
                             </Box>
-                            <div>Henüz ajan yok</div>
+                            <div>{t('emptyStates.noAgents')}</div>
                         </Stack>
                     )}
                 </Stack>

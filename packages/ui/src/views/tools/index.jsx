@@ -20,6 +20,7 @@ import toolsApi from '@/api/tools'
 // Hooks
 import useApi from '@/hooks/useApi'
 import { useError } from '@/store/context/ErrorContext'
+import { useLanguage } from '@/i18n/LanguageContext'
 import { gridSpacing } from '@/store/constant'
 
 // icons
@@ -30,6 +31,7 @@ import ToolEmptySVG from '@/assets/images/tools_empty.svg'
 
 const Tools = () => {
     const theme = useTheme()
+    const { t } = useLanguage()
     const getAllToolsApi = useApi(toolsApi.getAllTools)
     const { error, setError } = useError()
 
@@ -161,9 +163,9 @@ const Tools = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Araç ara [ Ctrl + F ]'
-                            title='Araçlar'
-                            description="Ajanın işlem yapmak için kullanabileceği harici işlevler veya API'ler"
+                            searchPlaceholder={t('placeholders.searchTools')}
+                            title={t('pages.tools.title')}
+                            description={t('pages.tools.description')}
                         >
                             <ToggleButtonGroup
                                 sx={{ borderRadius: 2, maxHeight: 40 }}
@@ -206,7 +208,7 @@ const Tools = () => {
                                     startIcon={<IconFileUpload />}
                                     sx={{ borderRadius: 2, height: 40 }}
                                 >
-                                    Yükle
+                                    {t('buttons.load')}
                                 </PermissionButton>
                                 <input
                                     style={{ display: 'none' }}
@@ -225,7 +227,7 @@ const Tools = () => {
                                     startIcon={<IconPlus />}
                                     sx={{ borderRadius: 2, height: 40 }}
                                 >
-                                    Oluştur
+                                    {t('buttons.create')}
                                 </StyledPermissionButton>
                             </ButtonGroup>
                         </ViewHeader>
@@ -264,7 +266,7 @@ const Tools = () => {
                                         alt='ToolEmptySVG'
                                     />
                                 </Box>
-                                <div>Henüz araç oluşturulmadı</div>
+                                <div>{t('emptyStates.noTools')}</div>
                             </Stack>
                         )}
                     </Stack>

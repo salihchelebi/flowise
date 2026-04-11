@@ -51,6 +51,7 @@ import VariablesEmptySVG from '@/assets/images/variables_empty.svg'
 
 // const
 import { useError } from '@/store/context/ErrorContext'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     borderColor: theme.palette.grey[900] + 25,
@@ -75,6 +76,7 @@ const StyledTableRow = styled(TableRow)(() => ({
 
 const Variables = () => {
     const theme = useTheme()
+    const { t } = useLanguage()
     const customization = useSelector((state) => state.customization)
     const dispatch = useDispatch()
     useNotifier()
@@ -222,12 +224,12 @@ const Variables = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Değişken ara [ Ctrl + F ]'
-                            title='Değişkenler'
-                            description='Genel değişkenleri oluştur ve yönet'
+                            searchPlaceholder={t('placeholders.searchVariables')}
+                            title={t('pages.variables.title')}
+                            description={t('pages.variables.description')}
                         >
                             <Button variant='outlined' sx={{ borderRadius: 2, height: '100%' }} onClick={() => setShowHowToDialog(true)}>
-                                Nasıl Kullanılır
+                                {t('buttons.howToUse')}
                             </Button>
                             <StyledPermissionButton
                                 permissionId={'variables:create'}
@@ -237,7 +239,7 @@ const Variables = () => {
                                 startIcon={<IconPlus />}
                                 id='btn_createVariable'
                             >
-                                Değişken Ekle
+                                {t('buttons.addVariable')}
                             </StyledPermissionButton>
                         </ViewHeader>
                         {!isLoading && variables.length === 0 ? (
@@ -249,7 +251,7 @@ const Variables = () => {
                                         alt='VariablesEmptySVG'
                                     />
                                 </Box>
-                                <div>Henüz değişken yok</div>
+                                <div>{t('emptyStates.noVariables')}</div>
                             </Stack>
                         ) : (
                             <>

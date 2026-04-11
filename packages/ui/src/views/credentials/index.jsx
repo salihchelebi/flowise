@@ -49,6 +49,7 @@ import keySVG from '@/assets/images/key.svg'
 import { baseURL } from '@/store/constant'
 import { SET_COMPONENT_CREDENTIALS } from '@/store/actions'
 import { useError } from '@/store/context/ErrorContext'
+import { useLanguage } from '@/i18n/LanguageContext'
 import ShareWithWorkspaceDialog from '@/ui-component/dialog/ShareWithWorkspaceDialog'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -75,6 +76,7 @@ const StyledTableRow = styled(TableRow)(() => ({
 
 const Credentials = () => {
     const theme = useTheme()
+    const { t } = useLanguage()
     const customization = useSelector((state) => state.customization)
     const dispatch = useDispatch()
     useNotifier()
@@ -245,9 +247,9 @@ const Credentials = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Kimlik bilgisi ara [ Ctrl + F ]'
-                            title='Kimlik Bilgileri'
-                            description='Üçüncü taraf entegrasyonlar için API anahtarları, tokenlar ve gizli bilgiler'
+                            searchPlaceholder={t('placeholders.searchCredentials')}
+                            title={t('pages.credentials.title')}
+                            description={t('pages.credentials.description')}
                         >
                             <StyledPermissionButton
                                 permissionId='credentials:create'
@@ -256,7 +258,7 @@ const Credentials = () => {
                                 onClick={listCredential}
                                 startIcon={<IconPlus />}
                             >
-                                Kimlik Bilgisi Ekle
+                                {t('buttons.addCredential')}
                             </StyledPermissionButton>
                         </ViewHeader>
                         {!isLoading && credentials.length <= 0 ? (
@@ -268,7 +270,7 @@ const Credentials = () => {
                                         alt='CredentialEmptySVG'
                                     />
                                 </Box>
-                                <div>No Credentials Yet</div>
+                                <div>{t('emptyStates.noCredentials')}</div>
                             </Stack>
                         ) : (
                             <TableContainer
@@ -285,9 +287,9 @@ const Credentials = () => {
                                         }}
                                     >
                                         <TableRow>
-                                            <StyledTableCell>Ad</StyledTableCell>
-                                            <StyledTableCell>Son Güncelleme</StyledTableCell>
-                                            <StyledTableCell>Oluşturulma</StyledTableCell>
+                                            <StyledTableCell>{t('common.name')}</StyledTableCell>
+                                            <StyledTableCell>{t('common.lastUpdated')}</StyledTableCell>
+                                            <StyledTableCell>{t('common.created')}</StyledTableCell>
                                             <StyledTableCell style={{ width: '5%' }}> </StyledTableCell>
                                             <StyledTableCell style={{ width: '5%' }}> </StyledTableCell>
                                             <StyledTableCell style={{ width: '5%' }}> </StyledTableCell>

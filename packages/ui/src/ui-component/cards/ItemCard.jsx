@@ -8,6 +8,7 @@ import { Box, Grid, Tooltip, Typography, useTheme } from '@mui/material'
 // project imports
 import MainCard from '@/ui-component/cards/MainCard'
 import MoreItemsTooltip from '../tooltip/MoreItemsTooltip'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     background: theme.palette.card.main,
@@ -33,6 +34,8 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 const ItemCard = ({ data, images, icons, onClick }) => {
     const theme = useTheme()
     const customization = useSelector((state) => state.customization)
+    const { translateMarketplace, t } = useLanguage()
+    const localizedData = data?.templateName ? translateMarketplace(data) : data
 
     return (
         <CardWrapper content={false} onClick={onClick} sx={{ border: 1, borderColor: theme.palette.grey[900] + 25, borderRadius: 2 }}>
@@ -88,10 +91,10 @@ const ItemCard = ({ data, images, icons, onClick }) => {
                                     overflow: 'hidden'
                                 }}
                             >
-                                {data.templateName || data.name}
+                                {localizedData.templateName || localizedData.name}
                             </Typography>
                         </div>
-                        {data.description && (
+                        {localizedData.description && (
                             <span
                                 style={{
                                     display: '-webkit-box',
@@ -103,7 +106,7 @@ const ItemCard = ({ data, images, icons, onClick }) => {
                                     overflow: 'hidden'
                                 }}
                             >
-                                {data.description}
+                                {localizedData.description}
                             </span>
                         )}
                     </Box>
@@ -171,7 +174,7 @@ const ItemCard = ({ data, images, icons, onClick }) => {
                                             fontWeight: 200
                                         }}
                                     >
-                                        + {(images?.length || 0) + (icons?.length || 0) - 3} More
+                                        + {(images?.length || 0) + (icons?.length || 0) - 3} {t('common.more')}
                                     </Typography>
                                 </MoreItemsTooltip>
                             )}

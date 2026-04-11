@@ -59,6 +59,7 @@ import useNotifier from '@/utils/useNotifier'
 import { baseURL, AGENTFLOW_ICONS } from '@/store/constant'
 import { gridSpacing } from '@/store/constant'
 import { useError } from '@/store/context/ErrorContext'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 const badges = ['POPULAR', 'NEW']
 const types = ['Chatflow', 'AgentflowV2', 'Tool']
@@ -80,6 +81,7 @@ const Marketplace = () => {
 
     const theme = useTheme()
     const { error, setError } = useError()
+    const { t, translateMarketplace } = useLanguage()
 
     const [isLoading, setLoading] = useState(true)
     const [images, setImages] = useState({})
@@ -264,10 +266,11 @@ const Marketplace = () => {
     }
 
     function filterFlows(data) {
+        const localized = data.templateName ? translateMarketplace(data) : data
         return (
             (data.categories ? data.categories.join(',') : '').toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            data.templateName.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            (data.description && data.description.toLowerCase().indexOf(search.toLowerCase()) > -1)
+            (localized.templateName || '').toLowerCase().indexOf(search.toLowerCase()) > -1 ||
+            (localized.description && localized.description.toLowerCase().indexOf(search.toLowerCase()) > -1)
         )
     }
 
@@ -302,10 +305,14 @@ const Marketplace = () => {
             filteredData = filteredData.filter((data) => (data.framework || []).some((item) => filter.frameworkFilter.includes(item)))
         if (filter.search) {
             filteredData = filteredData.filter(
-                (data) =>
+                    (data) => {
+                        const localized = data.templateName ? translateMarketplace(data) : data
+                        return (
                     (data.categories ? data.categories.join(',') : '').toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
-                    data.templateName.toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
-                    (data.description && data.description.toLowerCase().indexOf(filter.search.toLowerCase()) > -1)
+                    (localized.templateName || '').toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
+                    (localized.description && localized.description.toLowerCase().indexOf(filter.search.toLowerCase()) > -1)
+                        )
+                    }
             )
         }
 
@@ -485,7 +492,7 @@ const Marketplace = () => {
                                         }}
                                     >
                                         <InputLabel size='small' id='filter-badge-label'>
-                                            Etiket
+                                            {t('marketplace.tag')}
                                         </InputLabel>
                                         <Select
                                             labelId='filter-badge-label'
@@ -494,7 +501,7 @@ const Marketplace = () => {
                                             multiple
                                             value={badgeFilter}
                                             onChange={handleBadgeFilterChange}
-                                            input={<OutlinedInput label='Etiket' />}
+                                            input={<OutlinedInput label={t('marketplace.tag')} />}
                                             renderValue={(selected) => selected.join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
@@ -521,7 +528,7 @@ const Marketplace = () => {
                                         }}
                                     >
                                         <InputLabel size='small' id='type-badge-label'>
-                                            Tür
+                                            {t('marketplace.type')}
                                         </InputLabel>
                                         <Select
                                             size='small'
@@ -530,7 +537,7 @@ const Marketplace = () => {
                                             multiple
                                             value={typeFilter}
                                             onChange={handleTypeFilterChange}
-                                            input={<OutlinedInput label='Tür' />}
+                                            input={<OutlinedInput label={t('marketplace.type')} />}
                                             renderValue={(selected) => selected.join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
@@ -557,7 +564,7 @@ const Marketplace = () => {
                                         }}
                                     >
                                         <InputLabel size='small' id='type-fw-label'>
-                                            Çatı
+                                            {t('marketplace.framework')}
                                         </InputLabel>
                                         <Select
                                             size='small'
@@ -566,7 +573,7 @@ const Marketplace = () => {
                                             multiple
                                             value={frameworkFilter}
                                             onChange={handleFrameworkFilterChange}
-                                            input={<OutlinedInput label='Çatı' />}
+                                            input={<OutlinedInput label={t('marketplace.framework')} />}
                                             renderValue={(selected) => selected.join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
@@ -587,9 +594,9 @@ const Marketplace = () => {
                             }
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Ad/Açıklama/Düğüm Ara [ Ctrl + F ]'
-                            title='Pazaryeri'
-                            description='Hazır şablonları keşfet ve kullan'
+                            searchPlaceholder={t('placeholders.searchMarketplace')}
+                            title={t('pages.marketplaces.title')}
+                            description={t('pages.marketplaces.description')}
                         >
                             <ToggleButtonGroup
                                 sx={{ borderRadius: 2, height: '100%' }}
@@ -627,8 +634,8 @@ const Marketplace = () => {
                         {hasPermission('templates:marketplace') && hasPermission('templates:custom') && (
                             <Stack direction='row' justifyContent='space-between' sx={{ mb: 2 }}>
                                 <Tabs value={activeTabValue} onChange={handleTabChange} textColor='primary' aria-label='tabs'>
-                                    <PermissionTab permissionId='templates:marketplace' value={0} label='Community Templates' />
-                                    <PermissionTab permissionId='templates:custom' value={1} label='My Templates' />
+                                    <PermissionTab permissionId='templates:marketplace' value={0} label={t('marketplace.communityTemplates')} />
+                                    <PermissionTab permissionId='templates:custom' value={1} label={t('marketplace.myTemplates')} />
                                 </Tabs>
                                 <Autocomplete
                                     id='useCases'
@@ -650,7 +657,7 @@ const Marketplace = () => {
                                             </li>
                                         )
                                     }}
-                                    renderInput={(params) => <TextField {...params} label='Kullanım Alanları' />}
+                                    renderInput={(params) => <TextField {...params} label={t('marketplace.usecases')} />}
                                     sx={{
                                         width: 300
                                     }}
@@ -794,7 +801,7 @@ const Marketplace = () => {
                                                     alt='WorkflowEmptySVG'
                                                 />
                                             </Box>
-                                            <div>No Marketplace Yet</div>
+                                            <div>{t('emptyStates.noMarketplace')}</div>
                                         </Stack>
                                     )}
                             </TabPanel>
@@ -835,7 +842,7 @@ const Marketplace = () => {
                                         onClick={() => clearAllUsecases()}
                                         startIcon={<IconX />}
                                     >
-                                        Clear All
+                                        {t('buttons.clearAll')}
                                     </Button>
                                 )}
                                 {!view || view === 'card' ? (
@@ -927,7 +934,7 @@ const Marketplace = () => {
                                                 alt='WorkflowEmptySVG'
                                             />
                                         </Box>
-                                        <div>No Saved Custom Templates</div>
+                                        <div>{t('emptyStates.noSavedCustomTemplates')}</div>
                                     </Stack>
                                 )}
                             </TabPanel>

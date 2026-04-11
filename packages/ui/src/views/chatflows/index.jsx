@@ -26,6 +26,7 @@ import useApi from '@/hooks/useApi'
 // const
 import { baseURL } from '@/store/constant'
 import { useError } from '@/store/context/ErrorContext'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 // icons
 import { IconLayoutGrid, IconList, IconPlus } from '@tabler/icons-react'
@@ -35,6 +36,7 @@ import { IconLayoutGrid, IconList, IconPlus } from '@tabler/icons-react'
 const Chatflows = () => {
     const navigate = useNavigate()
     const theme = useTheme()
+    const { t } = useLanguage()
 
     const [isLoading, setLoading] = useState(true)
     const [images, setImages] = useState({})
@@ -138,9 +140,9 @@ const Chatflows = () => {
                     <ViewHeader
                         onSearchChange={onSearchChange}
                         search={true}
-                        searchPlaceholder='Ad veya kategori ara [ Ctrl'
-                        title='Sohbet Akışları'
-                        description='Tek ajanlı sistemler, sohbet botları ve basit LLM akışları oluştur'
+                        searchPlaceholder={t('placeholders.searchNameOrCategory')}
+                        title={t('pages.chatflows.title')}
+                        description={t('pages.chatflows.description')}
                     >
                         <ToggleButtonGroup
                             sx={{ borderRadius: 2, maxHeight: 40 }}
@@ -182,7 +184,7 @@ const Chatflows = () => {
                             startIcon={<IconPlus />}
                             sx={{ borderRadius: 2, height: 40 }}
                         >
-                            Yeni Ekle
+                            {t('buttons.addNew')}
                         </StyledPermissionButton>
                     </ViewHeader>
 
@@ -226,7 +228,7 @@ const Chatflows = () => {
                                     alt='WorkflowEmptySVG'
                                 />
                             </Box>
-                            <div>Henüz sohbet akışı yok</div>
+                            <div>{t('emptyStates.noChatflows')}</div>
                         </Stack>
                     )}
                 </Stack>

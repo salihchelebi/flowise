@@ -10,6 +10,7 @@ import { useTheme } from '@mui/material/styles'
 import ErrorBoundary from '@/ErrorBoundary'
 import ViewHeader from '@/layout/MainLayout/ViewHeader'
 import { useError } from '@/store/context/ErrorContext'
+import { useLanguage } from '@/i18n/LanguageContext'
 import { StyledPermissionButton } from '@/ui-component/button/RBACButtons'
 import DocumentStoreCard from '@/ui-component/cards/DocumentStoreCard'
 import MainCard from '@/ui-component/cards/MainCard'
@@ -48,6 +49,7 @@ const getDocStoreActionButtonSx = (theme) => ({
 
 const Documents = () => {
     const theme = useTheme()
+    const { t } = useLanguage()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { hasPermission } = useAuth()
@@ -329,8 +331,8 @@ const Documents = () => {
                         onSearchChange={onSearchChange}
                         search={hasDocStores}
                         searchPlaceholder='Search Name'
-                        title='Doküman Deposu'
-                        description='LLM erişimi (RAG) için doküman depola ve güncelle'
+                        title={t('pages.docstore.title')}
+                        description={t('pages.docstore.description')}
                     >
                         {hasDocStores && (
                             <ToggleButtonGroup
@@ -374,7 +376,7 @@ const Documents = () => {
                             startIcon={<IconPlus />}
                             id='btn_createVariable'
                         >
-                            Yeni Ekle
+                            {t('buttons.addNew')}
                         </StyledPermissionButton>
                     </ViewHeader>
                     {!hasDocStores ? (
@@ -386,7 +388,7 @@ const Documents = () => {
                                     alt='doc_store_empty'
                                 />
                             </Box>
-                            <div>Henüz doküman deposu oluşturulmadı</div>
+                            <div>{t('emptyStates.noDocumentStores')}</div>
                         </Stack>
                     ) : (
                         <React.Fragment>

@@ -43,11 +43,13 @@ import TablePagination, { DEFAULT_ITEMS_PER_PAGE } from '@/ui-component/paginati
 import { ExecutionsListTable } from '@/ui-component/table/ExecutionsListTable'
 import { omit } from 'lodash'
 import { ExecutionDetails } from './ExecutionDetails'
+import { useLanguage } from '@/i18n/LanguageContext'
 
 // ==============================|| AGENT EXECUTIONS ||============================== //
 
 const AgentExecutions = () => {
     const theme = useTheme()
+    const { t } = useLanguage()
     const customization = useSelector((state) => state.customization)
     const borderColor = theme.palette.grey[900] + 25
 
@@ -236,18 +238,18 @@ const AgentExecutions = () => {
                 <ErrorBoundary error={error} />
             ) : (
                 <Stack flexDirection='column' sx={{ gap: 3 }}>
-                    <ViewHeader title='Ajan Çalıştırmaları' description='Ajan akışı çalıştırmalarını izle ve yönet' />
+                    <ViewHeader title={t('pages.executions.title')} description={t('pages.executions.description')} />
 
                     {/* Filter Section */}
                     <Box sx={{ mb: 2, width: '100%' }}>
                         <Grid container spacing={2} alignItems='center'>
                             <Grid item xs={12} md={2}>
                                 <FormControl fullWidth size='small'>
-                                    <InputLabel id='state-select-label'>Durum</InputLabel>
+                                    <InputLabel id='state-select-label'>{t('common.state')}</InputLabel>
                                     <Select
                                         labelId='state-select-label'
                                         value={filters.state}
-                                        label='Durum'
+                                        label={t('common.state')}
                                         onChange={(e) => handleFilterChange('state', e.target.value)}
                                         size='small'
                                         sx={{
@@ -281,7 +283,7 @@ const AgentExecutions = () => {
                                     customInput={
                                         <TextField
                                             size='small'
-                                            label='Başlangıç tarihi'
+                                            label={t('common.startDate')}
                                             fullWidth
                                             sx={{
                                                 '& .MuiOutlinedInput-notchedOutline': {
@@ -305,7 +307,7 @@ const AgentExecutions = () => {
                                     customInput={
                                         <TextField
                                             size='small'
-                                            label='Bitiş tarihi'
+                                            label={t('common.endDate')}
                                             fullWidth
                                             sx={{
                                                 '& .MuiOutlinedInput-notchedOutline': {
@@ -333,7 +335,7 @@ const AgentExecutions = () => {
                             <Grid sx={{ ml: -1 }} item xs={12} md={2}>
                                 <TextField
                                     fullWidth
-                                    label='Oturum Kimliği'
+                                    label={t('common.sessionId')}
                                     value={filters.sessionId}
                                     onChange={(e) => handleFilterChange('sessionId', e.target.value)}
                                     size='small'
@@ -352,10 +354,10 @@ const AgentExecutions = () => {
                                         onClick={() => applyFilters(currentPage, pageLimit)}
                                         size='small'
                                     >
-                                        Uygula
+                                        {t('buttons.apply')}
                                     </Button>
                                     <Button variant='outlined' onClick={resetFilters} size='small'>
-                                        Sıfırla
+                                        {t('buttons.reset')}
                                     </Button>
                                     <Available permissions={['executions:delete']}>
                                         <Tooltip title='Delete selected executions'>
@@ -453,7 +455,7 @@ const AgentExecutions = () => {
                                     alt='execution_empty'
                                 />
                             </Box>
-                            <div>Henüz çalıştırma yok</div>
+                            <div>{t('emptyStates.noExecutions')}</div>
                         </Stack>
                     )}
                 </Stack>
