@@ -117,7 +117,7 @@ const GitHubStarButton = ({ starCount, isDark }) => {
                         ></path>
                     </svg>
                     <Typography variant='caption' sx={{ fontWeight: 600, color: isDark ? 'white' : theme.palette.text.primary }}>
-                        Star
+                        Yıldız
                     </Typography>
                 </Box>
                 <Box
@@ -171,7 +171,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
     const signOutClicked = () => {
         logoutApi.request()
         enqueueSnackbar({
-            message: 'Logging out...',
+            message: 'Çıkış yapılıyor...',
             options: {
                 key: new Date().getTime() + Math.random(),
                 variant: 'success',
@@ -294,7 +294,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
                     onClick={() => setIsPricingOpen(true)}
                     startIcon={<IconSparkles size={20} />}
                 >
-                    Upgrade
+                    Yükselt
                 </Button>
             )}
             {isPricingOpen && isCloud && (
