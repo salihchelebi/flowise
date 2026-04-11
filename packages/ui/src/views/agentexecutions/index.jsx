@@ -236,18 +236,18 @@ const AgentExecutions = () => {
                 <ErrorBoundary error={error} />
             ) : (
                 <Stack flexDirection='column' sx={{ gap: 3 }}>
-                    <ViewHeader title='Agent Executions' description='Monitor and manage agentflows executions' />
+                    <ViewHeader title='Ajan Çalıştırmaları' description='Ajan akışı çalıştırmalarını izle ve yönet' />
 
                     {/* Filter Section */}
                     <Box sx={{ mb: 2, width: '100%' }}>
                         <Grid container spacing={2} alignItems='center'>
                             <Grid item xs={12} md={2}>
                                 <FormControl fullWidth size='small'>
-                                    <InputLabel id='state-select-label'>State</InputLabel>
+                                    <InputLabel id='state-select-label'>Durum</InputLabel>
                                     <Select
                                         labelId='state-select-label'
                                         value={filters.state}
-                                        label='State'
+                                        label='Durum'
                                         onChange={(e) => handleFilterChange('state', e.target.value)}
                                         size='small'
                                         sx={{
@@ -259,13 +259,13 @@ const AgentExecutions = () => {
                                             }
                                         }}
                                     >
-                                        <MenuItem value=''>All</MenuItem>
-                                        <MenuItem value='INPROGRESS'>In Progress</MenuItem>
-                                        <MenuItem value='FINISHED'>Finished</MenuItem>
-                                        <MenuItem value='ERROR'>Error</MenuItem>
-                                        <MenuItem value='TERMINATED'>Terminated</MenuItem>
-                                        <MenuItem value='TIMEOUT'>Timeout</MenuItem>
-                                        <MenuItem value='STOPPED'>Stopped</MenuItem>
+                                        <MenuItem value=''>Tümü</MenuItem>
+                                        <MenuItem value='INPROGRESS'>Devam Ediyor</MenuItem>
+                                        <MenuItem value='FINISHED'>Tamamlandı</MenuItem>
+                                        <MenuItem value='ERROR'>Hata</MenuItem>
+                                        <MenuItem value='TERMINATED'>Sonlandırıldı</MenuItem>
+                                        <MenuItem value='TIMEOUT'>Zaman Aşımı</MenuItem>
+                                        <MenuItem value='STOPPED'>Durduruldu</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -281,7 +281,7 @@ const AgentExecutions = () => {
                                     customInput={
                                         <TextField
                                             size='small'
-                                            label='Start date'
+                                            label='Başlangıç tarihi'
                                             fullWidth
                                             sx={{
                                                 '& .MuiOutlinedInput-notchedOutline': {
@@ -305,7 +305,7 @@ const AgentExecutions = () => {
                                     customInput={
                                         <TextField
                                             size='small'
-                                            label='End date'
+                                            label='Bitiş tarihi'
                                             fullWidth
                                             sx={{
                                                 '& .MuiOutlinedInput-notchedOutline': {
@@ -319,7 +319,7 @@ const AgentExecutions = () => {
                             <Grid sx={{ ml: -1 }} item xs={12} md={2}>
                                 <TextField
                                     fullWidth
-                                    label='Agentflow'
+                                    label='Ajan Akışı'
                                     value={filters.agentflowName}
                                     onChange={(e) => handleFilterChange('agentflowName', e.target.value)}
                                     size='small'
@@ -333,7 +333,7 @@ const AgentExecutions = () => {
                             <Grid sx={{ ml: -1 }} item xs={12} md={2}>
                                 <TextField
                                     fullWidth
-                                    label='Session ID'
+                                    label='Oturum Kimliği'
                                     value={filters.sessionId}
                                     onChange={(e) => handleFilterChange('sessionId', e.target.value)}
                                     size='small'
@@ -352,13 +352,13 @@ const AgentExecutions = () => {
                                         onClick={() => applyFilters(currentPage, pageLimit)}
                                         size='small'
                                     >
-                                        Apply
+                                        Uygula
                                     </Button>
                                     <Button variant='outlined' onClick={resetFilters} size='small'>
-                                        Reset
+                                        Sıfırla
                                     </Button>
                                     <Available permissions={['executions:delete']}>
-                                        <Tooltip title='Delete selected executions'>
+                                        <Tooltip title='Seçili çalıştırmaları sil'>
                                             <span>
                                                 <IconButton
                                                     sx={{ height: 30, width: 30 }}
@@ -427,19 +427,20 @@ const AgentExecutions = () => {
                         aria-labelledby='alert-dialog-title'
                         aria-describedby='alert-dialog-description'
                     >
-                        <DialogTitle id='alert-dialog-title'>Confirm Deletion</DialogTitle>
+                        <DialogTitle id='alert-dialog-title'>Silmeyi Onayla</DialogTitle>
                         <DialogContent>
                             <DialogContentText id='alert-dialog-description'>
-                                Are you sure you want to delete {selectedExecutionIds.length} execution
-                                {selectedExecutionIds.length !== 1 ? 's' : ''}? This action cannot be undone.
+                                Seçili {selectedExecutionIds.length} çalıştırma
+                                {selectedExecutionIds.length !== 1 ? '' : ''} kaydını silmek istediğine emin misin? Bu işlem geri
+                                alınamaz.
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleDeleteDialogClose} color='primary'>
-                                Cancel
+                                İptal
                             </Button>
                             <Button onClick={handleDeleteExecutions} color='error'>
-                                Delete
+                                Sil
                             </Button>
                         </DialogActions>
                     </Dialog>
@@ -453,7 +454,7 @@ const AgentExecutions = () => {
                                     alt='execution_empty'
                                 />
                             </Box>
-                            <div>No Executions Yet</div>
+                            <div>Henüz çalıştırma yok</div>
                         </Stack>
                     )}
                 </Stack>
