@@ -178,9 +178,9 @@ const Agentflows = () => {
                     <ViewHeader
                         onSearchChange={onSearchChange}
                         search={true}
-                        searchPlaceholder='Search Name or Category'
-                        title='Agentflows'
-                        description='Multi-agent systems, workflow orchestration'
+                        searchPlaceholder='Ad veya Kategori Ara'
+                        title='Ajan Akışları'
+                        description='Çok ajanlı sistemler, iş akışı orkestrasyonu'
                     >
                         <ToggleButtonGroup
                             sx={{ borderRadius: 2, maxHeight: 40 }}
@@ -199,7 +199,7 @@ const Agentflows = () => {
                                 value='v2'
                                 title='V2'
                             >
-                                <Chip sx={{ mr: 1 }} label='NEW' size='small' color='primary' />
+                                <Chip sx={{ mr: 1 }} label='YENİ' size='small' color='primary' />
                                 V2
                             </ToggleButton>
                             <ToggleButton
@@ -231,7 +231,7 @@ const Agentflows = () => {
                                 }}
                                 variant='contained'
                                 value='card'
-                                title='Card View'
+                                title='Kart Görünümü'
                             >
                                 <IconLayoutGrid />
                             </ToggleButton>
@@ -243,7 +243,7 @@ const Agentflows = () => {
                                 }}
                                 variant='contained'
                                 value='list'
-                                title='List View'
+                                title='Liste Görünümü'
                             >
                                 <IconList />
                             </ToggleButton>
@@ -255,7 +255,7 @@ const Agentflows = () => {
                             startIcon={<IconPlus />}
                             sx={{ borderRadius: 2, height: 40 }}
                         >
-                            Add New
+                            Yeni Ekle
                         </StyledPermissionButton>
                     </ViewHeader>
 
@@ -283,8 +283,8 @@ const Agentflows = () => {
                                 }}
                             />
                             <Box sx={{ flex: 1 }}>
-                                <strong>V1 Agentflows are deprecated.</strong> We recommend migrating to V2 for improved performance and
-                                continued support.
+                                <strong>V1 Ajan Akışları kullanımdan kaldırıldı.</strong> Daha iyi performans ve devam eden destek için
+                                V2'ye geçmenizi öneririz.
                             </Box>
                             <IconButton
                                 aria-label='dismiss'
@@ -344,7 +344,7 @@ const Agentflows = () => {
                                     alt='AgentsEmptySVG'
                                 />
                             </Box>
-                            <div>No Agents Yet</div>
+                            <div>Henüz ajan yok</div>
                         </Stack>
                     )}
                 </Stack>
