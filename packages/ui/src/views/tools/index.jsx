@@ -68,10 +68,10 @@ const Tools = () => {
     const onUploadFile = (file) => {
         try {
             const dialogProp = {
-                title: 'Add New Tool',
+                title: 'Yeni Araç Ekle',
                 type: 'IMPORT',
-                cancelButtonName: 'Cancel',
-                confirmButtonName: 'Save',
+                cancelButtonName: 'İptal',
+                confirmButtonName: 'Kaydet',
                 data: JSON.parse(file)
             }
             setDialogProps(dialogProp)
@@ -99,10 +99,10 @@ const Tools = () => {
 
     const addNew = () => {
         const dialogProp = {
-            title: 'Add New Tool',
+            title: 'Yeni Araç Ekle',
             type: 'ADD',
-            cancelButtonName: 'Cancel',
-            confirmButtonName: 'Add'
+            cancelButtonName: 'İptal',
+            confirmButtonName: 'Ekle'
         }
         setDialogProps(dialogProp)
         setShowDialog(true)
@@ -110,10 +110,10 @@ const Tools = () => {
 
     const edit = (selectedTool) => {
         const dialogProp = {
-            title: 'Edit Tool',
+            title: 'Aracı Düzenle',
             type: 'EDIT',
-            cancelButtonName: 'Cancel',
-            confirmButtonName: 'Save',
+            cancelButtonName: 'İptal',
+            confirmButtonName: 'Kaydet',
             data: selectedTool
         }
         setDialogProps(dialogProp)
@@ -161,9 +161,9 @@ const Tools = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Search Tools'
-                            title='Tools'
-                            description='External functions or APIs the agent can use to take action'
+                            searchPlaceholder='Araç Ara'
+                            title='Araçlar'
+                            description="Ajanın işlem yapmak için kullanabileceği harici işlevler veya API'ler"
                         >
                             <ToggleButtonGroup
                                 sx={{ borderRadius: 2, maxHeight: 40 }}
@@ -181,7 +181,7 @@ const Tools = () => {
                                     }}
                                     variant='contained'
                                     value='card'
-                                    title='Card View'
+                                    title='Kart Görünümü'
                                 >
                                     <IconLayoutGrid />
                                 </ToggleButton>
@@ -193,7 +193,7 @@ const Tools = () => {
                                     }}
                                     variant='contained'
                                     value='list'
-                                    title='List View'
+                                    title='Liste Görünümü'
                                 >
                                     <IconList />
                                 </ToggleButton>
@@ -206,7 +206,7 @@ const Tools = () => {
                                     startIcon={<IconFileUpload />}
                                     sx={{ borderRadius: 2, height: 40 }}
                                 >
-                                    Load
+                                    Yükle
                                 </PermissionButton>
                                 <input
                                     style={{ display: 'none' }}
@@ -225,7 +225,7 @@ const Tools = () => {
                                     startIcon={<IconPlus />}
                                     sx={{ borderRadius: 2, height: 40 }}
                                 >
-                                    Create
+                                    Oluştur
                                 </StyledPermissionButton>
                             </ButtonGroup>
                         </ViewHeader>
@@ -264,7 +264,7 @@ const Tools = () => {
                                         alt='ToolEmptySVG'
                                     />
                                 </Box>
-                                <div>No Tools Created Yet</div>
+                                <div>Henüz araç oluşturulmadı</div>
                             </Stack>
                         )}
                     </Stack>
