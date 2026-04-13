@@ -117,12 +117,12 @@ const Marketplace = () => {
     const share = (template) => {
         const dialogProps = {
             type: 'EDIT',
-            cancelButtonName: 'Cancel',
-            confirmButtonName: 'Share',
+            cancelButtonName: 'İptal',
+            confirmButtonName: 'Paylaş',
             data: {
                 id: template.id,
                 name: template.name,
-                title: 'Share Custom Template',
+                title: 'Özel Şablonu Paylaş',
                 itemType: 'custom_template'
             }
         }
@@ -218,10 +218,10 @@ const Marketplace = () => {
 
     const onDeleteCustomTemplate = async (template) => {
         const confirmPayload = {
-            title: `Delete`,
-            description: `Delete Custom Template ${template.name}?`,
-            confirmButtonName: 'Delete',
-            cancelButtonName: 'Cancel'
+            title: `Sil`,
+            description: `Özel Şablon ${template.name} silinsin mi?`,
+            confirmButtonName: 'Sil',
+            cancelButtonName: 'İptal'
         }
         const isConfirmed = await confirm(confirmPayload)
 
@@ -230,7 +230,7 @@ const Marketplace = () => {
                 const deleteResp = await marketplacesApi.deleteCustomTemplate(template.id)
                 if (deleteResp.data) {
                     enqueueSnackbar({
-                        message: 'Custom Template deleted successfully!',
+                        message: 'Özel şablon başarıyla silindi!',
                         options: {
                             key: new Date().getTime() + Math.random(),
                             variant: 'success',
@@ -245,7 +245,7 @@ const Marketplace = () => {
                 }
             } catch (error) {
                 enqueueSnackbar({
-                    message: `Failed to delete custom template: ${
+                    message: `Özel şablon silinemedi: ${
                         typeof error.response.data === 'object' ? error.response.data.message : error.response.data
                     }`,
                     options: {
@@ -321,10 +321,10 @@ const Marketplace = () => {
 
     const onUseTemplate = (selectedTool) => {
         const dialogProp = {
-            title: 'Add New Tool',
+            title: 'Yeni Araç Ekle',
             type: 'IMPORT',
-            cancelButtonName: 'Cancel',
-            confirmButtonName: 'Add',
+            cancelButtonName: 'İptal',
+            confirmButtonName: 'Ekle',
             data: selectedTool
         }
         setToolDialogProps(dialogProp)
@@ -485,7 +485,7 @@ const Marketplace = () => {
                                         }}
                                     >
                                         <InputLabel size='small' id='filter-badge-label'>
-                                            Tag
+                                            Etiket
                                         </InputLabel>
                                         <Select
                                             labelId='filter-badge-label'
@@ -494,7 +494,7 @@ const Marketplace = () => {
                                             multiple
                                             value={badgeFilter}
                                             onChange={handleBadgeFilterChange}
-                                            input={<OutlinedInput label='Tag' />}
+                                            input={<OutlinedInput label='Etiket' />}
                                             renderValue={(selected) => selected.join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
@@ -521,7 +521,7 @@ const Marketplace = () => {
                                         }}
                                     >
                                         <InputLabel size='small' id='type-badge-label'>
-                                            Type
+                                            Tür
                                         </InputLabel>
                                         <Select
                                             size='small'
@@ -530,7 +530,7 @@ const Marketplace = () => {
                                             multiple
                                             value={typeFilter}
                                             onChange={handleTypeFilterChange}
-                                            input={<OutlinedInput label='Type' />}
+                                            input={<OutlinedInput label='Tür' />}
                                             renderValue={(selected) => selected.join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
@@ -557,7 +557,7 @@ const Marketplace = () => {
                                         }}
                                     >
                                         <InputLabel size='small' id='type-fw-label'>
-                                            Framework
+                                            Çatı
                                         </InputLabel>
                                         <Select
                                             size='small'
@@ -566,7 +566,7 @@ const Marketplace = () => {
                                             multiple
                                             value={frameworkFilter}
                                             onChange={handleFrameworkFilterChange}
-                                            input={<OutlinedInput label='Framework' />}
+                                            input={<OutlinedInput label='Çatı' />}
                                             renderValue={(selected) => selected.join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
@@ -587,9 +587,9 @@ const Marketplace = () => {
                             }
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Search Name/Description/Node'
-                            title='Marketplace'
-                            description='Explore and use pre-built templates'
+                            searchPlaceholder='Ad/Açıklama/Düğüm Ara'
+                            title='Pazaryeri'
+                            description='Hazır şablonları keşfet ve kullan'
                         >
                             <ToggleButtonGroup
                                 sx={{ borderRadius: 2, height: '100%' }}
@@ -606,7 +606,7 @@ const Marketplace = () => {
                                     }}
                                     variant='contained'
                                     value='card'
-                                    title='Card View'
+                                    title='Kart Görünümü'
                                 >
                                     <IconLayoutGrid />
                                 </ToggleButton>
@@ -618,7 +618,7 @@ const Marketplace = () => {
                                     }}
                                     variant='contained'
                                     value='list'
-                                    title='List View'
+                                    title='Liste Görünümü'
                                 >
                                     <IconList />
                                 </ToggleButton>
@@ -627,8 +627,8 @@ const Marketplace = () => {
                         {hasPermission('templates:marketplace') && hasPermission('templates:custom') && (
                             <Stack direction='row' justifyContent='space-between' sx={{ mb: 2 }}>
                                 <Tabs value={activeTabValue} onChange={handleTabChange} textColor='primary' aria-label='tabs'>
-                                    <PermissionTab permissionId='templates:marketplace' value={0} label='Community Templates' />
-                                    <PermissionTab permissionId='templates:custom' value={1} label='My Templates' />
+                                    <PermissionTab permissionId='templates:marketplace' value={0} label='Topluluk Şablonları' />
+                                    <PermissionTab permissionId='templates:custom' value={1} label='Şablonlarım' />
                                 </Tabs>
                                 <Autocomplete
                                     id='useCases'
@@ -650,7 +650,7 @@ const Marketplace = () => {
                                             </li>
                                         )
                                     }}
-                                    renderInput={(params) => <TextField {...params} label='Usecases' />}
+                                    renderInput={(params) => <TextField {...params} label='Kullanım Alanları' />}
                                     sx={{
                                         width: 300
                                     }}
@@ -794,7 +794,7 @@ const Marketplace = () => {
                                                     alt='WorkflowEmptySVG'
                                                 />
                                             </Box>
-                                            <div>No Marketplace Yet</div>
+                                            <div>Henüz pazaryeri yok</div>
                                         </Stack>
                                     )}
                             </TabPanel>
@@ -835,7 +835,7 @@ const Marketplace = () => {
                                         onClick={() => clearAllUsecases()}
                                         startIcon={<IconX />}
                                     >
-                                        Clear All
+                                        Tümünü Temizle
                                     </Button>
                                 )}
                                 {!view || view === 'card' ? (
@@ -927,7 +927,7 @@ const Marketplace = () => {
                                                 alt='WorkflowEmptySVG'
                                             />
                                         </Box>
-                                        <div>No Saved Custom Templates</div>
+                                        <div>Kaydedilmiş özel şablon yok</div>
                                     </Stack>
                                 )}
                             </TabPanel>
