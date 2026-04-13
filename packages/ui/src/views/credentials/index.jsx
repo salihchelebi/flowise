@@ -109,7 +109,7 @@ const Credentials = () => {
 
     const listCredential = () => {
         const dialogProp = {
-            title: 'Add New Credential',
+            title: 'Yeni Kimlik Bilgisi Ekle',
             componentsCredentials
         }
         setCredentialListDialogProps(dialogProp)
@@ -119,8 +119,8 @@ const Credentials = () => {
     const addNew = (credentialComponent) => {
         const dialogProp = {
             type: 'ADD',
-            cancelButtonName: 'Cancel',
-            confirmButtonName: 'Add',
+            cancelButtonName: 'İptal',
+            confirmButtonName: 'Ekle',
             credentialComponent
         }
         setSpecificCredentialDialogProps(dialogProp)
@@ -130,8 +130,8 @@ const Credentials = () => {
     const edit = (credential) => {
         const dialogProp = {
             type: 'EDIT',
-            cancelButtonName: 'Cancel',
-            confirmButtonName: 'Save',
+            cancelButtonName: 'İptal',
+            confirmButtonName: 'Kaydet',
             data: credential
         }
         setSpecificCredentialDialogProps(dialogProp)
@@ -141,12 +141,12 @@ const Credentials = () => {
     const share = (credential) => {
         const dialogProps = {
             type: 'EDIT',
-            cancelButtonName: 'Cancel',
-            confirmButtonName: 'Share',
+            cancelButtonName: 'İptal',
+            confirmButtonName: 'Paylaş',
             data: {
                 id: credential.id,
                 name: credential.name,
-                title: 'Share Credential',
+                title: 'Kimlik Bilgisini Paylaş',
                 itemType: 'credential'
             }
         }
@@ -156,10 +156,10 @@ const Credentials = () => {
 
     const deleteCredential = async (credential) => {
         const confirmPayload = {
-            title: `Delete`,
-            description: `Delete credential ${credential.name}?`,
-            confirmButtonName: 'Delete',
-            cancelButtonName: 'Cancel'
+            title: `Sil`,
+            description: `${credential.name} kimlik bilgisini silmek istiyor musun?`,
+            confirmButtonName: 'Sil',
+            cancelButtonName: 'İptal'
         }
         const isConfirmed = await confirm(confirmPayload)
 
@@ -168,7 +168,7 @@ const Credentials = () => {
                 const deleteResp = await credentialsApi.deleteCredential(credential.id)
                 if (deleteResp.data) {
                     enqueueSnackbar({
-                        message: 'Credential deleted',
+                        message: 'Kimlik bilgisi silindi',
                         options: {
                             key: new Date().getTime() + Math.random(),
                             variant: 'success',
@@ -183,7 +183,7 @@ const Credentials = () => {
                 }
             } catch (error) {
                 enqueueSnackbar({
-                    message: `Failed to delete Credential: ${
+                    message: `Kimlik bilgisi silinemedi: ${
                         typeof error.response.data === 'object' ? error.response.data.message : error.response.data
                     }`,
                     options: {
@@ -245,9 +245,9 @@ const Credentials = () => {
                         <ViewHeader
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Search Credentials'
-                            title='Credentials'
-                            description='API keys, tokens, and secrets for 3rd party integrations'
+                            searchPlaceholder='Kimlik Bilgisi Ara'
+                            title='Kimlik Bilgileri'
+                            description='Üçüncü taraf entegrasyonlar için API anahtarları, tokenlar ve gizli bilgiler'
                         >
                             <StyledPermissionButton
                                 permissionId='credentials:create'
@@ -256,7 +256,7 @@ const Credentials = () => {
                                 onClick={listCredential}
                                 startIcon={<IconPlus />}
                             >
-                                Add Credential
+                                Kimlik Bilgisi Ekle
                             </StyledPermissionButton>
                         </ViewHeader>
                         {!isLoading && credentials.length <= 0 ? (
@@ -268,7 +268,7 @@ const Credentials = () => {
                                         alt='CredentialEmptySVG'
                                     />
                                 </Box>
-                                <div>No Credentials Yet</div>
+                                <div>Henüz kimlik bilgisi yok</div>
                             </Stack>
                         ) : (
                             <TableContainer
@@ -285,9 +285,9 @@ const Credentials = () => {
                                         }}
                                     >
                                         <TableRow>
-                                            <StyledTableCell>Name</StyledTableCell>
-                                            <StyledTableCell>Last Updated</StyledTableCell>
-                                            <StyledTableCell>Created</StyledTableCell>
+                                            <StyledTableCell>Ad</StyledTableCell>
+                                            <StyledTableCell>Son Güncelleme</StyledTableCell>
+                                            <StyledTableCell>Oluşturulma</StyledTableCell>
                                             <StyledTableCell style={{ width: '5%' }}> </StyledTableCell>
                                             <StyledTableCell style={{ width: '5%' }}> </StyledTableCell>
                                             <StyledTableCell style={{ width: '5%' }}> </StyledTableCell>
@@ -391,7 +391,7 @@ const Credentials = () => {
                                                                     <PermissionIconButton
                                                                         permissionId={'credentials:share'}
                                                                         display={'feat:workspaces'}
-                                                                        title='Share'
+                                                                        title='Paylaş'
                                                                         color='primary'
                                                                         onClick={() => share(credential)}
                                                                     >
@@ -401,7 +401,7 @@ const Credentials = () => {
                                                                 <StyledTableCell>
                                                                     <PermissionIconButton
                                                                         permissionId={'credentials:create,credentials:update'}
-                                                                        title='Edit'
+                                                                        title='Düzenle'
                                                                         color='primary'
                                                                         onClick={() => edit(credential)}
                                                                     >
@@ -411,7 +411,7 @@ const Credentials = () => {
                                                                 <StyledTableCell>
                                                                     <PermissionIconButton
                                                                         permissionId={'credentials:delete'}
-                                                                        title='Delete'
+                                                                        title='Sil'
                                                                         color='error'
                                                                         onClick={() => deleteCredential(credential)}
                                                                     >
@@ -422,7 +422,7 @@ const Credentials = () => {
                                                         )}
                                                         {credential.shared && (
                                                             <>
-                                                                <StyledTableCell colSpan={'3'}>Shared Credential</StyledTableCell>
+                                                                <StyledTableCell colSpan={'3'}>Paylaşılan Kimlik Bilgisi</StyledTableCell>
                                                             </>
                                                         )}
                                                     </StyledTableRow>
