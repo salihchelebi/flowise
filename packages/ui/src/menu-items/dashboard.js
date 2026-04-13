@@ -67,6 +67,15 @@ const dashboard = {
             type: 'group',
             children: [
                 {
+                    id: 'sectoral-agents',
+                    title: 'Sektörel Ajanlar',
+                    type: 'item',
+                    url: '/sectoral-agents',
+                    icon: icons.IconRobot,
+                    breadcrumbs: true,
+                    permission: 'agentflows:view'
+                },
+                {
                     id: 'chatflows',
                     title: 'Sohbet Akışları',
                     type: 'item',
