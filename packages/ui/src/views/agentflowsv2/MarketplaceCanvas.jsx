@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 // material-ui
-import { Toolbar, Box, AppBar } from '@mui/material'
+import { Toolbar, Box, AppBar, Tooltip } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // project imports
@@ -59,16 +59,17 @@ const MarketplaceCanvasV2 = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [flowData])
 
-    const onChatflowCopy = (flowData) => {
-        const templateFlowData = JSON.stringify(flowData)
+    const onChatflowCopy = (currentFlowData) => {
+        const templateFlowData = JSON.stringify(currentFlowData)
         navigate('/v2/agentcanvas', { state: { templateFlowData } })
     }
 
     // eslint-disable-next-line
     const onNodeDoubleClick = useCallback((event, node) => {
         if (!node || !node.data) return
+
         if (node.data.name === 'stickyNoteAgentflow') {
-            // dont show dialog
+            // not açma penceresi gösterilmez
         } else {
             const dialogProps = {
                 data: node.data,
@@ -97,10 +98,11 @@ const MarketplaceCanvasV2 = () => {
                         <MarketplaceCanvasHeader
                             flowName={name}
                             flowData={JSON.parse(flowData)}
-                            onChatflowCopy={(flowData) => onChatflowCopy(flowData)}
+                            onChatflowCopy={(currentFlowData) => onChatflowCopy(currentFlowData)}
                         />
                     </Toolbar>
                 </AppBar>
+
                 <Box sx={{ pt: '70px', height: '100vh', width: '100%' }}>
                     <div className='reactflow-parent-wrapper'>
                         <div className='reactflow-wrapper' ref={reactFlowWrapper}>
@@ -127,28 +129,35 @@ const MarketplaceCanvasV2 = () => {
                                         transform: 'translate(-50%, -50%)'
                                     }}
                                 >
-                                    <button
-                                        className='react-flow__controls-button react-flow__controls-interactive'
-                                        onClick={() => {
-                                            setIsSnappingEnabled(!isSnappingEnabled)
-                                        }}
-                                        title='toggle snapping'
-                                        aria-label='toggle snapping'
-                                    >
-                                        {isSnappingEnabled ? <IconMagnetFilled /> : <IconMagnetOff />}
-                                    </button>
-                                    <button
-                                        className='react-flow__controls-button react-flow__controls-interactive'
-                                        onClick={() => {
-                                            setIsBackgroundEnabled(!isBackgroundEnabled)
-                                        }}
-                                        title='toggle background'
-                                        aria-label='toggle background'
-                                    >
-                                        {isBackgroundEnabled ? <IconArtboard /> : <IconArtboardOff />}
-                                    </button>
+                                    <Tooltip title={isSnappingEnabled ? 'Izgaraya hizalamayı kapat' : 'Izgaraya hizalamayı aç'} placement='top'>
+                                        <button
+                                            className='react-flow__controls-button react-flow__controls-interactive'
+                                            onClick={() => {
+                                                setIsSnappingEnabled(!isSnappingEnabled)
+                                            }}
+                                            title={isSnappingEnabled ? 'Izgaraya hizalamayı kapat' : 'Izgaraya hizalamayı aç'}
+                                            aria-label={isSnappingEnabled ? 'Izgaraya hizalamayı kapat' : 'Izgaraya hizalamayı aç'}
+                                        >
+                                            {isSnappingEnabled ? <IconMagnetFilled /> : <IconMagnetOff />}
+                                        </button>
+                                    </Tooltip>
+
+                                    <Tooltip title={isBackgroundEnabled ? 'Arka plan ızgarasını gizle' : 'Arka plan ızgarasını göster'} placement='top'>
+                                        <button
+                                            className='react-flow__controls-button react-flow__controls-interactive'
+                                            onClick={() => {
+                                                setIsBackgroundEnabled(!isBackgroundEnabled)
+                                            }}
+                                            title={isBackgroundEnabled ? 'Arka plan ızgarasını gizle' : 'Arka plan ızgarasını göster'}
+                                            aria-label={isBackgroundEnabled ? 'Arka plan ızgarasını gizle' : 'Arka plan ızgarasını göster'}
+                                        >
+                                            {isBackgroundEnabled ? <IconArtboard /> : <IconArtboardOff />}
+                                        </button>
+                                    </Tooltip>
                                 </Controls>
+
                                 {isBackgroundEnabled && <Background color='#aaa' gap={16} />}
+
                                 <EditNodeDialog
                                     show={editNodeDialogOpen}
                                     dialogProps={editNodeDialogProps}
