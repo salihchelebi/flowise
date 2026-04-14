@@ -16,43 +16,43 @@ import PostProcessing from '@/ui-component/extended/PostProcessing'
 
 const CHATFLOW_CONFIGURATION_TABS = [
     {
-        label: 'Security',
+        label: 'Güvenlik',
         id: 'security'
     },
     {
-        label: 'Starter Prompts',
+        label: 'Başlangıç Önerileri',
         id: 'conversationStarters'
     },
     {
-        label: 'Follow-up Prompts',
+        label: 'Devam Önerileri',
         id: 'followUpPrompts'
     },
     {
-        label: 'Speech to Text',
+        label: 'Sesi Yazıya Çevir',
         id: 'speechToText'
     },
     {
-        label: 'Text to Speech',
+        label: 'Yazıyı Sese Çevir',
         id: 'textToSpeech'
     },
     {
-        label: 'Chat Feedback',
+        label: 'Sohbet Geri Bildirimi',
         id: 'chatFeedback'
     },
     {
-        label: 'Analyse Chatflow',
+        label: 'Akışı İncele',
         id: 'analyseChatflow'
     },
     {
-        label: 'Leads',
+        label: 'İletişim Toplama',
         id: 'leads'
     },
     {
-        label: 'File Upload',
+        label: 'Dosya Yükleme',
         id: 'fileUpload'
     },
     {
-        label: 'Post Processing',
+        label: 'Son İşleme',
         id: 'postProcessing'
     }
 ]

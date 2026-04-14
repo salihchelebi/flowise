@@ -24,20 +24,19 @@ const SaveChatflowDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
             onClose={onCancel}
             aria-labelledby='alert-dialog-title'
             aria-describedby='alert-dialog-description'
-            disableRestoreFocus // needed due to StrictMode
+            disableRestoreFocus
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
                 {dialogProps.title}
             </DialogTitle>
             <DialogContent>
                 <OutlinedInput
-                    // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus
                     sx={{ mt: 1 }}
                     id='chatflow-name'
                     type='text'
                     fullWidth
-                    placeholder='My New Chatflow'
+                    placeholder='Yeni akış adı'
                     value={chatflowName}
                     onChange={(e) => setChatflowName(e.target.value)}
                     onKeyDown={(e) => {

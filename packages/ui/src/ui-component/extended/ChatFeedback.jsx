@@ -2,19 +2,15 @@ import { useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-// material-ui
 import { Button, Box } from '@mui/material'
 import { IconX } from '@tabler/icons-react'
 
-// Project import
 import { StyledButton } from '@/ui-component/button/StyledButton'
 import { SwitchInput } from '@/ui-component/switch/Switch'
 
-// store
 import { enqueueSnackbar as enqueueSnackbarAction, closeSnackbar as closeSnackbarAction, SET_CHATFLOW } from '@/store/actions'
 import useNotifier from '@/utils/useNotifier'
 
-// API
 import chatflowsApi from '@/api/chatflows'
 
 const ChatFeedback = ({ dialogProps, onConfirm }) => {
@@ -45,7 +41,7 @@ const ChatFeedback = ({ dialogProps, onConfirm }) => {
             })
             if (saveResp.data) {
                 enqueueSnackbar({
-                    message: 'Chat Feedback Settings Saved',
+                    message: 'Sohbet geri bildirimi ayarları kaydedildi',
                     options: {
                         key: new Date().getTime() + Math.random(),
                         variant: 'success',
@@ -61,7 +57,7 @@ const ChatFeedback = ({ dialogProps, onConfirm }) => {
             }
         } catch (error) {
             enqueueSnackbar({
-                message: `Failed to save Chat Feedback Settings: ${
+                message: `Sohbet geri bildirimi ayarları kaydedilemedi: ${
                     typeof error.response.data === 'object' ? error.response.data.message : error.response.data
                 }`,
                 options: {
@@ -93,10 +89,10 @@ const ChatFeedback = ({ dialogProps, onConfirm }) => {
     return (
         <>
             <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                <SwitchInput label='Enable chat feedback' onChange={handleChange} value={chatFeedbackStatus} />
+                <SwitchInput label='Sohbet geri bildirimini aç' onChange={handleChange} value={chatFeedbackStatus} />
             </Box>
             <StyledButton style={{ marginBottom: 10, marginTop: 10 }} variant='contained' onClick={onSave}>
-                Save
+                Kaydet
             </StyledButton>
         </>
     )
