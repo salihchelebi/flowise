@@ -39,6 +39,7 @@ const USECASE_LABELS = {
     'Web Search': 'Web Arama',
     Email: 'E-Posta',
     'Human Approval': 'İnsan Onayı',
+    'Human in the Loop': 'İnsan Onaylı Akış',
     'Multi Agent': 'Çoklu Ajan',
     'Multi-Agent': 'Çoklu Ajan',
     Support: 'Destek'
@@ -125,6 +126,8 @@ const TEMPLATE_TRANSLATIONS = {
     }
 }
 
+const ACTION_LINE = 'TIKLA + ÖNİZLE + KOPYALA + DÜZENLE'
+
 const normalizeText = (value) =>
     String(value || '')
         .toLowerCase()
@@ -154,7 +157,7 @@ const getFallbackDescription = (template) => {
     if (template?.description?.trim()) return template.description.trim()
 
     if (template?.type === 'Tool') {
-        return 'Bu şablon, hazır bir aracı nasıl kullanabileceğini gösterir.'
+        return 'Bu şablon, hazır bir aracın nasıl kullanılabileceğini gösterir.'
     }
 
     if (template?.type === 'AgentflowV2') {
@@ -174,7 +177,7 @@ const getFallbackPurpose = (template) => {
     }
 
     if (template?.type === 'AgentflowV2') {
-        return 'Amaç: Birden fazla adımı olan daha gelişmiş bir ajan akışını incelemek.'
+        return 'Amaç: Birden fazla adımı olan daha gelişmiş bir ajan akışının mantığını görmek.'
     }
 
     if (template?.type === 'Agentflow') {
@@ -186,7 +189,7 @@ const getFallbackPurpose = (template) => {
 
 const getFallbackBullets = (template) => {
     if (template?.type === 'Tool') {
-        return ['Aracı gösterir', 'Ne işe yaradığını anlatır', 'İçeri aktarmaya hazır hale getirir']
+        return ['Aracı gösterir', 'Ne işe yaradığını anlatır', 'İçe aktarmaya hazır hale getirir']
     }
 
     if (template?.type === 'AgentflowV2') {
@@ -200,22 +203,20 @@ const getFallbackBullets = (template) => {
     return ['Hazır yapıyı gösterir', 'Akış mantığını örnekler', 'Kendi sürümünü hazırlamana yardım eder']
 }
 
-const getTranslatedTemplateEntry = (template) => {
-    const key = getTemplateKey(template)
-    return TEMPLATE_TRANSLATIONS[key] || null
-}
+const getTranslatedTemplateEntry = (template) => TEMPLATE_TRANSLATIONS[getTemplateKey(template)] || null
 
 export const getMarketplaceTemplateDisplayData = (template) => {
     const translation = getTranslatedTemplateEntry(template)
-
     const title = translation?.title || template?.templateName || template?.name || 'Hazır Şablon'
     const description = translation?.description || getFallbackDescription(template)
     const purpose = translation?.purpose || getFallbackPurpose(template)
     const bullets = (translation?.bullets || getFallbackBullets(template)).slice(0, 5)
-    const actionLine = 'TIKLA + ÖNİZLE + KOPYALA + DÜZENLE'
-
     const usecases = (translation?.usecases || template?.usecases || []).map(getMarketplaceUsecaseLabel)
-    const frameworks = (template?.framework || []).map(getMarketplaceFrameworkLabel)
+    const frameworks = Array.isArray(template?.framework)
+        ? template.framework.map(getMarketplaceFrameworkLabel)
+        : template?.framework
+        ? [getMarketplaceFrameworkLabel(template.framework)]
+        : []
     const badge = getMarketplaceBadgeLabel(template?.badge)
     const type = getMarketplaceTypeLabel(template?.type)
 
@@ -225,7 +226,7 @@ export const getMarketplaceTemplateDisplayData = (template) => {
         displayDescription: description,
         displayPurpose: purpose,
         displayBullets: bullets,
-        displayActionLine: actionLine,
+        displayActionLine: ACTION_LINE,
         displayUsecases: usecases,
         displayFrameworks: frameworks,
         displayBadge: badge,
@@ -246,6 +247,3 @@ export const getMarketplaceTooltipData = (template) => {
         type: display.displayType
     }
 }
-
-export const getMarketplaceDisplayTitle = (template) => getMarketplaceTemplateDisplayData(template).displayTitle
-export const getMarketplaceDisplayDescription = (template) => getMarketplaceTemplateDisplayData(template).displayDescription
