@@ -55,7 +55,6 @@ const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
                         inputs: updatedInputs
                     })
 
-                    // Remove inputs with display set to false
                     Object.keys(updatedInputs).forEach((key) => {
                         const input = updatedInputParams.find((param) => param.name === key)
                         if (input && input.display === false) {
@@ -125,7 +124,7 @@ const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
                                 </Typography>
 
                                 {data?.id && (
-                                    <ButtonBase title='Edit Name' sx={{ borderRadius: '50%' }}>
+                                    <ButtonBase title='Adı Düzenle' sx={{ borderRadius: '50%' }}>
                                         <Avatar
                                             variant='rounded'
                                             sx={{
@@ -151,7 +150,6 @@ const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
                         ) : (
                             <Stack flexDirection='row' sx={{ width: '100%' }}>
                                 <TextField
-                                    //eslint-disable-next-line jsx-a11y/no-autofocus
                                     autoFocus
                                     size='small'
                                     sx={{
@@ -171,7 +169,7 @@ const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
                                         }
                                     }}
                                 />
-                                <ButtonBase title='Save Name' sx={{ borderRadius: '50%' }}>
+                                <ButtonBase title='Yeni Adı Kaydet' sx={{ borderRadius: '50%' }}>
                                     <Avatar
                                         variant='rounded'
                                         sx={{
@@ -197,7 +195,7 @@ const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
                                         <IconCheck stroke={1.5} size='1rem' />
                                     </Avatar>
                                 </ButtonBase>
-                                <ButtonBase title='Cancel' sx={{ borderRadius: '50%' }}>
+                                <ButtonBase title='Vazgeç' sx={{ borderRadius: '50%' }}>
                                     <Avatar
                                         variant='rounded'
                                         sx={{
@@ -222,6 +220,7 @@ const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
                         )}
                     </Box>
                 )}
+
                 {data?.hint && (
                     <Stack
                         direction='row'
@@ -251,6 +250,7 @@ const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
                         </Typography>
                     </Stack>
                 )}
+
                 {inputParams
                     .filter((inputParam) => inputParam.display !== false)
                     .map((inputParam, index) => (
