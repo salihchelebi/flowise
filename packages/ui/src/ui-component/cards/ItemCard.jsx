@@ -28,11 +28,71 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
     whiteSpace: 'pre-line'
 }))
 
+const NODE_LABELS = {
+    chatOpenAI: 'OpenAI Sohbet Modeli',
+    chatAnthropic: 'Anthropic Sohbet Modeli',
+    chatGoogleGenerativeAI: 'Google Sohbet Modeli',
+    openAI: 'OpenAI Modeli',
+    promptTemplate: 'Komut Şablonu',
+    chatPromptTemplate: 'Sohbet Komut Şablonu',
+    conversationChain: 'Konuşma Akışı',
+    llmChain: 'Model Çalışma Adımı',
+    conversationalRetrievalQAChain: 'Bilgi Tabanlı Soru Cevap Akışı',
+    retrievalQAChain: 'Bilgi Getirerek Cevap Üretme',
+    vectorStoreRetriever: 'Bilgi Deposu Arayıcısı',
+    bufferMemory: 'Kısa Süreli Konuşma Hafızası',
+    bufferWindowMemory: 'Yakın Mesaj Hafızası',
+    conversationSummaryMemory: 'Özet Hafıza',
+    documentStore: 'Belge Deposu',
+    customTool: 'Özel Araç',
+    agent: 'Ajan',
+    toolAgent: 'Araç Kullanan Ajan',
+    openAIToolAgent: 'OpenAI Araç Ajanı',
+    supervisor: 'Yönetici Ajan',
+    worker: 'Görev Ajanı',
+    http: 'İnternet İsteği',
+    calculator: 'Hesaplayıcı',
+    ifElseFunction: 'Koşul Kontrolü',
+    stickyNote: 'Not',
+    stickyNoteAgentflow: 'Not'
+}
+
+const prettifyNodeLabel = (label) => {
+    if (!label) return ''
+
+    if (NODE_LABELS[label]) return NODE_LABELS[label]
+
+    const spaced = label
+        .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+        .replace(/_/g, ' ')
+        .replace(/-/g, ' ')
+        .trim()
+
+    return spaced.charAt(0).toUpperCase() + spaced.slice(1)
+}
+
+const getCardDescription = (data) => {
+    if (data.description && data.description.trim()) return data.description
+
+    if (data.type === 'Tool') {
+        return 'Hazır bir araç yapısını inceleyip kendi kullanımına göre ekleyebilirsin.'
+    }
+
+    if (data.type === 'AgentflowV2') {
+        return 'Bu gelişmiş ajan akışını açıp adımlarını inceleyebilir, sonra kendi çalışma alanına kopyalayabilirsin.'
+    }
+
+    return 'Bu hazır akışı açıp nasıl çalıştığını inceleyebilir, sonra kendi ihtiyacına göre kullanabilirsin.'
+}
+
 // ===========================|| CONTRACT CARD ||=========================== //
 
 const ItemCard = ({ data, images, icons, onClick }) => {
     const theme = useTheme()
     const customization = useSelector((state) => state.customization)
+
+    const title = data.templateName || data.name
+    const description = getCardDescription(data)
 
     return (
         <CardWrapper content={false} onClick={onClick} sx={{ border: 1, borderColor: theme.palette.grey[900] + 25, borderRadius: 2 }}>
@@ -64,6 +124,7 @@ const ItemCard = ({ data, images, icons, onClick }) => {
                                     }}
                                 ></div>
                             )}
+
                             {!data.iconSrc && data.color && (
                                 <div
                                     style={{
@@ -77,36 +138,43 @@ const ItemCard = ({ data, images, icons, onClick }) => {
                                     }}
                                 ></div>
                             )}
-                            <Typography
-                                sx={{
-                                    display: '-webkit-box',
-                                    fontSize: '1.25rem',
-                                    fontWeight: 500,
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: 'vertical',
-                                    textOverflow: 'ellipsis',
-                                    overflow: 'hidden'
-                                }}
-                            >
-                                {data.templateName || data.name}
-                            </Typography>
+
+                            <Tooltip title={title || ''} placement='top'>
+                                <Typography
+                                    sx={{
+                                        display: '-webkit-box',
+                                        fontSize: '1.25rem',
+                                        fontWeight: 500,
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        textOverflow: 'ellipsis',
+                                        overflow: 'hidden'
+                                    }}
+                                >
+                                    {title}
+                                </Typography>
+                            </Tooltip>
                         </div>
-                        {data.description && (
-                            <span
-                                style={{
-                                    display: '-webkit-box',
-                                    marginTop: 10,
-                                    overflowWrap: 'break-word',
-                                    WebkitLineClamp: 3,
-                                    WebkitBoxOrient: 'vertical',
-                                    textOverflow: 'ellipsis',
-                                    overflow: 'hidden'
-                                }}
-                            >
-                                {data.description}
-                            </span>
+
+                        {description && (
+                            <Tooltip title={description} placement='top'>
+                                <span
+                                    style={{
+                                        display: '-webkit-box',
+                                        marginTop: 10,
+                                        overflowWrap: 'break-word',
+                                        WebkitLineClamp: 3,
+                                        WebkitBoxOrient: 'vertical',
+                                        textOverflow: 'ellipsis',
+                                        overflow: 'hidden'
+                                    }}
+                                >
+                                    {description}
+                                </span>
+                            </Tooltip>
                         )}
                     </Box>
+
                     {(images?.length > 0 || icons?.length > 0) && (
                         <Box
                             sx={{
@@ -117,8 +185,17 @@ const ItemCard = ({ data, images, icons, onClick }) => {
                             }}
                         >
                             {[
-                                ...(images || []).map((img) => ({ type: 'image', src: img.imageSrc, label: img.label })),
-                                ...(icons || []).map((ic) => ({ type: 'icon', icon: ic.icon, color: ic.color, label: ic.name }))
+                                ...(images || []).map((img) => ({
+                                    type: 'image',
+                                    src: img.imageSrc,
+                                    label: prettifyNodeLabel(img.label)
+                                })),
+                                ...(icons || []).map((ic) => ({
+                                    type: 'icon',
+                                    icon: ic.icon,
+                                    color: ic.color,
+                                    label: prettifyNodeLabel(ic.name)
+                                }))
                             ]
                                 .slice(0, 3)
                                 .map((item, index) => (
@@ -159,8 +236,13 @@ const ItemCard = ({ data, images, icons, onClick }) => {
                             {(images?.length || 0) + (icons?.length || 0) > 3 && (
                                 <MoreItemsTooltip
                                     images={[
-                                        ...(images?.slice(3) || []),
-                                        ...(icons?.slice(Math.max(0, 3 - (images?.length || 0))) || []).map((ic) => ({ label: ic.name }))
+                                        ...(images?.slice(3) || []).map((img) => ({
+                                            ...img,
+                                            label: prettifyNodeLabel(img.label)
+                                        })),
+                                        ...(icons?.slice(Math.max(0, 3 - (images?.length || 0))) || []).map((ic) => ({
+                                            label: prettifyNodeLabel(ic.name)
+                                        }))
                                     ]}
                                 >
                                     <Typography
@@ -171,7 +253,7 @@ const ItemCard = ({ data, images, icons, onClick }) => {
                                             fontWeight: 200
                                         }}
                                     >
-                                        + {(images?.length || 0) + (icons?.length || 0) - 3} More
+                                        + {(images?.length || 0) + (icons?.length || 0) - 3} bileşen daha
                                     </Typography>
                                 </MoreItemsTooltip>
                             )}
