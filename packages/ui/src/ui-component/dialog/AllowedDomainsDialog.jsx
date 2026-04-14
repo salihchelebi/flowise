@@ -3,14 +3,11 @@ import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-// material-ui
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 
-// store
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/store/actions'
 import useNotifier from '@/utils/useNotifier'
 
-// Project imports
 import AllowedDomains from '@/ui-component/extended/AllowedDomains'
 
 const AllowedDomainsDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
@@ -35,7 +32,7 @@ const AllowedDomainsDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
             aria-describedby='alert-dialog-description'
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
-                {dialogProps.title || 'Allowed Domains'}
+                {dialogProps.title || 'İzin Verilen Alan Adları'}
             </DialogTitle>
             <DialogContent>
                 <AllowedDomains dialogProps={dialogProps} onConfirm={onConfirm} />
