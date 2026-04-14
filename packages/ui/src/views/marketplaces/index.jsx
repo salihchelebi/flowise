@@ -24,7 +24,8 @@ import {
     Autocomplete,
     TextField,
     Chip,
-    Tooltip
+    Tooltip,
+    Typography
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { IconLayoutGrid, IconList, IconX } from '@tabler/icons-react'
@@ -66,9 +67,94 @@ const framework = ['Langchain', 'LlamaIndex']
 const MenuProps = {
     PaperProps: {
         style: {
-            width: 160
+            width: 220
         }
     }
+}
+
+const BADGE_LABELS = {
+    POPULAR: 'Çok Kullanılan',
+    NEW: 'Yeni',
+    DEPRECATED: 'Eski'
+}
+
+const TYPE_LABELS = {
+    Chatflow: 'Sohbet Akışı',
+    Agentflow: 'Ajan Akışı',
+    AgentflowV2: 'Gelişmiş Ajan Akışı',
+    Tool: 'Hazır Araç'
+}
+
+const FRAMEWORK_LABELS = {
+    Langchain: 'LangChain',
+    LlamaIndex: 'LlamaIndex'
+}
+
+const USECASE_LABELS = {
+    'Customer Support': 'Müşteri Desteği',
+    'Customer Service': 'Müşteri Hizmeti',
+    Sales: 'Satış',
+    Marketing: 'Pazarlama',
+    Education: 'Eğitim',
+    Healthcare: 'Sağlık',
+    Finance: 'Finans',
+    Ecommerce: 'E-Ticaret',
+    'E-Commerce': 'E-Ticaret',
+    HR: 'İnsan Kaynakları',
+    Research: 'Araştırma',
+    'Data Analysis': 'Veri Analizi',
+    'Document QnA': 'Belge Soru Cevap',
+    'Question Answering': 'Soru Cevap',
+    'Lead Generation': 'Müşteri Adayı Toplama',
+    Productivity: 'Verimlilik',
+    Automation: 'Otomasyon'
+}
+
+const getBadgeLabel = (value) => BADGE_LABELS[value] || value
+const getTypeLabel = (value) => TYPE_LABELS[value] || value
+const getFrameworkLabel = (value) => FRAMEWORK_LABELS[value] || value
+const getUsecaseLabel = (value) => USECASE_LABELS[value] || value
+
+const getReadableDescription = (data) => {
+    if (data.description && data.description.trim()) return data.description
+
+    if (data.type === 'Tool') {
+        return 'Hazır bir araç yapısını inceleyip kendi kullanımına göre ekleyebilirsin.'
+    }
+
+    if (data.type === 'AgentflowV2') {
+        return 'Bu gelişmiş ajan akışını açıp adımlarını inceleyebilir, sonra kendi çalışma alanına kopyalayabilirsin.'
+    }
+
+    return 'Bu hazır akışı açıp nasıl çalıştığını inceleyebilir, sonra kendi ihtiyacına göre kullanabilirsin.'
+}
+
+const renderTemplateTooltip = (data) => {
+    const title = data.templateName || data.name || 'Hazır Şablon'
+    const typeLabel = getTypeLabel(data.type)
+    const usecaseLabels = (data.usecases || []).map(getUsecaseLabel).slice(0, 4)
+
+    return (
+        <Box sx={{ maxWidth: 360, p: 0.5 }}>
+            <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 0.75 }}>
+                {title}
+            </Typography>
+            <Typography variant='body2' sx={{ mb: 1 }}>
+                {getReadableDescription(data)}
+            </Typography>
+            <Typography variant='caption' sx={{ display: 'block', opacity: 0.9 }}>
+                Tür: {typeLabel}
+            </Typography>
+            {usecaseLabels.length > 0 && (
+                <Typography variant='caption' sx={{ display: 'block', opacity: 0.9, mt: 0.5 }}>
+                    Kullanım alanı: {usecaseLabels.join(', ')}
+                </Typography>
+            )}
+            <Typography variant='caption' sx={{ display: 'block', opacity: 0.9, mt: 0.75 }}>
+                Tıklayınca önce önizleme açılır. Sonra istersen bu şablonu kendi alanına kopyalayıp düzenleyebilirsin.
+            </Typography>
+        </Box>
+    )
 }
 
 // ==============================|| Marketplace ||============================== //
@@ -156,10 +242,7 @@ const Marketplace = () => {
         const {
             target: { value }
         } = event
-        setBadgeFilter(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value
-        )
+        setBadgeFilter(typeof value === 'string' ? value.split(',') : value)
         const data = activeTabValue === 0 ? getAllTemplatesMarketplacesApi.data : getAllCustomTemplatesApi.data
         getEligibleUsecases(data, {
             typeFilter,
@@ -173,10 +256,7 @@ const Marketplace = () => {
         const {
             target: { value }
         } = event
-        setTypeFilter(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value
-        )
+        setTypeFilter(typeof value === 'string' ? value.split(',') : value)
         const data = activeTabValue === 0 ? getAllTemplatesMarketplacesApi.data : getAllCustomTemplatesApi.data
         getEligibleUsecases(data, {
             typeFilter: typeof value === 'string' ? value.split(',') : value,
@@ -190,10 +270,7 @@ const Marketplace = () => {
         const {
             target: { value }
         } = event
-        setFrameworkFilter(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value
-        )
+        setFrameworkFilter(typeof value === 'string' ? value.split(',') : value)
         const data = activeTabValue === 0 ? getAllTemplatesMarketplacesApi.data : getAllCustomTemplatesApi.data
         getEligibleUsecases(data, {
             typeFilter,
@@ -212,7 +289,6 @@ const Marketplace = () => {
     const onSearchChange = (event) => {
         setSearch(event.target.value)
         const data = activeTabValue === 0 ? getAllTemplatesMarketplacesApi.data : getAllCustomTemplatesApi.data
-
         getEligibleUsecases(data, { typeFilter, badgeFilter, frameworkFilter, search: event.target.value })
     }
 
@@ -266,7 +342,7 @@ const Marketplace = () => {
     function filterFlows(data) {
         return (
             (data.categories ? data.categories.join(',') : '').toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            data.templateName.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
+            (data.templateName || '').toLowerCase().indexOf(search.toLowerCase()) > -1 ||
             (data.description && data.description.toLowerCase().indexOf(search.toLowerCase()) > -1)
         )
     }
@@ -284,39 +360,42 @@ const Marketplace = () => {
     }
 
     function filterByUsecases(data) {
-        if (activeTabValue === 0)
+        if (activeTabValue === 0) {
             return selectedUsecases.length > 0 ? (data.usecases || []).some((item) => selectedUsecases.includes(item)) : true
-        else
+        } else {
             return selectedTemplateUsecases.length > 0
                 ? (data.usecases || []).some((item) => selectedTemplateUsecases.includes(item))
                 : true
+        }
     }
 
     const getEligibleUsecases = (data, filter) => {
         if (!data) return
 
         let filteredData = data
-        if (filter.badgeFilter.length > 0) filteredData = filteredData.filter((data) => filter.badgeFilter.includes(data.badge))
-        if (filter.typeFilter.length > 0) filteredData = filteredData.filter((data) => filter.typeFilter.includes(data.type))
-        if (filter.frameworkFilter.length > 0)
-            filteredData = filteredData.filter((data) => (data.framework || []).some((item) => filter.frameworkFilter.includes(item)))
+        if (filter.badgeFilter.length > 0) filteredData = filteredData.filter((item) => filter.badgeFilter.includes(item.badge))
+        if (filter.typeFilter.length > 0) filteredData = filteredData.filter((item) => filter.typeFilter.includes(item.type))
+        if (filter.frameworkFilter.length > 0) {
+            filteredData = filteredData.filter((item) => (item.framework || []).some((fw) => filter.frameworkFilter.includes(fw)))
+        }
         if (filter.search) {
             filteredData = filteredData.filter(
-                (data) =>
-                    (data.categories ? data.categories.join(',') : '').toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
-                    data.templateName.toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
-                    (data.description && data.description.toLowerCase().indexOf(filter.search.toLowerCase()) > -1)
+                (item) =>
+                    (item.categories ? item.categories.join(',') : '').toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
+                    (item.templateName || '').toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
+                    (item.description && item.description.toLowerCase().indexOf(filter.search.toLowerCase()) > -1)
             )
         }
 
-        const usecases = []
+        const uc = []
         for (let i = 0; i < filteredData.length; i += 1) {
-            if (filteredData[i].flowData) {
-                usecases.push(...filteredData[i].usecases)
+            if (filteredData[i].flowData && Array.isArray(filteredData[i].usecases)) {
+                uc.push(...filteredData[i].usecases)
             }
         }
-        if (activeTabValue === 0) setEligibleUsecases(Array.from(new Set(usecases)).sort())
-        else setEligibleTemplateUsecases(Array.from(new Set(usecases)).sort())
+
+        if (activeTabValue === 0) setEligibleUsecases(Array.from(new Set(uc)).sort())
+        else setEligibleTemplateUsecases(Array.from(new Set(uc)).sort())
     }
 
     const onUseTemplate = (selectedTool) => {
@@ -367,26 +446,29 @@ const Marketplace = () => {
         if (getAllTemplatesMarketplacesApi.data) {
             try {
                 const flows = getAllTemplatesMarketplacesApi.data
-                const usecases = []
-                const images = {}
-                const icons = {}
+                const uc = []
+                const nextImages = {}
+                const nextIcons = {}
+
                 for (let i = 0; i < flows.length; i += 1) {
                     if (flows[i].flowData) {
                         const flowDataStr = flows[i].flowData
                         const flowData = JSON.parse(flowDataStr)
-                        usecases.push(...flows[i].usecases)
+                        uc.push(...(flows[i].usecases || []))
                         const nodes = flowData.nodes || []
-                        images[flows[i].id] = []
-                        icons[flows[i].id] = []
+                        nextImages[flows[i].id] = []
+                        nextIcons[flows[i].id] = []
+
                         for (let j = 0; j < nodes.length; j += 1) {
                             if (nodes[j].data.name === 'stickyNote' || nodes[j].data.name === 'stickyNoteAgentflow') continue
+
                             const foundIcon = AGENTFLOW_ICONS.find((icon) => icon.name === nodes[j].data.name)
                             if (foundIcon) {
-                                icons[flows[i].id].push(foundIcon)
+                                nextIcons[flows[i].id].push(foundIcon)
                             } else {
                                 const imageSrc = `${baseURL}/api/v1/node-icon/${nodes[j].data.name}`
-                                if (!images[flows[i].id].some((img) => img.imageSrc === imageSrc)) {
-                                    images[flows[i].id].push({
+                                if (!nextImages[flows[i].id].some((img) => img.imageSrc === imageSrc)) {
+                                    nextImages[flows[i].id].push({
                                         imageSrc,
                                         label: nodes[j].data.name
                                     })
@@ -395,10 +477,11 @@ const Marketplace = () => {
                         }
                     }
                 }
-                setImages(images)
-                setIcons(icons)
-                setUsecases(Array.from(new Set(usecases)).sort())
-                setEligibleUsecases(Array.from(new Set(usecases)).sort())
+
+                setImages(nextImages)
+                setIcons(nextIcons)
+                setUsecases(Array.from(new Set(uc)).sort())
+                setEligibleUsecases(Array.from(new Set(uc)).sort())
             } catch (e) {
                 console.error(e)
             }
@@ -420,20 +503,23 @@ const Marketplace = () => {
         if (getAllCustomTemplatesApi.data) {
             try {
                 const flows = getAllCustomTemplatesApi.data
-                const usecases = []
+                const uc = []
                 const tImages = {}
                 const tIcons = {}
+
                 for (let i = 0; i < flows.length; i += 1) {
                     if (flows[i].flowData) {
                         const flowDataStr = flows[i].flowData
                         const flowData = JSON.parse(flowDataStr)
-                        usecases.push(...flows[i].usecases)
+                        uc.push(...(flows[i].usecases || []))
                         if (flows[i].framework) {
                             flows[i].framework = [flows[i].framework] || []
                         }
+
                         const nodes = flowData.nodes || []
                         tImages[flows[i].id] = []
                         tIcons[flows[i].id] = []
+
                         for (let j = 0; j < nodes.length; j += 1) {
                             const foundIcon = AGENTFLOW_ICONS.find((icon) => icon.name === nodes[j].data.name)
                             if (foundIcon) {
@@ -447,10 +533,11 @@ const Marketplace = () => {
                         }
                     }
                 }
+
                 setTemplateImages(tImages)
                 setTemplateIcons(tIcons)
-                setTemplateUsecases(Array.from(new Set(usecases)).sort())
-                setEligibleTemplateUsecases(Array.from(new Set(usecases)).sort())
+                setTemplateUsecases(Array.from(new Set(uc)).sort())
+                setEligibleTemplateUsecases(Array.from(new Set(uc)).sort())
             } catch (e) {
                 console.error(e)
             }
@@ -481,11 +568,11 @@ const Marketplace = () => {
                                             display: 'flex',
                                             flexDirection: 'column',
                                             justifyContent: 'end',
-                                            minWidth: 120
+                                            minWidth: 160
                                         }}
                                     >
                                         <InputLabel size='small' id='filter-badge-label'>
-                                            Etiket
+                                            Durum Etiketi
                                         </InputLabel>
                                         <Select
                                             labelId='filter-badge-label'
@@ -494,8 +581,8 @@ const Marketplace = () => {
                                             multiple
                                             value={badgeFilter}
                                             onChange={handleBadgeFilterChange}
-                                            input={<OutlinedInput label='Etiket' />}
-                                            renderValue={(selected) => selected.join(', ')}
+                                            input={<OutlinedInput label='Durum Etiketi' />}
+                                            renderValue={(selected) => selected.map(getBadgeLabel).join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
                                         >
@@ -506,22 +593,23 @@ const Marketplace = () => {
                                                     sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}
                                                 >
                                                     <Checkbox checked={badgeFilter.indexOf(name) > -1} sx={{ p: 0 }} />
-                                                    <ListItemText primary={name} />
+                                                    <ListItemText primary={getBadgeLabel(name)} />
                                                 </MenuItem>
                                             ))}
                                         </Select>
                                     </FormControl>
+
                                     <FormControl
                                         sx={{
                                             borderRadius: 2,
                                             display: 'flex',
                                             flexDirection: 'column',
                                             justifyContent: 'end',
-                                            minWidth: 120
+                                            minWidth: 170
                                         }}
                                     >
                                         <InputLabel size='small' id='type-badge-label'>
-                                            Tür
+                                            Şablon Türü
                                         </InputLabel>
                                         <Select
                                             size='small'
@@ -530,8 +618,8 @@ const Marketplace = () => {
                                             multiple
                                             value={typeFilter}
                                             onChange={handleTypeFilterChange}
-                                            input={<OutlinedInput label='Tür' />}
-                                            renderValue={(selected) => selected.join(', ')}
+                                            input={<OutlinedInput label='Şablon Türü' />}
+                                            renderValue={(selected) => selected.map(getTypeLabel).join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
                                         >
@@ -542,22 +630,23 @@ const Marketplace = () => {
                                                     sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}
                                                 >
                                                     <Checkbox checked={typeFilter.indexOf(name) > -1} sx={{ p: 0 }} />
-                                                    <ListItemText primary={name} />
+                                                    <ListItemText primary={getTypeLabel(name)} />
                                                 </MenuItem>
                                             ))}
                                         </Select>
                                     </FormControl>
+
                                     <FormControl
                                         sx={{
                                             borderRadius: 2,
                                             display: 'flex',
                                             flexDirection: 'column',
                                             justifyContent: 'end',
-                                            minWidth: 120
+                                            minWidth: 150
                                         }}
                                     >
                                         <InputLabel size='small' id='type-fw-label'>
-                                            Çatı
+                                            Altyapı
                                         </InputLabel>
                                         <Select
                                             size='small'
@@ -566,8 +655,8 @@ const Marketplace = () => {
                                             multiple
                                             value={frameworkFilter}
                                             onChange={handleFrameworkFilterChange}
-                                            input={<OutlinedInput label='Çatı' />}
-                                            renderValue={(selected) => selected.join(', ')}
+                                            input={<OutlinedInput label='Altyapı' />}
+                                            renderValue={(selected) => selected.map(getFrameworkLabel).join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
                                         >
@@ -578,7 +667,7 @@ const Marketplace = () => {
                                                     sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}
                                                 >
                                                     <Checkbox checked={frameworkFilter.indexOf(name) > -1} sx={{ p: 0 }} />
-                                                    <ListItemText primary={name} />
+                                                    <ListItemText primary={getFrameworkLabel(name)} />
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -587,9 +676,9 @@ const Marketplace = () => {
                             }
                             onSearchChange={onSearchChange}
                             search={true}
-                            searchPlaceholder='Ad/Açıklama/Düğüm Ara'
-                            title='Pazaryeri'
-                            description='Hazır şablonları keşfet ve kullan'
+                            searchPlaceholder='Şablon adı, açıklama veya içindeki adımlarda ara'
+                            title='Hazır Ajan ve Akış Şablonları'
+                            description='Sıfırdan kurmak yerine hazır örnekleri açın, nasıl çalıştıklarını inceleyin ve kendi ihtiyacınıza göre uyarlayın.'
                         >
                             <ToggleButtonGroup
                                 sx={{ borderRadius: 2, height: '100%' }}
@@ -624,35 +713,41 @@ const Marketplace = () => {
                                 </ToggleButton>
                             </ToggleButtonGroup>
                         </ViewHeader>
+
                         {hasPermission('templates:marketplace') && hasPermission('templates:custom') && (
                             <Stack direction='row' justifyContent='space-between' sx={{ mb: 2 }}>
                                 <Tabs value={activeTabValue} onChange={handleTabChange} textColor='primary' aria-label='tabs'>
-                                    <PermissionTab permissionId='templates:marketplace' value={0} label='Topluluk Şablonları' />
-                                    <PermissionTab permissionId='templates:custom' value={1} label='Şablonlarım' />
+                                    <PermissionTab permissionId='templates:marketplace' value={0} label='Hazır Topluluk Şablonları' />
+                                    <PermissionTab permissionId='templates:custom' value={1} label='Benim Kaydettiklerim' />
                                 </Tabs>
+
                                 <Autocomplete
                                     id='useCases'
                                     multiple
                                     size='small'
-                                    options={usecases}
-                                    value={selectedUsecases}
-                                    onChange={(_, newValue) => setSelectedUsecases(newValue)}
+                                    options={activeTabValue === 0 ? usecases : templateUsecases}
+                                    value={activeTabValue === 0 ? selectedUsecases : selectedTemplateUsecases}
+                                    onChange={(_, newValue) => {
+                                        if (activeTabValue === 0) setSelectedUsecases(newValue)
+                                        else setSelectedTemplateUsecases(newValue)
+                                    }}
                                     disableCloseOnSelect
-                                    getOptionLabel={(option) => option}
+                                    getOptionLabel={(option) => getUsecaseLabel(option)}
                                     isOptionEqualToValue={(option, value) => option === value}
                                     renderOption={(props, option, { selected }) => {
-                                        const isDisabled = eligibleUsecases.length > 0 && !eligibleUsecases.includes(option)
+                                        const currentEligible = activeTabValue === 0 ? eligibleUsecases : eligibleTemplateUsecases
+                                        const isDisabled = currentEligible.length > 0 && !currentEligible.includes(option)
 
                                         return (
                                             <li {...props} style={{ pointerEvents: isDisabled ? 'none' : 'auto' }}>
                                                 <Checkbox checked={selected} color='success' disabled={isDisabled} />
-                                                <ListItemText primary={option} />
+                                                <ListItemText primary={getUsecaseLabel(option)} />
                                             </li>
                                         )
                                     }}
-                                    renderInput={(params) => <TextField {...params} label='Kullanım Alanları' />}
+                                    renderInput={(params) => <TextField {...params} label='Ne İçin Kullanılır' />}
                                     sx={{
-                                        width: 300
+                                        width: 340
                                     }}
                                     limitTags={2}
                                     renderTags={(value, getTagProps) => {
@@ -665,7 +760,7 @@ const Marketplace = () => {
                                                     <Chip
                                                         {...getTagProps({ index })}
                                                         key={index}
-                                                        label={option}
+                                                        label={getUsecaseLabel(option)}
                                                         sx={{
                                                             height: 24,
                                                             '& .MuiSvgIcon-root': {
@@ -681,13 +776,15 @@ const Marketplace = () => {
                                                         title={
                                                             <ol style={{ paddingLeft: '20px' }}>
                                                                 {value.slice(limitTags).map((item, i) => (
-                                                                    <li key={i}>{item}</li>
+                                                                    <li key={i}>{getUsecaseLabel(item)}</li>
                                                                 ))}
                                                             </ol>
                                                         }
                                                         placement='top'
                                                     >
-                                                        +{totalTags - limitTags}
+                                                        <span style={{ cursor: 'help', fontSize: 13, alignSelf: 'center' }}>
+                                                            +{totalTags - limitTags} tane daha
+                                                        </span>
                                                     </Tooltip>
                                                 )}
                                             </>
@@ -703,6 +800,7 @@ const Marketplace = () => {
                                 />
                             </Stack>
                         )}
+
                         <Available permission='templates:marketplace'>
                             <TabPanel value={activeTabValue} index={0}>
                                 {!view || view === 'card' ? (
@@ -723,7 +821,7 @@ const Marketplace = () => {
                                                     .filter(filterByUsecases)
                                                     .map((data, index) => (
                                                         <Box key={index}>
-                                                            {data.badge && (
+                                                            {data.badge ? (
                                                                 <Badge
                                                                     sx={{
                                                                         width: '100%',
@@ -732,37 +830,43 @@ const Marketplace = () => {
                                                                             right: 20
                                                                         }
                                                                     }}
-                                                                    badgeContent={data.badge}
+                                                                    badgeContent={getBadgeLabel(data.badge)}
                                                                     color={data.badge === 'POPULAR' ? 'primary' : 'error'}
                                                                 >
-                                                                    {(data.type === 'Chatflow' ||
-                                                                        data.type === 'Agentflow' ||
-                                                                        data.type === 'AgentflowV2') && (
-                                                                        <ItemCard
-                                                                            onClick={() => goToCanvas(data)}
-                                                                            data={data}
-                                                                            images={images[data.id]}
-                                                                            icons={icons[data.id]}
-                                                                        />
-                                                                    )}
-                                                                    {data.type === 'Tool' && (
-                                                                        <ItemCard data={data} onClick={() => goToTool(data)} />
-                                                                    )}
+                                                                    <Tooltip title={renderTemplateTooltip(data)} placement='top' arrow>
+                                                                        <Box>
+                                                                            {(data.type === 'Chatflow' ||
+                                                                                data.type === 'Agentflow' ||
+                                                                                data.type === 'AgentflowV2') && (
+                                                                                <ItemCard
+                                                                                    onClick={() => goToCanvas(data)}
+                                                                                    data={data}
+                                                                                    images={images[data.id]}
+                                                                                    icons={icons[data.id]}
+                                                                                />
+                                                                            )}
+                                                                            {data.type === 'Tool' && (
+                                                                                <ItemCard data={data} onClick={() => goToTool(data)} />
+                                                                            )}
+                                                                        </Box>
+                                                                    </Tooltip>
                                                                 </Badge>
-                                                            )}
-                                                            {!data.badge &&
-                                                                (data.type === 'Chatflow' ||
-                                                                    data.type === 'Agentflow' ||
-                                                                    data.type === 'AgentflowV2') && (
-                                                                    <ItemCard
-                                                                        onClick={() => goToCanvas(data)}
-                                                                        data={data}
-                                                                        images={images[data.id]}
-                                                                        icons={icons[data.id]}
-                                                                    />
-                                                                )}
-                                                            {!data.badge && data.type === 'Tool' && (
-                                                                <ItemCard data={data} onClick={() => goToTool(data)} />
+                                                            ) : (
+                                                                <Tooltip title={renderTemplateTooltip(data)} placement='top' arrow>
+                                                                    <Box>
+                                                                        {(data.type === 'Chatflow' ||
+                                                                            data.type === 'Agentflow' ||
+                                                                            data.type === 'AgentflowV2') && (
+                                                                            <ItemCard
+                                                                                onClick={() => goToCanvas(data)}
+                                                                                data={data}
+                                                                                images={images[data.id]}
+                                                                                icons={icons[data.id]}
+                                                                            />
+                                                                        )}
+                                                                        {data.type === 'Tool' && <ItemCard data={data} onClick={() => goToTool(data)} />}
+                                                                    </Box>
+                                                                </Tooltip>
                                                             )}
                                                         </Box>
                                                     ))}
@@ -784,21 +888,21 @@ const Marketplace = () => {
                                     />
                                 )}
 
-                                {!isLoading &&
-                                    (!getAllTemplatesMarketplacesApi.data || getAllTemplatesMarketplacesApi.data.length === 0) && (
-                                        <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
-                                            <Box sx={{ p: 2, height: 'auto' }}>
-                                                <img
-                                                    style={{ objectFit: 'cover', height: '25vh', width: 'auto' }}
-                                                    src={WorkflowEmptySVG}
-                                                    alt='WorkflowEmptySVG'
-                                                />
-                                            </Box>
-                                            <div>Henüz pazaryeri yok</div>
-                                        </Stack>
-                                    )}
+                                {!isLoading && (!getAllTemplatesMarketplacesApi.data || getAllTemplatesMarketplacesApi.data.length === 0) && (
+                                    <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
+                                        <Box sx={{ p: 2, height: 'auto' }}>
+                                            <img
+                                                style={{ objectFit: 'cover', height: '25vh', width: 'auto' }}
+                                                src={WorkflowEmptySVG}
+                                                alt='WorkflowEmptySVG'
+                                            />
+                                        </Box>
+                                        <div>Henüz hazır topluluk şablonu bulunmuyor</div>
+                                    </Stack>
+                                )}
                             </TabPanel>
                         </Available>
+
                         <Available permission='templates:custom'>
                             <TabPanel value={activeTabValue} index={1}>
                                 <Stack direction='row' sx={{ gap: 2, my: 2, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -824,10 +928,11 @@ const Marketplace = () => {
                                                     }}
                                                 />
                                             }
-                                            label={usecase}
+                                            label={getUsecaseLabel(usecase)}
                                         />
                                     ))}
                                 </Stack>
+
                                 {selectedTemplateUsecases.length > 0 && (
                                     <Button
                                         sx={{ width: 'max-content', mb: 2, borderRadius: '20px' }}
@@ -838,6 +943,7 @@ const Marketplace = () => {
                                         Tümünü Temizle
                                     </Button>
                                 )}
+
                                 {!view || view === 'card' ? (
                                     <>
                                         {isLoading ? (
@@ -856,7 +962,7 @@ const Marketplace = () => {
                                                     .filter(filterByUsecases)
                                                     .map((data, index) => (
                                                         <Box key={index}>
-                                                            {data.badge && (
+                                                            {data.badge ? (
                                                                 <Badge
                                                                     sx={{
                                                                         width: '100%',
@@ -865,37 +971,43 @@ const Marketplace = () => {
                                                                             right: 20
                                                                         }
                                                                     }}
-                                                                    badgeContent={data.badge}
+                                                                    badgeContent={getBadgeLabel(data.badge)}
                                                                     color={data.badge === 'POPULAR' ? 'primary' : 'error'}
                                                                 >
-                                                                    {(data.type === 'Chatflow' ||
-                                                                        data.type === 'Agentflow' ||
-                                                                        data.type === 'AgentflowV2') && (
-                                                                        <ItemCard
-                                                                            onClick={() => goToCanvas(data)}
-                                                                            data={data}
-                                                                            images={templateImages[data.id]}
-                                                                            icons={templateIcons[data.id]}
-                                                                        />
-                                                                    )}
-                                                                    {data.type === 'Tool' && (
-                                                                        <ItemCard data={data} onClick={() => goToTool(data)} />
-                                                                    )}
+                                                                    <Tooltip title={renderTemplateTooltip(data)} placement='top' arrow>
+                                                                        <Box>
+                                                                            {(data.type === 'Chatflow' ||
+                                                                                data.type === 'Agentflow' ||
+                                                                                data.type === 'AgentflowV2') && (
+                                                                                <ItemCard
+                                                                                    onClick={() => goToCanvas(data)}
+                                                                                    data={data}
+                                                                                    images={templateImages[data.id]}
+                                                                                    icons={templateIcons[data.id]}
+                                                                                />
+                                                                            )}
+                                                                            {data.type === 'Tool' && (
+                                                                                <ItemCard data={data} onClick={() => goToTool(data)} />
+                                                                            )}
+                                                                        </Box>
+                                                                    </Tooltip>
                                                                 </Badge>
-                                                            )}
-                                                            {!data.badge &&
-                                                                (data.type === 'Chatflow' ||
-                                                                    data.type === 'Agentflow' ||
-                                                                    data.type === 'AgentflowV2') && (
-                                                                    <ItemCard
-                                                                        onClick={() => goToCanvas(data)}
-                                                                        data={data}
-                                                                        images={templateImages[data.id]}
-                                                                        icons={templateIcons[data.id]}
-                                                                    />
-                                                                )}
-                                                            {!data.badge && data.type === 'Tool' && (
-                                                                <ItemCard data={data} onClick={() => goToTool(data)} />
+                                                            ) : (
+                                                                <Tooltip title={renderTemplateTooltip(data)} placement='top' arrow>
+                                                                    <Box>
+                                                                        {(data.type === 'Chatflow' ||
+                                                                            data.type === 'Agentflow' ||
+                                                                            data.type === 'AgentflowV2') && (
+                                                                            <ItemCard
+                                                                                onClick={() => goToCanvas(data)}
+                                                                                data={data}
+                                                                                images={templateImages[data.id]}
+                                                                                icons={templateIcons[data.id]}
+                                                                            />
+                                                                        )}
+                                                                        {data.type === 'Tool' && <ItemCard data={data} onClick={() => goToTool(data)} />}
+                                                                    </Box>
+                                                                </Tooltip>
                                                             )}
                                                         </Box>
                                                     ))}
@@ -918,6 +1030,7 @@ const Marketplace = () => {
                                         onShare={hasPermission('templates:custom-share') ? share : null}
                                     />
                                 )}
+
                                 {!isLoading && (!getAllCustomTemplatesApi.data || getAllCustomTemplatesApi.data.length === 0) && (
                                     <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
                                         <Box sx={{ p: 2, height: 'auto' }}>
@@ -927,7 +1040,7 @@ const Marketplace = () => {
                                                 alt='WorkflowEmptySVG'
                                             />
                                         </Box>
-                                        <div>Kaydedilmiş özel şablon yok</div>
+                                        <div>Henüz kaydedilmiş özel şablon bulunmuyor</div>
                                     </Stack>
                                 )}
                             </TabPanel>
@@ -935,21 +1048,24 @@ const Marketplace = () => {
                     </Stack>
                 )}
             </MainCard>
+
             <ToolDialog
                 show={showToolDialog}
                 dialogProps={toolDialogProps}
                 onCancel={() => setShowToolDialog(false)}
                 onConfirm={() => setShowToolDialog(false)}
                 onUseTemplate={(tool) => onUseTemplate(tool)}
-            ></ToolDialog>
+            />
+
             {showShareTemplateDialog && (
                 <ShareWithWorkspaceDialog
                     show={showShareTemplateDialog}
                     dialogProps={shareTemplateDialogProps}
                     onCancel={() => setShowShareTemplateDialog(false)}
                     setError={setError}
-                ></ShareWithWorkspaceDialog>
+                />
             )}
+
             <ConfirmDialog />
         </>
     )
