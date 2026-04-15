@@ -18,54 +18,54 @@ class CustomFunction_Utilities implements INode {
     outputs: INodeOutputsValue[]
 
     constructor() {
-        this.label = 'Custom JS Function'
+        this.label = 'Özel JS Fonksiyonu'
         this.name = 'customFunction'
         this.version = 3.0
         this.type = 'CustomFunction'
         this.icon = 'customfunction.svg'
         this.category = 'Utilities'
-        this.description = `Execute custom javascript function`
+        this.description = `Özel JavaScript fonksiyonu çalıştırır`
         this.baseClasses = [this.type, 'Utilities']
         this.tags = ['Utilities']
         this.inputs = [
             {
-                label: 'Input Variables',
+                label: 'Girdi Değişkenleri',
                 name: 'functionInputVariables',
-                description: 'Input variables can be used in the function with prefix $. For example: $var',
+                description: 'Girdi değişkenlerini fonksiyon içinde $ önekiyle kullan. Örn: $var',
                 type: 'json',
                 optional: true,
                 acceptVariable: true,
                 list: true
             },
             {
-                label: 'Function Name',
+                label: 'Fonksiyon Adı',
                 name: 'functionName',
                 type: 'string',
                 optional: true,
-                placeholder: 'My Function'
+                placeholder: 'Fonksiyonum'
             },
             {
-                label: 'Additional Tools',
-                description: 'Tools can be used in the function with $tools.{tool_name}.invoke(args)',
+                label: 'Ek Araçlar',
+                description: 'Araçları fonksiyonda $tools.{tool_name}.invoke(args) ile kullan',
                 name: 'tools',
                 type: 'Tool',
                 list: true,
                 optional: true
             },
             {
-                label: 'Javascript Function',
+                label: 'JavaScript Fonksiyonu',
                 name: 'javascriptFunction',
                 type: 'code'
             }
         ]
         this.outputs = [
             {
-                label: 'Output',
+                label: 'Çıktı',
                 name: 'output',
                 baseClasses: ['string', 'number', 'boolean', 'json', 'array']
             },
             {
-                label: 'Ending Node',
+                label: 'Bitiş Düğümü',
                 name: 'EndingNode',
                 baseClasses: [this.type]
             }

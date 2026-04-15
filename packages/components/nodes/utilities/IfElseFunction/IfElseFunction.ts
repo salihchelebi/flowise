@@ -16,36 +16,36 @@ class IfElseFunction_Utilities implements INode {
     outputs: INodeOutputsValue[]
 
     constructor() {
-        this.label = 'IfElse Function'
+        this.label = 'Koşul Dallanması'
         this.name = 'ifElseFunction'
         this.version = 2.0
         this.type = 'IfElseFunction'
         this.icon = 'ifelsefunction.svg'
         this.category = 'Utilities'
-        this.description = `Split flows based on If Else javascript functions`
+        this.description = `Akışı koşula göre iki yola ayırır`
         this.baseClasses = [this.type, 'Utilities']
         this.tags = ['Utilities']
         this.inputs = [
             {
-                label: 'Input Variables',
+                label: 'Girdi Değişkenleri',
                 name: 'functionInputVariables',
-                description: 'Input variables can be used in the function with prefix $. For example: $var',
+                description: 'Girdi değişkenlerini fonksiyon içinde $ önekiyle kullan. Örn: $var',
                 type: 'json',
                 optional: true,
                 acceptVariable: true,
                 list: true
             },
             {
-                label: 'IfElse Name',
+                label: 'Koşul Adı',
                 name: 'functionName',
                 type: 'string',
                 optional: true,
-                placeholder: 'If Condition Match'
+                placeholder: 'Koşul Sağlandı'
             },
             {
-                label: 'If Function',
+                label: 'If Fonksiyonu',
                 name: 'ifFunction',
-                description: 'Function must return a value',
+                description: 'Fonksiyon bir değer döndürmelidir',
                 type: 'code',
                 rows: 2,
                 default: `if ("hello" == "hello") {
@@ -53,9 +53,9 @@ class IfElseFunction_Utilities implements INode {
 }`
             },
             {
-                label: 'Else Function',
+                label: 'Else Fonksiyonu',
                 name: 'elseFunction',
-                description: 'Function must return a value',
+                description: 'Fonksiyon bir değer döndürmelidir',
                 type: 'code',
                 rows: 2,
                 default: `return false;`
@@ -63,13 +63,13 @@ class IfElseFunction_Utilities implements INode {
         ]
         this.outputs = [
             {
-                label: 'True',
+                label: 'Doğru',
                 name: 'returnTrue',
                 baseClasses: ['string', 'number', 'boolean', 'json', 'array'],
                 isAnchor: true
             },
             {
-                label: 'False',
+                label: 'Yanlış',
                 name: 'returnFalse',
                 baseClasses: ['string', 'number', 'boolean', 'json', 'array'],
                 isAnchor: true

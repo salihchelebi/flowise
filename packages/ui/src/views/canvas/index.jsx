@@ -178,10 +178,10 @@ const Canvas = () => {
 
     const handleDeleteFlow = async () => {
         const confirmPayload = {
-            title: `Delete`,
-            description: `Delete ${canvasTitle} ${chatflow.name}?`,
-            confirmButtonName: 'Delete',
-            cancelButtonName: 'Cancel'
+            title: 'Sil',
+            description: `${canvasTitle} "${chatflow.name}" silinsin mi?`,
+            confirmButtonName: 'Sil',
+            cancelButtonName: 'Vazgeç'
         }
         const isConfirmed = await confirm(confirmPayload)
 
@@ -349,7 +349,7 @@ const Canvas = () => {
     const saveChatflowSuccess = () => {
         dispatch({ type: REMOVE_DIRTY })
         enqueueSnackbar({
-            message: `${canvasTitle} saved`,
+            message: `${canvasTitle} kaydedildi`,
             options: {
                 key: new Date().getTime() + Math.random(),
                 variant: 'success',
@@ -420,7 +420,7 @@ const Canvas = () => {
             setEdges(initialFlow.edges || [])
             dispatch({ type: SET_CHATFLOW, chatflow })
         } else if (getSpecificChatflowApi.error) {
-            errorFailed(`Failed to retrieve ${canvasTitle}: ${getSpecificChatflowApi.error.response.data.message}`)
+            errorFailed(`${canvasTitle} alınamadı: ${getSpecificChatflowApi.error.response.data.message}`)
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -434,7 +434,7 @@ const Canvas = () => {
             saveChatflowSuccess()
             window.history.replaceState(state, null, `/${isAgentCanvas ? 'agentcanvas' : 'canvas'}/${chatflow.id}`)
         } else if (createNewChatflowApi.error) {
-            errorFailed(`Failed to retrieve ${canvasTitle}: ${createNewChatflowApi.error.response.data.message}`)
+            errorFailed(`${canvasTitle} alınamadı: ${createNewChatflowApi.error.response.data.message}`)
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -447,7 +447,7 @@ const Canvas = () => {
             setLasUpdatedDateTime(updateChatflowApi.data.updatedDate)
             saveChatflowSuccess()
         } else if (updateChatflowApi.error) {
-            errorFailed(`Failed to retrieve ${canvasTitle}: ${updateChatflowApi.error.response.data.message}`)
+            errorFailed(`${canvasTitle} alınamadı: ${updateChatflowApi.error.response.data.message}`)
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -458,10 +458,10 @@ const Canvas = () => {
         const checkIfHasChanged = async () => {
             if (getHasChatflowChangedApi.data?.hasChanged === true) {
                 const confirmPayload = {
-                    title: `Confirm Change`,
-                    description: `${canvasTitle} ${chatflow.name} has changed since you have opened, overwrite changes?`,
-                    confirmButtonName: 'Confirm',
-                    cancelButtonName: 'Cancel'
+                    title: 'Değişikliği Onayla',
+                    description: `"${chatflow.name}" açıldığından beri değişti. Üzerine yazmak ister misin?`,
+                    confirmButtonName: 'Onayla',
+                    cancelButtonName: 'Vazgeç'
                 }
                 const isConfirmed = await confirm(confirmPayload)
 
@@ -511,7 +511,7 @@ const Canvas = () => {
             dispatch({
                 type: SET_CHATFLOW,
                 chatflow: {
-                    name: `Untitled ${canvasTitle}`
+                    name: `Adsız ${canvasTitle}`
                 }
             })
         }
@@ -556,7 +556,7 @@ const Canvas = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [templateFlowData])
 
-    usePrompt('You have unsaved changes! Do you want to navigate away?', canvasDataStore.isDirty)
+    usePrompt('Kaydedilmemiş değişikliklerin var. Sayfadan ayrılmak istiyor musun?', canvasDataStore.isDirty)
 
     return (
         <>
@@ -617,8 +617,8 @@ const Canvas = () => {
                                         onClick={() => {
                                             setIsSnappingEnabled(!isSnappingEnabled)
                                         }}
-                                        title='toggle snapping'
-                                        aria-label='toggle snapping'
+                                        title='Hizalamayı aç/kapat'
+                                        aria-label='Hizalamayı aç/kapat'
                                     >
                                         {isSnappingEnabled ? <IconMagnetFilled /> : <IconMagnetOff />}
                                     </button>
@@ -627,8 +627,8 @@ const Canvas = () => {
                                         onClick={() => {
                                             setIsBackgroundEnabled(!isBackgroundEnabled)
                                         }}
-                                        title='toggle background'
-                                        aria-label='toggle background'
+                                        title='Arka planı aç/kapat'
+                                        aria-label='Arka planı aç/kapat'
                                     >
                                         {isBackgroundEnabled ? <IconArtboard /> : <IconArtboardOff />}
                                     </button>
@@ -649,7 +649,7 @@ const Canvas = () => {
                                         }}
                                         size='small'
                                         aria-label='sync'
-                                        title='Sync Nodes'
+                                        title='Düğümleri Senkronla'
                                         onClick={() => syncNodes()}
                                     >
                                         <IconRefreshAlert />

@@ -136,7 +136,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                             marginBottom: 5
                                         }}
                                     >
-                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>version {dialogProps.data.version}</span>
+                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>sürüm {dialogProps.data.version}</span>
                                     </div>
                                 )}
                                 {dialogProps.data.badge && (
@@ -201,13 +201,13 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                             <Button
                                 variant='outlined'
                                 color='primary'
-                                title='Open Documentation'
+                                title='Dokümantasyonu Aç'
                                 onClick={() => {
                                     window.open(dialogProps.data.documentation, '_blank', 'noopener,noreferrer')
                                 }}
                                 startIcon={<IconBook2 />}
                             >
-                                Documentation
+                                Dokümantasyon
                             </Button>
                         )}
                     </div>
