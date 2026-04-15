@@ -16,83 +16,16 @@ import {
     Typography,
     Stack,
     Tooltip,
+    Box,
     useTheme
 } from '@mui/material'
 import { IconShare, IconTrash } from '@tabler/icons-react'
 import { PermissionIconButton } from '@/ui-component/button/RBACButtons'
-
-const BADGE_LABELS = {
-    POPULAR: 'Çok Kullanılan',
-    NEW: 'Yeni',
-    DEPRECATED: 'Eski'
-}
-
-const TYPE_LABELS = {
-    Chatflow: 'Sohbet Akışı',
-    Agentflow: 'Ajan Akışı',
-    AgentflowV2: 'Gelişmiş Ajan Akışı',
-    Tool: 'Hazır Araç'
-}
-
-const FRAMEWORK_LABELS = {
-    Langchain: 'LangChain',
-    LlamaIndex: 'LlamaIndex'
-}
-
-const USECASE_LABELS = {
-    'Customer Support': 'Müşteri Desteği',
-    'Customer Service': 'Müşteri Hizmeti',
-    Sales: 'Satış',
-    Marketing: 'Pazarlama',
-    Education: 'Eğitim',
-    Healthcare: 'Sağlık',
-    Finance: 'Finans',
-    Ecommerce: 'E-Ticaret',
-    'E-Commerce': 'E-Ticaret',
-    HR: 'İnsan Kaynakları',
-    Research: 'Araştırma',
-    'Data Analysis': 'Veri Analizi',
-    'Document QnA': 'Belge Soru Cevap',
-    'Question Answering': 'Soru Cevap',
-    'Lead Generation': 'Müşteri Adayı Toplama',
-    Productivity: 'Verimlilik',
-    Automation: 'Otomasyon'
-}
-
-const getBadgeLabel = (value) => BADGE_LABELS[value] || value
-const getTypeLabel = (value) => TYPE_LABELS[value] || value
-const getFrameworkLabel = (value) => FRAMEWORK_LABELS[value] || value
-const getUsecaseLabel = (value) => USECASE_LABELS[value] || value
-
-const getReadableDescription = (row) => {
-    if (row.description && row.description.trim()) return row.description
-
-    if (row.type === 'Tool') {
-        return 'Hazır bir araç yapısını inceleyip kendi kullanımına göre ekleyebilirsin.'
-    }
-
-    if (row.type === 'AgentflowV2') {
-        return 'Bu gelişmiş ajan akışını açıp adımlarını inceleyebilir, sonra kendi alanına kopyalayabilirsin.'
-    }
-
-    return 'Bu hazır akışı açıp nasıl çalıştığını inceleyebilir, sonra kendi ihtiyacına göre kullanabilirsin.'
-}
-
-const getTemplateTooltipText = (row) => {
-    const parts = [
-        `${row.templateName || row.name || 'Hazır Şablon'}`,
-        getReadableDescription(row),
-        `Tür: ${getTypeLabel(row.type)}`
-    ]
-
-    if (row.usecases?.length) {
-        parts.push(`Kullanım alanı: ${row.usecases.map(getUsecaseLabel).slice(0, 4).join(', ')}`)
-    }
-
-    parts.push('Tıklayınca önce önizleme açılır. Sonra istersen şablonu kendi alanına kopyalayıp düzenleyebilirsin.')
-
-    return parts.join('\n\n')
-}
+import {
+    getMarketplaceBadgeLabel,
+    getMarketplaceTemplateDisplayData,
+    getMarketplaceTooltipData
+} from '@/utils/translateMarketplaceTemplates'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     borderColor: theme.palette.grey[900] + 25,
@@ -110,6 +43,55 @@ const StyledTableRow = styled(TableRow)(() => ({
         border: 0
     }
 }))
+
+const getTooltipStyleProps = (theme) => ({
+    componentsProps: {
+        tooltip: {
+            sx: {
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                border: `1px solid ${theme.palette.grey[900]}22`,
+                borderRadius: 2,
+                boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
+                p: 2,
+                maxWidth: 390
+            }
+        },
+        arrow: {
+            sx: {
+                color: theme.palette.background.paper
+            }
+        }
+    }
+})
+
+const renderRowTooltip = (row) => {
+    const tooltipData = getMarketplaceTooltipData(row)
+
+    return (
+        <Box sx={{ maxWidth: 360 }}>
+            <Typography variant='subtitle1' sx={{ fontWeight: 700, mb: 1 }}>
+                {tooltipData.title}
+            </Typography>
+            <Typography variant='body2' sx={{ mb: 1 }}>
+                {tooltipData.description}
+            </Typography>
+            <Typography variant='caption' sx={{ display: 'block', color: 'text.secondary', mb: 1 }}>
+                {tooltipData.purpose}
+            </Typography>
+            <Box component='ul' sx={{ pl: 2.25, my: 0, mb: 1.5 }}>
+                {tooltipData.bullets.map((item, index) => (
+                    <Typography component='li' variant='body2' key={index} sx={{ mb: 0.5 }}>
+                        {item}
+                    </Typography>
+                ))}
+            </Box>
+            <Typography variant='caption' sx={{ fontWeight: 700 }}>
+                {tooltipData.actionLine}
+            </Typography>
+        </Box>
+    )
+}
 
 export const MarketplaceTable = ({
     data,
@@ -165,50 +147,22 @@ export const MarketplaceTable = ({
                     {isLoading ? (
                         <>
                             <StyledTableRow>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
                             </StyledTableRow>
                             <StyledTableRow>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <Skeleton variant='text' />
-                                </StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
+                                <StyledTableCell><Skeleton variant='text' /></StyledTableCell>
                             </StyledTableRow>
                         </>
                     ) : (
@@ -219,122 +173,103 @@ export const MarketplaceTable = ({
                                 .filter(filterFunction)
                                 .filter(filterByFramework)
                                 .filter(filterByUsecases)
-                                .map((row, index) => (
-                                    <StyledTableRow key={index}>
-                                        <StyledTableCell>
-                                            <Tooltip title={<Typography sx={{ whiteSpace: 'pre-line' }}>{getTemplateTooltipText(row)}</Typography>} placement='top' arrow>
-                                                <Typography
-                                                    sx={{
-                                                        display: '-webkit-box',
-                                                        fontSize: 14,
-                                                        fontWeight: 500,
-                                                        WebkitLineClamp: 2,
-                                                        WebkitBoxOrient: 'vertical',
-                                                        textOverflow: 'ellipsis',
-                                                        overflow: 'hidden'
-                                                    }}
-                                                >
-                                                    <Button onClick={() => openTemplate(row)} sx={{ textAlign: 'left' }}>
-                                                        {row.templateName || row.name}
-                                                    </Button>
+                                .map((row, index) => {
+                                    const display = getMarketplaceTemplateDisplayData(row)
+                                    return (
+                                        <StyledTableRow key={index}>
+                                            <StyledTableCell>
+                                                <Tooltip title={renderRowTooltip(display)} placement='top' arrow {...getTooltipStyleProps(theme)}>
+                                                    <Typography
+                                                        sx={{
+                                                            display: '-webkit-box',
+                                                            fontSize: 14,
+                                                            fontWeight: 500,
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            textOverflow: 'ellipsis',
+                                                            overflow: 'hidden'
+                                                        }}
+                                                    >
+                                                        <Button onClick={() => openTemplate(display)} sx={{ textAlign: 'left' }}>
+                                                            {display.displayTitle}
+                                                        </Button>
+                                                    </Typography>
+                                                </Tooltip>
+                                            </StyledTableCell>
+
+                                            <StyledTableCell>
+                                                <Typography>{display.displayType}</Typography>
+                                            </StyledTableCell>
+
+                                            <StyledTableCell>
+                                                <Typography sx={{ overflowWrap: 'break-word', whiteSpace: 'pre-line' }}>
+                                                    {display.displayDescription}
                                                 </Typography>
-                                            </Tooltip>
-                                        </StyledTableCell>
+                                            </StyledTableCell>
 
-                                        <StyledTableCell>
-                                            <Typography>{getTypeLabel(row.type)}</Typography>
-                                        </StyledTableCell>
-
-                                        <StyledTableCell>
-                                            <Typography sx={{ overflowWrap: 'break-word', whiteSpace: 'pre-line' }}>
-                                                {getReadableDescription(row)}
-                                            </Typography>
-                                        </StyledTableCell>
-
-                                        <StyledTableCell>
-                                            <Stack flexDirection='row' sx={{ gap: 1, flexWrap: 'wrap' }}>
-                                                {row.framework &&
-                                                    row.framework.length > 0 &&
-                                                    row.framework.map((item, itemIndex) => (
-                                                        <Chip
-                                                            variant='outlined'
-                                                            key={itemIndex}
-                                                            size='small'
-                                                            label={getFrameworkLabel(item)}
-                                                            style={{ marginRight: 3, marginBottom: 3 }}
-                                                        />
+                                            <StyledTableCell>
+                                                <Stack flexDirection='row' sx={{ gap: 1, flexWrap: 'wrap' }}>
+                                                    {display.displayFrameworks.map((item, itemIndex) => (
+                                                        <Chip variant='outlined' key={itemIndex} size='small' label={item} style={{ marginRight: 3, marginBottom: 3 }} />
                                                     ))}
-                                            </Stack>
-                                        </StyledTableCell>
+                                                </Stack>
+                                            </StyledTableCell>
 
-                                        <StyledTableCell>
-                                            <Stack flexDirection='row' sx={{ gap: 1, flexWrap: 'wrap' }}>
-                                                {row.usecases &&
-                                                    row.usecases.length > 0 &&
-                                                    row.usecases.map((usecase, usecaseIndex) => (
-                                                        <Chip
-                                                            variant='outlined'
-                                                            key={usecaseIndex}
-                                                            size='small'
-                                                            label={getUsecaseLabel(usecase)}
-                                                            style={{ marginRight: 3, marginBottom: 3 }}
-                                                        />
+                                            <StyledTableCell>
+                                                <Stack flexDirection='row' sx={{ gap: 1, flexWrap: 'wrap' }}>
+                                                    {display.displayUsecases.map((usecase, usecaseIndex) => (
+                                                        <Chip variant='outlined' key={usecaseIndex} size='small' label={usecase} style={{ marginRight: 3, marginBottom: 3 }} />
                                                     ))}
-                                            </Stack>
-                                        </StyledTableCell>
+                                                </Stack>
+                                            </StyledTableCell>
 
-                                        <StyledTableCell>
-                                            <Typography>
-                                                {row.badge &&
-                                                    row.badge.split(';').map((tag, tagIndex) => (
-                                                        <Chip
-                                                            color={
-                                                                tag === 'POPULAR'
-                                                                    ? 'primary'
-                                                                    : tag === 'DEPRECATED'
-                                                                    ? 'warning'
-                                                                    : 'error'
-                                                            }
-                                                            key={tagIndex}
-                                                            size='small'
-                                                            label={getBadgeLabel(tag)}
-                                                            style={{ marginRight: 5, marginBottom: 5 }}
-                                                        />
-                                                    ))}
-                                            </Typography>
-                                        </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Typography>
+                                                    {row.badge &&
+                                                        row.badge.split(';').map((tag, tagIndex) => (
+                                                            <Chip
+                                                                color={tag === 'POPULAR' ? 'primary' : tag === 'DEPRECATED' ? 'warning' : 'error'}
+                                                                key={tagIndex}
+                                                                size='small'
+                                                                label={getMarketplaceBadgeLabel(tag)}
+                                                                style={{ marginRight: 5, marginBottom: 5 }}
+                                                            />
+                                                        ))}
+                                                </Typography>
+                                            </StyledTableCell>
 
-                                        <StyledTableCell colSpan={row.shared ? 2 : undefined}>
-                                            {row.shared ? (
-                                                <Typography>Paylaşılan Şablon</Typography>
-                                            ) : (
-                                                <>
-                                                    {onShare && (
-                                                        <PermissionIconButton
-                                                            display={'feat:workspaces'}
-                                                            permissionId={'templates:custom-share'}
-                                                            title='Paylaş'
-                                                            color='primary'
-                                                            onClick={() => onShare(row)}
-                                                        >
-                                                            <IconShare />
-                                                        </PermissionIconButton>
-                                                    )}
-                                                    {onDelete && (
-                                                        <PermissionIconButton
-                                                            permissionId={'templates:custom-delete'}
-                                                            title='Sil'
-                                                            color='error'
-                                                            onClick={() => onDelete(row)}
-                                                        >
-                                                            <IconTrash />
-                                                        </PermissionIconButton>
-                                                    )}
-                                                </>
-                                            )}
-                                        </StyledTableCell>
-                                    </StyledTableRow>
-                                ))}
+                                            <StyledTableCell colSpan={row.shared ? 2 : undefined}>
+                                                {row.shared ? (
+                                                    <Typography>Paylaşılan Şablon</Typography>
+                                                ) : (
+                                                    <>
+                                                        {onShare && (
+                                                            <PermissionIconButton
+                                                                display={'feat:workspaces'}
+                                                                permissionId={'templates:custom-share'}
+                                                                title='Paylaş'
+                                                                color='primary'
+                                                                onClick={() => onShare(display)}
+                                                            >
+                                                                <IconShare />
+                                                            </PermissionIconButton>
+                                                        )}
+                                                        {onDelete && (
+                                                            <PermissionIconButton
+                                                                permissionId={'templates:custom-delete'}
+                                                                title='Sil'
+                                                                color='error'
+                                                                onClick={() => onDelete(display)}
+                                                            >
+                                                                <IconTrash />
+                                                            </PermissionIconButton>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </StyledTableCell>
+                                        </StyledTableRow>
+                                    )
+                                })}
                         </>
                     )}
                 </TableBody>
