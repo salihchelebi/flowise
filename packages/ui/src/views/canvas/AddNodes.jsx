@@ -20,11 +20,13 @@ import {
     OutlinedInput,
     Paper,
     Popper,
+    Button,
     Stack,
     Typography,
     Chip,
     Tab,
-    Tabs
+    Tabs,
+    Tooltip
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
@@ -36,6 +38,7 @@ import MainCard from '@/ui-component/cards/MainCard'
 import Transitions from '@/ui-component/extended/Transitions'
 import { StyledFab } from '@/ui-component/button/StyledFab'
 import AgentflowGeneratorDialog from '@/ui-component/dialog/AgentflowGeneratorDialog'
+import NodeInfoDialog from '@/ui-component/dialog/NodeInfoDialog'
 
 // icons
 import { IconPlus, IconSearch, IconMinus, IconX, IconSparkles } from '@tabler/icons-react'
@@ -46,6 +49,16 @@ import utilNodesPNG from '@/assets/images/utilNodes.png'
 // const
 import { baseURL, AGENTFLOW_ICONS } from '@/store/constant'
 import { SET_COMPONENT_NODES } from '@/store/actions'
+import {
+    canvasUIText,
+    getCategoryDisplayName,
+    getCategoryTooltip,
+    getLocalizedNodeDescription,
+    getLocalizedNodeLabel,
+    getSearchableText,
+    getTabMeta,
+    getVisibleBadgeLabel
+} from './canvasI18n'
 
 // ==============================|| ADD NODES||============================== //
 function a11yProps(index) {
@@ -83,6 +96,9 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
 
     const [openDialog, setOpenDialog] = useState(false)
     const [dialogProps, setDialogProps] = useState({})
+    const [showInfoDialog, setShowInfoDialog] = useState(false)
+    const [infoDialogProps, setInfoDialogProps] = useState({})
+    const safeNodesData = Array.isArray(nodesData) ? nodesData : []
 
     const isAgentCanvasV2 = window.location.pathname.includes('/v2/agentcanvas')
 
@@ -106,11 +122,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
         let nodes = []
         if (category) {
             const nodeNames = exceptionsForAgentCanvas[category] || []
-            nodes = nodesData.filter((nd) => nd.category === category && nodeNames.includes(nd.name))
+            nodes = safeNodesData.filter((nd) => nd?.category === category && nodeNames.includes(nd?.name))
         } else {
             for (const category in exceptionsForAgentCanvas) {
                 const nodeNames = exceptionsForAgentCanvas[category]
-                nodes.push(...nodesData.filter((nd) => nd.category === category && nodeNames.includes(nd.name)))
+                nodes.push(...safeNodesData.filter((nd) => nd?.category === category && nodeNames.includes(nd?.name)))
             }
         }
         return nodes
@@ -204,7 +220,10 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
             const nameScore = fuzzyScore(searchValue, nd.name)
             const labelScore = fuzzyScore(searchValue, nd.label)
             const categoryScore = fuzzyScore(searchValue, nd.category) * 0.5 // Lower weight for category
-            const maxScore = Math.max(nameScore, labelScore, categoryScore)
+            const localizedLabelScore = fuzzyScore(searchValue, getLocalizedNodeLabel(nd))
+            const localizedDescriptionScore = fuzzyScore(searchValue, getLocalizedNodeDescription(nd))
+            const combinedScore = fuzzyScore(searchValue, getSearchableText(nd))
+            const maxScore = Math.max(nameScore, labelScore, categoryScore, localizedLabelScore, localizedDescriptionScore, combinedScore)
 
             return { node: nd, score: maxScore }
         })
@@ -218,11 +237,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
 
     const getSearchedNodes = (value) => {
         if (isAgentCanvas) {
-            const nodes = nodesData.filter((nd) => !blacklistCategoriesForAgentCanvas.includes(nd.category))
+            const nodes = safeNodesData.filter((nd) => !blacklistCategoriesForAgentCanvas.includes(nd?.category))
             nodes.push(...addException())
             return scoreAndSortNodes(nodes, value)
         }
-        let nodes = nodesData.filter((nd) => nd.category !== 'Multi Agents' && nd.category !== 'Sequential Agents')
+        let nodes = safeNodesData.filter((nd) => nd?.category !== 'Multi Agents' && nd?.category !== 'Sequential Agents')
 
         for (const category in blacklistForChatflowCanvas) {
             const nodeNames = blacklistForChatflowCanvas[category]
@@ -240,16 +259,17 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                 groupByCategory(returnData, newTabValue ?? tabValue, true)
                 scrollTop()
             } else if (value === '') {
-                groupByCategory(nodesData, newTabValue ?? tabValue)
+                groupByCategory(safeNodesData, newTabValue ?? tabValue)
                 scrollTop()
             }
         }, 500)
     }
 
-    const groupByTags = (nodes, newTabValue = 0) => {
-        const langchainNodes = nodes.filter((nd) => !nd.tags)
-        const llmaindexNodes = nodes.filter((nd) => nd.tags && nd.tags.includes('LlamaIndex'))
-        const utilitiesNodes = nodes.filter((nd) => nd.tags && nd.tags.includes('Utilities'))
+    const groupByTags = (nodes = [], newTabValue = 0) => {
+        const safeNodes = Array.isArray(nodes) ? nodes : []
+        const langchainNodes = safeNodes.filter((nd) => !nd?.tags)
+        const llmaindexNodes = safeNodes.filter((nd) => nd?.tags && nd.tags.includes('LlamaIndex'))
+        const utilitiesNodes = safeNodes.filter((nd) => nd?.tags && nd.tags.includes('Utilities'))
         if (newTabValue === 0) {
             return langchainNodes
         } else if (newTabValue === 1) {
@@ -259,10 +279,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
         }
     }
 
-    const groupByCategory = (nodes, newTabValue, isFilter) => {
+    const groupByCategory = (nodes = [], newTabValue, isFilter) => {
+        const safeNodes = Array.isArray(nodes) ? nodes.filter(Boolean) : []
         if (isAgentCanvas) {
             const accordianCategories = {}
-            const result = nodes.reduce(function (r, a) {
+            const result = safeNodes.reduce(function (r, a) {
                 r[a.category] = r[a.category] || []
                 r[a.category].push(a)
                 accordianCategories[a.category] = isFilter ? true : false
@@ -301,7 +322,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
             accordianCategories['Agent Flows'] = true
             setCategoryExpanded(accordianCategories)
         } else {
-            const taggedNodes = groupByTags(nodes, newTabValue)
+            const taggedNodes = groupByTags(safeNodes, newTabValue)
             const accordianCategories = {}
             const result = taggedNodes.reduce(function (r, a) {
                 r[a.category] = r[a.category] || []
@@ -379,21 +400,18 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
     }, [node])
 
     useEffect(() => {
-        if (nodesData) {
-            groupByCategory(nodesData)
-            dispatch({ type: SET_COMPONENT_NODES, componentNodes: nodesData })
-        }
+        groupByCategory(safeNodesData)
+        dispatch({ type: SET_COMPONENT_NODES, componentNodes: safeNodesData })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [nodesData, dispatch])
+    }, [safeNodesData, dispatch])
 
     // Handle dialog open/close
     const handleOpenDialog = () => {
         setOpenDialog(true)
         setDialogProps({
-            title: 'What would you like to build?',
-            description:
-                'Enter your prompt to generate an agentflow. Performance may vary with different models. Only nodes and edges are generated, you will need to fill in the input fields for each node.'
+            title: canvasUIText.generationDialogTitle,
+            description: canvasUIText.generationDialogDescription
         })
     }
 
@@ -406,6 +424,13 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
         onFlowGenerated()
     }
 
+    const handleOpenNodeInfo = (event, selectedNode) => {
+        event.preventDefault()
+        event.stopPropagation()
+        setInfoDialogProps({ data: selectedNode })
+        setShowInfoDialog(true)
+    }
+
     return (
         <>
             <StyledFab
@@ -414,7 +439,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                 size='small'
                 color='primary'
                 aria-label='add'
-                title='Add Node'
+                title={canvasUIText.addNode}
                 onClick={handleToggle}
             >
                 {open ? <IconMinus /> : <IconPlus />}
@@ -433,7 +458,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                     size='small'
                     color='primary'
                     aria-label='generate'
-                    title='Generate Agentflow'
+                    title={canvasUIText.generateAgentflow}
                 >
                     <IconSparkles />
                 </StyledFab>
@@ -472,7 +497,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                 <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
                                     <Box sx={{ p: 2 }}>
                                         <Stack>
-                                            <Typography variant='h4'>Add Nodes</Typography>
+                                            <Typography variant='h4'>{canvasUIText.addNodesTitle}</Typography>
                                         </Stack>
                                         <OutlinedInput
                                             // eslint-disable-next-line
@@ -481,7 +506,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                             id='input-search-node'
                                             value={searchValue}
                                             onChange={(e) => filterSearch(e.target.value)}
-                                            placeholder='Search nodes'
+                                            placeholder={canvasUIText.searchPlaceholder}
                                             startAdornment={
                                                 <InputAdornment position='start'>
                                                     <IconSearch stroke={1.5} size='1rem' color={theme.palette.grey[500]} />
@@ -497,7 +522,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                             color: theme.palette.grey[900]
                                                         }
                                                     }}
-                                                    title='Clear Search'
+                                                    title={canvasUIText.clearSearch}
                                                 >
                                                     <IconX
                                                         stroke={1.5}
@@ -514,6 +539,9 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                 'aria-label': 'weight'
                                             }}
                                         />
+                                        <Typography variant='caption' sx={{ color: theme.palette.grey[600], px: 1 }}>
+                                            {canvasUIText.searchHint}
+                                        </Typography>
                                         {!isAgentCanvas && (
                                             <Tabs
                                                 sx={{ position: 'relative', minHeight: '50px', height: '50px' }}
@@ -522,8 +550,9 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                 onChange={handleTabChange}
                                                 aria-label='tabs'
                                             >
-                                                {['LangChain', 'LlamaIndex', 'Utilities'].map((item, index) => (
+                                                {[0, 1, 2].map((_, index) => (
                                                     <Tab
+                                                        title={getTabMeta(index).tooltip}
                                                         icon={
                                                             <div
                                                                 style={{
@@ -539,9 +568,9 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                                         objectFit: 'contain'
                                                                     }}
                                                                     src={getImage(index)}
-                                                                    alt={item}
+                                                                    alt={getTabMeta(index).label}
                                                                 />
-                                                                {item === 'LlamaIndex' && (
+                                                                {getTabMeta(index).label === 'LlamaIndex' && (
                                                                     <span
                                                                         style={{
                                                                             position: 'absolute',
@@ -567,7 +596,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                         iconPosition='start'
                                                         sx={{ minHeight: '50px', height: '50px' }}
                                                         key={index}
-                                                        label={item}
+                                                        label={
+                                                            <Tooltip title={getTabMeta(index).tooltip} arrow placement='top'>
+                                                                <span>{getTabMeta(index).label}</span>
+                                                            </Tooltip>
+                                                        }
                                                         {...a11yProps(index)}
                                                     ></Tab>
                                                 ))}
@@ -629,7 +662,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                                             alignItems: 'center'
                                                                         }}
                                                                     >
-                                                                        <Typography variant='h5'>{category.split(';')[0]}</Typography>
+                                                                        <Tooltip title={getCategoryTooltip(category)} arrow placement='top'>
+                                                                            <Typography variant='h5'>
+                                                                                {getCategoryDisplayName(category)}
+                                                                            </Typography>
+                                                                        </Tooltip>
                                                                         &nbsp;
                                                                         <Chip
                                                                             sx={{
@@ -646,15 +683,19 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                                                         : 'inherit'
                                                                             }}
                                                                             size='small'
-                                                                            label={category.split(';')[1]}
+                                                                            label={getVisibleBadgeLabel(category.split(';')[1])}
                                                                         />
                                                                     </div>
                                                                 ) : (
-                                                                    <Typography variant='h5'>{category}</Typography>
+                                                                    <Tooltip title={getCategoryTooltip(category)} arrow placement='top'>
+                                                                        <Typography variant='h5'>
+                                                                            {getCategoryDisplayName(category)}
+                                                                        </Typography>
+                                                                    </Tooltip>
                                                                 )}
                                                             </AccordionSummary>
                                                             <AccordionDetails>
-                                                                {nodes[category].map((node, index) => (
+                                                                {(nodes[category] || []).map((node, index) => (
                                                                     <div
                                                                         key={node.name}
                                                                         onDragStart={(event) => onDragStart(event, node)}
@@ -716,7 +757,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                                                                     alignItems: 'center'
                                                                                                 }}
                                                                                             >
-                                                                                                <span>{node.label}</span>
+                                                                                                <span>{getLocalizedNodeLabel(node)}</span>
                                                                                                 &nbsp;
                                                                                                 {node.badge && (
                                                                                                     <Chip
@@ -736,7 +777,9 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                                                                                     : 'inherit'
                                                                                                         }}
                                                                                                         size='small'
-                                                                                                        label={node.badge}
+                                                                                                        label={getVisibleBadgeLabel(
+                                                                                                            node.badge
+                                                                                                        )}
                                                                                                     />
                                                                                                 )}
                                                                                             </div>
@@ -747,16 +790,29 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                                                                         fontWeight: 700
                                                                                                     }}
                                                                                                 >
-                                                                                                    By {node.author}
+                                                                                                    {canvasUIText.authorPrefix}:{' '}
+                                                                                                    {node.author}
                                                                                                 </span>
                                                                                             )}
                                                                                         </>
                                                                                     }
-                                                                                    secondary={node.description}
+                                                                                    secondary={getLocalizedNodeDescription(node)}
                                                                                 />
+                                                                                <Button
+                                                                                    size='small'
+                                                                                    variant='text'
+                                                                                    sx={{ ml: 1, mt: -1.5 }}
+                                                                                    onMouseDown={(event) => {
+                                                                                        event.preventDefault()
+                                                                                        event.stopPropagation()
+                                                                                    }}
+                                                                                    onClick={(event) => handleOpenNodeInfo(event, node)}
+                                                                                >
+                                                                                    {canvasUIText.learnMore}
+                                                                                </Button>
                                                                             </ListItem>
                                                                         </ListItemButton>
-                                                                        {index === nodes[category].length - 1 ? null : <Divider />}
+                                                                        {index === (nodes[category] || []).length - 1 ? null : <Divider />}
                                                                     </div>
                                                                 ))}
                                                             </AccordionDetails>
@@ -771,6 +827,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                     </Transitions>
                 )}
             </Popper>
+            <NodeInfoDialog show={showInfoDialog} dialogProps={infoDialogProps} onCancel={() => setShowInfoDialog(false)} />
         </>
     )
 }
