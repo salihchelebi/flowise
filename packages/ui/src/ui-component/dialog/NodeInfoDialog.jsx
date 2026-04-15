@@ -16,6 +16,14 @@ import { baseURL, AGENTFLOW_ICONS } from '@/store/constant'
 // API
 import configApi from '@/api/config'
 import useApi from '@/hooks/useApi'
+import {
+    canvasUIText,
+    getLocalizedNodeDescription,
+    getLocalizedNodeLabel,
+    getNodeLearnMoreData,
+    getNodeWhenToUseText,
+    getVisibleBadgeLabel
+} from '@/views/canvas/canvasI18n'
 
 const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     const portalElement = document.getElementById('portal')
@@ -23,6 +31,9 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     const theme = useTheme()
 
     const getNodeConfigApi = useApi(configApi.getNodeConfig)
+    const nodeData = dialogProps?.data
+    const tags = Array.isArray(nodeData?.tags) ? nodeData.tags : []
+    const learnMoreData = getNodeLearnMoreData(nodeData)
 
     const renderIcon = (node) => {
         const foundIcon = AGENTFLOW_ICONS.find((icon) => icon.name === node.name)
@@ -32,12 +43,12 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     }
 
     useEffect(() => {
-        if (dialogProps.data) {
-            getNodeConfigApi.request(dialogProps.data)
+        if (nodeData) {
+            getNodeConfigApi.request(nodeData)
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dialogProps])
+    }, [nodeData])
 
     useEffect(() => {
         if (show) dispatch({ type: SHOW_CANVAS_DIALOG })
@@ -55,24 +66,24 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
             aria-describedby='alert-dialog-description'
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
-                {dialogProps.data && dialogProps.data.name && dialogProps.data.label && (
+                {nodeData && nodeData.name && nodeData.label && (
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        {dialogProps.data.color && !dialogProps.data.icon ? (
+                        {nodeData.color && !nodeData.icon ? (
                             <div
                                 style={{
                                     ...theme.typography.commonAvatar,
                                     ...theme.typography.largeAvatar,
                                     borderRadius: '15px',
-                                    backgroundColor: dialogProps.data.color,
+                                    backgroundColor: nodeData.color,
                                     cursor: 'grab',
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
-                                    background: dialogProps.data.color,
+                                    background: nodeData.color,
                                     marginRight: 10
                                 }}
                             >
-                                {renderIcon(dialogProps.data)}
+                                {renderIcon(nodeData)}
                             </div>
                         ) : (
                             <div
@@ -96,13 +107,13 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                         borderRadius: '50%',
                                         objectFit: 'contain'
                                     }}
-                                    alt={dialogProps.data.name}
-                                    src={`${baseURL}/api/v1/node-icon/${dialogProps.data.name}`}
+                                    alt={nodeData.name}
+                                    src={`${baseURL}/api/v1/node-icon/${nodeData.name}`}
                                 />
                             </div>
                         )}
                         <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
-                            {dialogProps.data.label}
+                            {getLocalizedNodeLabel(nodeData)}
                             <div style={{ display: 'flex', flexDirection: 'row' }}>
                                 <div
                                     style={{
@@ -118,9 +129,9 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                         marginBottom: 5
                                     }}
                                 >
-                                    <span style={{ color: 'rgb(116,66,16)', fontSize: '0.825rem' }}>{dialogProps.data.id}</span>
+                                    <span style={{ color: 'rgb(116,66,16)', fontSize: '0.825rem' }}>{nodeData.id}</span>
                                 </div>
-                                {dialogProps.data.version && (
+                                {nodeData.version && (
                                     <div
                                         style={{
                                             display: 'flex',
@@ -136,17 +147,19 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                             marginBottom: 5
                                         }}
                                     >
-                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>version {dialogProps.data.version}</span>
+                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>
+                                            {canvasUIText.version} {nodeData.version}
+                                        </span>
                                     </div>
                                 )}
-                                {dialogProps.data.badge && (
+                                {nodeData.badge && (
                                     <div
                                         style={{
                                             display: 'flex',
                                             flexDirection: 'row',
                                             width: 'max-content',
                                             borderRadius: 15,
-                                            background: dialogProps.data.badge === 'DEPRECATING' ? '#ffe57f' : '#52b69a',
+                                            background: nodeData.badge === 'DEPRECATING' ? '#ffe57f' : '#52b69a',
                                             padding: 5,
                                             paddingLeft: 10,
                                             paddingRight: 10,
@@ -157,17 +170,16 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                     >
                                         <span
                                             style={{
-                                                color: dialogProps.data.badge !== 'DEPRECATING' ? 'white' : 'inherit',
+                                                color: nodeData.badge !== 'DEPRECATING' ? 'white' : 'inherit',
                                                 fontSize: '0.825rem'
                                             }}
                                         >
-                                            {dialogProps.data.badge}
+                                            {getVisibleBadgeLabel(nodeData.badge)}
                                         </span>
                                     </div>
                                 )}
-                                {dialogProps.data.tags &&
-                                    dialogProps.data.tags.length &&
-                                    dialogProps.data.tags.map((tag, index) => (
+                                {tags.length > 0 &&
+                                    tags.map((tag, index) => (
                                         <div
                                             style={{
                                                 display: 'flex',
@@ -197,31 +209,50 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                             </div>
                         </div>
                         <div style={{ flex: 1 }}></div>
-                        {dialogProps.data.documentation && (
+                        {nodeData.documentation && (
                             <Button
                                 variant='outlined'
                                 color='primary'
-                                title='Open Documentation'
+                                title={canvasUIText.openDocumentation}
                                 onClick={() => {
-                                    window.open(dialogProps.data.documentation, '_blank', 'noopener,noreferrer')
+                                    window.open(nodeData.documentation, '_blank', 'noopener,noreferrer')
                                 }}
                                 startIcon={<IconBook2 />}
                             >
-                                Documentation
+                                {canvasUIText.documentation}
                             </Button>
                         )}
                     </div>
                 )}
             </DialogTitle>
             <DialogContent>
-                {dialogProps.data?.description && (
+                {nodeData && (
                     <div
                         style={{
                             padding: 10,
                             marginBottom: 10
                         }}
                     >
-                        <span>{dialogProps.data.description}</span>
+                        <div style={{ fontWeight: 600, marginBottom: 4 }}>{canvasUIText.nodePurpose}</div>
+                        <span>{getLocalizedNodeDescription(nodeData)}</span>
+                        <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.nodeWhenToUse}</div>
+                        <span>{getNodeWhenToUseText(nodeData)}</span>
+                        {learnMoreData && (
+                            <>
+                                <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.learnMoreSummary}</div>
+                                <span>{learnMoreData.summary}</span>
+                                <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.learnMoreGuide}</div>
+                                <ul style={{ marginTop: 0, marginBottom: 8, paddingLeft: 20 }}>
+                                    {learnMoreData.bullets.map((bullet, index) => (
+                                        <li key={index} style={{ marginBottom: 4 }}>
+                                            {bullet}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.learnMoreExample}</div>
+                                <span>{learnMoreData.example}</span>
+                            </>
+                        )}
                     </div>
                 )}
                 {getNodeConfigApi.data && getNodeConfigApi.data.length > 0 && (
