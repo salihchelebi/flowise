@@ -20,6 +20,7 @@ import {
     canvasUIText,
     getLocalizedNodeDescription,
     getLocalizedNodeLabel,
+    getNodeLearnMoreData,
     getNodeWhenToUseText,
     getVisibleBadgeLabel
 } from '@/views/canvas/canvasI18n'
@@ -30,6 +31,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     const theme = useTheme()
 
     const getNodeConfigApi = useApi(configApi.getNodeConfig)
+    const learnMoreData = getNodeLearnMoreData(dialogProps.data)
 
     const renderIcon = (node) => {
         const foundIcon = AGENTFLOW_ICONS.find((icon) => icon.name === node.name)
@@ -234,6 +236,22 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                         <span>{getLocalizedNodeDescription(dialogProps.data)}</span>
                         <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.nodeWhenToUse}</div>
                         <span>{getNodeWhenToUseText(dialogProps.data)}</span>
+                        {learnMoreData && (
+                            <>
+                                <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.learnMoreSummary}</div>
+                                <span>{learnMoreData.summary}</span>
+                                <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.learnMoreGuide}</div>
+                                <ul style={{ marginTop: 0, marginBottom: 8, paddingLeft: 20 }}>
+                                    {learnMoreData.bullets.map((bullet, index) => (
+                                        <li key={index} style={{ marginBottom: 4 }}>
+                                            {bullet}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.learnMoreExample}</div>
+                                <span>{learnMoreData.example}</span>
+                            </>
+                        )}
                     </div>
                 )}
                 {getNodeConfigApi.data && getNodeConfigApi.data.length > 0 && (

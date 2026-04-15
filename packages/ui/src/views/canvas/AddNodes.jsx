@@ -37,6 +37,7 @@ import MainCard from '@/ui-component/cards/MainCard'
 import Transitions from '@/ui-component/extended/Transitions'
 import { StyledFab } from '@/ui-component/button/StyledFab'
 import AgentflowGeneratorDialog from '@/ui-component/dialog/AgentflowGeneratorDialog'
+import NodeInfoDialog from '@/ui-component/dialog/NodeInfoDialog'
 
 // icons
 import { IconPlus, IconSearch, IconMinus, IconX, IconSparkles } from '@tabler/icons-react'
@@ -94,6 +95,8 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
 
     const [openDialog, setOpenDialog] = useState(false)
     const [dialogProps, setDialogProps] = useState({})
+    const [showInfoDialog, setShowInfoDialog] = useState(false)
+    const [infoDialogProps, setInfoDialogProps] = useState({})
 
     const isAgentCanvasV2 = window.location.pathname.includes('/v2/agentcanvas')
 
@@ -417,6 +420,13 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
     const handleConfirmDialog = () => {
         setOpenDialog(false)
         onFlowGenerated()
+    }
+
+    const handleOpenNodeInfo = (event, selectedNode) => {
+        event.preventDefault()
+        event.stopPropagation()
+        setInfoDialogProps({ data: selectedNode })
+        setShowInfoDialog(true)
     }
 
     return (
@@ -786,6 +796,18 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                                                     }
                                                                                     secondary={getLocalizedNodeDescription(node)}
                                                                                 />
+                                                                                <Button
+                                                                                    size='small'
+                                                                                    variant='text'
+                                                                                    sx={{ ml: 1, mt: -1.5 }}
+                                                                                    onMouseDown={(event) => {
+                                                                                        event.preventDefault()
+                                                                                        event.stopPropagation()
+                                                                                    }}
+                                                                                    onClick={(event) => handleOpenNodeInfo(event, node)}
+                                                                                >
+                                                                                    {canvasUIText.learnMore}
+                                                                                </Button>
                                                                             </ListItem>
                                                                         </ListItemButton>
                                                                         {index === nodes[category].length - 1 ? null : <Divider />}
@@ -803,6 +825,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                     </Transitions>
                 )}
             </Popper>
+            <NodeInfoDialog show={showInfoDialog} dialogProps={infoDialogProps} onCancel={() => setShowInfoDialog(false)} />
         </>
     )
 }
