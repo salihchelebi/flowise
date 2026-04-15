@@ -55,6 +55,14 @@ import { useAuth } from '@/hooks/useAuth'
 
 // Utils
 import useNotifier from '@/utils/useNotifier'
+import {
+    getMarketplaceBadgeLabel,
+    getMarketplaceFrameworkLabel,
+    getMarketplaceTemplateDisplayData,
+    getMarketplaceTooltipData,
+    getMarketplaceTypeLabel,
+    getMarketplaceUsecaseLabel
+} from '@/utils/translateMarketplaceTemplates'
 
 // const
 import { baseURL, AGENTFLOW_ICONS } from '@/store/constant'
@@ -72,87 +80,82 @@ const MenuProps = {
     }
 }
 
-const BADGE_LABELS = {
-    POPULAR: 'Çok Kullanılan',
-    NEW: 'Yeni',
-    DEPRECATED: 'Eski'
-}
-
-const TYPE_LABELS = {
-    Chatflow: 'Sohbet Akışı',
-    Agentflow: 'Ajan Akışı',
-    AgentflowV2: 'Gelişmiş Ajan Akışı',
-    Tool: 'Hazır Araç'
-}
-
-const FRAMEWORK_LABELS = {
-    Langchain: 'LangChain',
-    LlamaIndex: 'LlamaIndex'
-}
-
-const USECASE_LABELS = {
-    'Customer Support': 'Müşteri Desteği',
-    'Customer Service': 'Müşteri Hizmeti',
-    Sales: 'Satış',
-    Marketing: 'Pazarlama',
-    Education: 'Eğitim',
-    Healthcare: 'Sağlık',
-    Finance: 'Finans',
-    Ecommerce: 'E-Ticaret',
-    'E-Commerce': 'E-Ticaret',
-    HR: 'İnsan Kaynakları',
-    Research: 'Araştırma',
-    'Data Analysis': 'Veri Analizi',
-    'Document QnA': 'Belge Soru Cevap',
-    'Question Answering': 'Soru Cevap',
-    'Lead Generation': 'Müşteri Adayı Toplama',
-    Productivity: 'Verimlilik',
-    Automation: 'Otomasyon'
-}
-
-const getBadgeLabel = (value) => BADGE_LABELS[value] || value
-const getTypeLabel = (value) => TYPE_LABELS[value] || value
-const getFrameworkLabel = (value) => FRAMEWORK_LABELS[value] || value
-const getUsecaseLabel = (value) => USECASE_LABELS[value] || value
-
-const getReadableDescription = (data) => {
-    if (data.description && data.description.trim()) return data.description
-
-    if (data.type === 'Tool') {
-        return 'Hazır bir araç yapısını inceleyip kendi kullanımına göre ekleyebilirsin.'
+const getSelectStyles = (borderColor, isDarkMode) => ({
+    '& .MuiOutlinedInput-notchedOutline': {
+        borderRadius: 2,
+        borderColor: borderColor
+    },
+    '& .MuiSvgIcon-root': {
+        color: isDarkMode ? '#fff' : 'inherit'
     }
+})
 
-    if (data.type === 'AgentflowV2') {
-        return 'Bu gelişmiş ajan akışını açıp adımlarını inceleyebilir, sonra kendi çalışma alanına kopyalayabilirsin.'
+const getTooltipStyleProps = (theme) => ({
+    componentsProps: {
+        tooltip: {
+            sx: {
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                border: `1px solid ${theme.palette.grey[900]}22`,
+                borderRadius: 2,
+                boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
+                p: 2,
+                maxWidth: 390
+            }
+        },
+        arrow: {
+            sx: {
+                color: theme.palette.background.paper
+            }
+        }
     }
+})
 
-    return 'Bu hazır akışı açıp nasıl çalıştığını inceleyebilir, sonra kendi ihtiyacına göre kullanabilirsin.'
-}
-
-const renderTemplateTooltip = (data) => {
-    const title = data.templateName || data.name || 'Hazır Şablon'
-    const typeLabel = getTypeLabel(data.type)
-    const usecaseLabels = (data.usecases || []).map(getUsecaseLabel).slice(0, 4)
+const renderTemplateTooltip = (template, theme) => {
+    const tooltipData = getMarketplaceTooltipData(template)
 
     return (
-        <Box sx={{ maxWidth: 360, p: 0.5 }}>
-            <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 0.75 }}>
-                {title}
+        <Box sx={{ maxWidth: 360 }}>
+            <Typography variant='subtitle1' sx={{ fontWeight: 700, mb: 1 }}>
+                {tooltipData.title}
             </Typography>
+
             <Typography variant='body2' sx={{ mb: 1 }}>
-                {getReadableDescription(data)}
+                {tooltipData.description}
             </Typography>
-            <Typography variant='caption' sx={{ display: 'block', opacity: 0.9 }}>
-                Tür: {typeLabel}
+
+            <Typography variant='caption' sx={{ display: 'block', color: 'text.secondary', mb: 1 }}>
+                {tooltipData.purpose}
             </Typography>
-            {usecaseLabels.length > 0 && (
-                <Typography variant='caption' sx={{ display: 'block', opacity: 0.9, mt: 0.5 }}>
-                    Kullanım alanı: {usecaseLabels.join(', ')}
+
+            <Box component='ul' sx={{ pl: 2.25, my: 0, mb: 1.5 }}>
+                {tooltipData.bullets.map((item, index) => (
+                    <Typography component='li' variant='body2' key={index} sx={{ mb: 0.5 }}>
+                        {item}
+                    </Typography>
+                ))}
+            </Box>
+
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+                <Chip size='small' label={`Tür: ${tooltipData.type}`} />
+                {tooltipData.usecases.slice(0, 2).map((item, index) => (
+                    <Chip key={index} size='small' variant='outlined' label={item} />
+                ))}
+            </Box>
+
+            <Box
+                sx={{
+                    px: 1.25,
+                    py: 1,
+                    borderRadius: 2,
+                    backgroundColor: theme.palette.primary.main + '10',
+                    border: `1px solid ${theme.palette.primary.main}25`
+                }}
+            >
+                <Typography variant='caption' sx={{ fontWeight: 700, letterSpacing: 0.2 }}>
+                    {tooltipData.actionLine}
                 </Typography>
-            )}
-            <Typography variant='caption' sx={{ display: 'block', opacity: 0.9, mt: 0.75 }}>
-                Tıklayınca önce önizleme açılır. Sonra istersen bu şablonu kendi alanına kopyalayıp düzenleyebilirsin.
-            </Typography>
+            </Box>
         </Box>
     )
 }
@@ -215,16 +218,6 @@ const Marketplace = () => {
         setShareTemplateDialogProps(dialogProps)
         setShowShareTemplateDialog(true)
     }
-
-    const getSelectStyles = (borderColor, isDarkMode) => ({
-        '& .MuiOutlinedInput-notchedOutline': {
-            borderRadius: 2,
-            borderColor: borderColor
-        },
-        '& .MuiSvgIcon-root': {
-            color: isDarkMode ? '#fff' : 'inherit'
-        }
-    })
 
     const handleTabChange = (event, newValue) => {
         if (newValue === 1 && !getAllCustomTemplatesApi.data) {
@@ -294,7 +287,7 @@ const Marketplace = () => {
 
     const onDeleteCustomTemplate = async (template) => {
         const confirmPayload = {
-            title: `Sil`,
+            title: 'Sil',
             description: `Özel Şablon ${template.name} silinsin mi?`,
             confirmButtonName: 'Sil',
             cancelButtonName: 'İptal'
@@ -319,11 +312,9 @@ const Marketplace = () => {
                     })
                     getAllCustomTemplatesApi.request()
                 }
-            } catch (error) {
+            } catch (err) {
                 enqueueSnackbar({
-                    message: `Özel şablon silinemedi: ${
-                        typeof error.response.data === 'object' ? error.response.data.message : error.response.data
-                    }`,
+                    message: `Özel şablon silinemedi: ${typeof err.response.data === 'object' ? err.response.data.message : err.response.data}`,
                     options: {
                         key: new Date().getTime() + Math.random(),
                         variant: 'error',
@@ -340,11 +331,22 @@ const Marketplace = () => {
     }
 
     function filterFlows(data) {
-        return (
-            (data.categories ? data.categories.join(',') : '').toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            (data.templateName || '').toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            (data.description && data.description.toLowerCase().indexOf(search.toLowerCase()) > -1)
-        )
+        const display = getMarketplaceTemplateDisplayData(data)
+        const haystack = [
+            data.categories ? data.categories.join(',') : '',
+            data.templateName || '',
+            data.name || '',
+            data.description || '',
+            display.displayTitle || '',
+            display.displayDescription || '',
+            display.displayPurpose || '',
+            (display.displayBullets || []).join(' '),
+            (display.displayUsecases || []).join(' ')
+        ]
+            .join(' ')
+            .toLowerCase()
+
+        return haystack.indexOf(search.toLowerCase()) > -1
     }
 
     function filterByBadge(data) {
@@ -362,11 +364,10 @@ const Marketplace = () => {
     function filterByUsecases(data) {
         if (activeTabValue === 0) {
             return selectedUsecases.length > 0 ? (data.usecases || []).some((item) => selectedUsecases.includes(item)) : true
-        } else {
-            return selectedTemplateUsecases.length > 0
-                ? (data.usecases || []).some((item) => selectedTemplateUsecases.includes(item))
-                : true
         }
+        return selectedTemplateUsecases.length > 0
+            ? (data.usecases || []).some((item) => selectedTemplateUsecases.includes(item))
+            : true
     }
 
     const getEligibleUsecases = (data, filter) => {
@@ -379,12 +380,7 @@ const Marketplace = () => {
             filteredData = filteredData.filter((item) => (item.framework || []).some((fw) => filter.frameworkFilter.includes(fw)))
         }
         if (filter.search) {
-            filteredData = filteredData.filter(
-                (item) =>
-                    (item.categories ? item.categories.join(',') : '').toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
-                    (item.templateName || '').toLowerCase().indexOf(filter.search.toLowerCase()) > -1 ||
-                    (item.description && item.description.toLowerCase().indexOf(filter.search.toLowerCase()) > -1)
-            )
+            filteredData = filteredData.filter((item) => filterFlows(item))
         }
 
         const uc = []
@@ -399,22 +395,24 @@ const Marketplace = () => {
     }
 
     const onUseTemplate = (selectedTool) => {
+        const display = getMarketplaceTemplateDisplayData(selectedTool)
         const dialogProp = {
-            title: 'Yeni Araç Ekle',
+            title: display.displayTitle || 'Yeni Araç Ekle',
             type: 'IMPORT',
             cancelButtonName: 'İptal',
             confirmButtonName: 'Ekle',
-            data: selectedTool
+            data: display
         }
         setToolDialogProps(dialogProp)
         setShowToolDialog(true)
     }
 
     const goToTool = (selectedTool) => {
+        const display = getMarketplaceTemplateDisplayData(selectedTool)
         const dialogProp = {
-            title: selectedTool.templateName,
+            title: display.displayTitle || selectedTool.templateName,
             type: 'TEMPLATE',
-            data: selectedTool
+            data: display
         }
         setToolDialogProps(dialogProp)
         setShowToolDialog(true)
@@ -452,8 +450,7 @@ const Marketplace = () => {
 
                 for (let i = 0; i < flows.length; i += 1) {
                     if (flows[i].flowData) {
-                        const flowDataStr = flows[i].flowData
-                        const flowData = JSON.parse(flowDataStr)
+                        const flowData = JSON.parse(flows[i].flowData)
                         uc.push(...(flows[i].usecases || []))
                         const nodes = flowData.nodes || []
                         nextImages[flows[i].id] = []
@@ -492,8 +489,7 @@ const Marketplace = () => {
         if (getAllTemplatesMarketplacesApi.error && setError) {
             setError(getAllTemplatesMarketplacesApi.error)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getAllTemplatesMarketplacesApi.error])
+    }, [getAllTemplatesMarketplacesApi.error, setError])
 
     useEffect(() => {
         setLoading(getAllCustomTemplatesApi.loading)
@@ -509,8 +505,7 @@ const Marketplace = () => {
 
                 for (let i = 0; i < flows.length; i += 1) {
                     if (flows[i].flowData) {
-                        const flowDataStr = flows[i].flowData
-                        const flowData = JSON.parse(flowDataStr)
+                        const flowData = JSON.parse(flows[i].flowData)
                         uc.push(...(flows[i].usecases || []))
                         if (flows[i].framework) {
                             flows[i].framework = [flows[i].framework] || []
@@ -542,15 +537,13 @@ const Marketplace = () => {
                 console.error(e)
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getAllCustomTemplatesApi.data])
 
     useEffect(() => {
         if (getAllCustomTemplatesApi.error && setError) {
             setError(getAllCustomTemplatesApi.error)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getAllCustomTemplatesApi.error])
+    }, [getAllCustomTemplatesApi.error, setError])
 
     return (
         <>
@@ -582,18 +575,14 @@ const Marketplace = () => {
                                             value={badgeFilter}
                                             onChange={handleBadgeFilterChange}
                                             input={<OutlinedInput label='Durum Etiketi' />}
-                                            renderValue={(selected) => selected.map(getBadgeLabel).join(', ')}
+                                            renderValue={(selected) => selected.map(getMarketplaceBadgeLabel).join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
                                         >
                                             {badges.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                    sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}
-                                                >
+                                                <MenuItem key={name} value={name} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
                                                     <Checkbox checked={badgeFilter.indexOf(name) > -1} sx={{ p: 0 }} />
-                                                    <ListItemText primary={getBadgeLabel(name)} />
+                                                    <ListItemText primary={getMarketplaceBadgeLabel(name)} />
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -619,18 +608,14 @@ const Marketplace = () => {
                                             value={typeFilter}
                                             onChange={handleTypeFilterChange}
                                             input={<OutlinedInput label='Şablon Türü' />}
-                                            renderValue={(selected) => selected.map(getTypeLabel).join(', ')}
+                                            renderValue={(selected) => selected.map(getMarketplaceTypeLabel).join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
                                         >
                                             {types.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                    sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}
-                                                >
+                                                <MenuItem key={name} value={name} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
                                                     <Checkbox checked={typeFilter.indexOf(name) > -1} sx={{ p: 0 }} />
-                                                    <ListItemText primary={getTypeLabel(name)} />
+                                                    <ListItemText primary={getMarketplaceTypeLabel(name)} />
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -656,18 +641,14 @@ const Marketplace = () => {
                                             value={frameworkFilter}
                                             onChange={handleFrameworkFilterChange}
                                             input={<OutlinedInput label='Altyapı' />}
-                                            renderValue={(selected) => selected.map(getFrameworkLabel).join(', ')}
+                                            renderValue={(selected) => selected.map(getMarketplaceFrameworkLabel).join(', ')}
                                             MenuProps={MenuProps}
                                             sx={getSelectStyles(theme.palette.grey[900] + 25, theme?.customization?.isDarkMode)}
                                         >
                                             {framework.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                    sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}
-                                                >
+                                                <MenuItem key={name} value={name} sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}>
                                                     <Checkbox checked={frameworkFilter.indexOf(name) > -1} sx={{ p: 0 }} />
-                                                    <ListItemText primary={getFrameworkLabel(name)} />
+                                                    <ListItemText primary={getMarketplaceFrameworkLabel(name)} />
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -678,7 +659,7 @@ const Marketplace = () => {
                             search={true}
                             searchPlaceholder='Şablon adı, açıklama veya içindeki adımlarda ara'
                             title='Hazır Ajan ve Akış Şablonları'
-                            description='Sıfırdan kurmak yerine hazır örnekleri açın, nasıl çalıştıklarını inceleyin ve kendi ihtiyacınıza göre uyarlayın.'
+                            description='Hazır yapıları açın, ne işe yaradığını görün ve kendi ihtiyacınıza göre düzenleyin.'
                         >
                             <ToggleButtonGroup
                                 sx={{ borderRadius: 2, height: '100%' }}
@@ -732,7 +713,7 @@ const Marketplace = () => {
                                         else setSelectedTemplateUsecases(newValue)
                                     }}
                                     disableCloseOnSelect
-                                    getOptionLabel={(option) => getUsecaseLabel(option)}
+                                    getOptionLabel={(option) => getMarketplaceUsecaseLabel(option)}
                                     isOptionEqualToValue={(option, value) => option === value}
                                     renderOption={(props, option, { selected }) => {
                                         const currentEligible = activeTabValue === 0 ? eligibleUsecases : eligibleTemplateUsecases
@@ -741,14 +722,12 @@ const Marketplace = () => {
                                         return (
                                             <li {...props} style={{ pointerEvents: isDisabled ? 'none' : 'auto' }}>
                                                 <Checkbox checked={selected} color='success' disabled={isDisabled} />
-                                                <ListItemText primary={getUsecaseLabel(option)} />
+                                                <ListItemText primary={getMarketplaceUsecaseLabel(option)} />
                                             </li>
                                         )
                                     }}
                                     renderInput={(params) => <TextField {...params} label='Ne İçin Kullanılır' />}
-                                    sx={{
-                                        width: 340
-                                    }}
+                                    sx={{ width: 340 }}
                                     limitTags={2}
                                     renderTags={(value, getTagProps) => {
                                         const totalTags = value.length
@@ -760,7 +739,7 @@ const Marketplace = () => {
                                                     <Chip
                                                         {...getTagProps({ index })}
                                                         key={index}
-                                                        label={getUsecaseLabel(option)}
+                                                        label={getMarketplaceUsecaseLabel(option)}
                                                         sx={{
                                                             height: 24,
                                                             '& .MuiSvgIcon-root': {
@@ -776,7 +755,7 @@ const Marketplace = () => {
                                                         title={
                                                             <ol style={{ paddingLeft: '20px' }}>
                                                                 {value.slice(limitTags).map((item, i) => (
-                                                                    <li key={i}>{getUsecaseLabel(item)}</li>
+                                                                    <li key={i}>{getMarketplaceUsecaseLabel(item)}</li>
                                                                 ))}
                                                             </ol>
                                                         }
@@ -807,9 +786,9 @@ const Marketplace = () => {
                                     <>
                                         {isLoading ? (
                                             <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
-                                                <Skeleton variant='rounded' height={160} />
-                                                <Skeleton variant='rounded' height={160} />
-                                                <Skeleton variant='rounded' height={160} />
+                                                <Skeleton variant='rounded' height={220} />
+                                                <Skeleton variant='rounded' height={220} />
+                                                <Skeleton variant='rounded' height={220} />
                                             </Box>
                                         ) : (
                                             <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
@@ -819,57 +798,73 @@ const Marketplace = () => {
                                                     .filter(filterFlows)
                                                     .filter(filterByFramework)
                                                     .filter(filterByUsecases)
-                                                    .map((data, index) => (
-                                                        <Box key={index}>
-                                                            {data.badge ? (
-                                                                <Badge
-                                                                    sx={{
-                                                                        width: '100%',
-                                                                        height: '100%',
-                                                                        '& .MuiBadge-badge': {
-                                                                            right: 20
-                                                                        }
-                                                                    }}
-                                                                    badgeContent={getBadgeLabel(data.badge)}
-                                                                    color={data.badge === 'POPULAR' ? 'primary' : 'error'}
-                                                                >
-                                                                    <Tooltip title={renderTemplateTooltip(data)} placement='top' arrow>
+                                                    .map((data, index) => {
+                                                        const displayData = getMarketplaceTemplateDisplayData(data)
+
+                                                        return (
+                                                            <Box key={index}>
+                                                                {displayData.badge ? (
+                                                                    <Badge
+                                                                        sx={{
+                                                                            width: '100%',
+                                                                            height: '100%',
+                                                                            '& .MuiBadge-badge': {
+                                                                                right: 20
+                                                                            }
+                                                                        }}
+                                                                        badgeContent={displayData.displayBadge}
+                                                                        color={displayData.badge === 'POPULAR' ? 'primary' : 'error'}
+                                                                    >
+                                                                        <Tooltip
+                                                                            title={renderTemplateTooltip(displayData, theme)}
+                                                                            placement='top'
+                                                                            arrow
+                                                                            {...getTooltipStyleProps(theme)}
+                                                                        >
+                                                                            <Box>
+                                                                                {(displayData.type === 'Chatflow' ||
+                                                                                    displayData.type === 'Agentflow' ||
+                                                                                    displayData.type === 'AgentflowV2') && (
+                                                                                    <ItemCard
+                                                                                        onClick={() => goToCanvas(displayData)}
+                                                                                        data={displayData}
+                                                                                        images={images[displayData.id]}
+                                                                                        icons={icons[displayData.id]}
+                                                                                    />
+                                                                                )}
+                                                                                {displayData.type === 'Tool' && (
+                                                                                    <ItemCard data={displayData} onClick={() => goToTool(displayData)} />
+                                                                                )}
+                                                                            </Box>
+                                                                        </Tooltip>
+                                                                    </Badge>
+                                                                ) : (
+                                                                    <Tooltip
+                                                                        title={renderTemplateTooltip(displayData, theme)}
+                                                                        placement='top'
+                                                                        arrow
+                                                                        {...getTooltipStyleProps(theme)}
+                                                                    >
                                                                         <Box>
-                                                                            {(data.type === 'Chatflow' ||
-                                                                                data.type === 'Agentflow' ||
-                                                                                data.type === 'AgentflowV2') && (
+                                                                            {(displayData.type === 'Chatflow' ||
+                                                                                displayData.type === 'Agentflow' ||
+                                                                                displayData.type === 'AgentflowV2') && (
                                                                                 <ItemCard
-                                                                                    onClick={() => goToCanvas(data)}
-                                                                                    data={data}
-                                                                                    images={images[data.id]}
-                                                                                    icons={icons[data.id]}
+                                                                                    onClick={() => goToCanvas(displayData)}
+                                                                                    data={displayData}
+                                                                                    images={images[displayData.id]}
+                                                                                    icons={icons[displayData.id]}
                                                                                 />
                                                                             )}
-                                                                            {data.type === 'Tool' && (
-                                                                                <ItemCard data={data} onClick={() => goToTool(data)} />
+                                                                            {displayData.type === 'Tool' && (
+                                                                                <ItemCard data={displayData} onClick={() => goToTool(displayData)} />
                                                                             )}
                                                                         </Box>
                                                                     </Tooltip>
-                                                                </Badge>
-                                                            ) : (
-                                                                <Tooltip title={renderTemplateTooltip(data)} placement='top' arrow>
-                                                                    <Box>
-                                                                        {(data.type === 'Chatflow' ||
-                                                                            data.type === 'Agentflow' ||
-                                                                            data.type === 'AgentflowV2') && (
-                                                                            <ItemCard
-                                                                                onClick={() => goToCanvas(data)}
-                                                                                data={data}
-                                                                                images={images[data.id]}
-                                                                                icons={icons[data.id]}
-                                                                            />
-                                                                        )}
-                                                                        {data.type === 'Tool' && <ItemCard data={data} onClick={() => goToTool(data)} />}
-                                                                    </Box>
-                                                                </Tooltip>
-                                                            )}
-                                                        </Box>
-                                                    ))}
+                                                                )}
+                                                            </Box>
+                                                        )
+                                                    })}
                                             </Box>
                                         )}
                                     </>
@@ -884,7 +879,6 @@ const Marketplace = () => {
                                         goToTool={goToTool}
                                         goToCanvas={goToCanvas}
                                         isLoading={isLoading}
-                                        setError={setError}
                                     />
                                 )}
 
@@ -928,7 +922,7 @@ const Marketplace = () => {
                                                     }}
                                                 />
                                             }
-                                            label={getUsecaseLabel(usecase)}
+                                            label={getMarketplaceUsecaseLabel(usecase)}
                                         />
                                     ))}
                                 </Stack>
@@ -948,9 +942,9 @@ const Marketplace = () => {
                                     <>
                                         {isLoading ? (
                                             <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
-                                                <Skeleton variant='rounded' height={160} />
-                                                <Skeleton variant='rounded' height={160} />
-                                                <Skeleton variant='rounded' height={160} />
+                                                <Skeleton variant='rounded' height={220} />
+                                                <Skeleton variant='rounded' height={220} />
+                                                <Skeleton variant='rounded' height={220} />
                                             </Box>
                                         ) : (
                                             <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
@@ -960,57 +954,73 @@ const Marketplace = () => {
                                                     .filter(filterFlows)
                                                     .filter(filterByFramework)
                                                     .filter(filterByUsecases)
-                                                    .map((data, index) => (
-                                                        <Box key={index}>
-                                                            {data.badge ? (
-                                                                <Badge
-                                                                    sx={{
-                                                                        width: '100%',
-                                                                        height: '100%',
-                                                                        '& .MuiBadge-badge': {
-                                                                            right: 20
-                                                                        }
-                                                                    }}
-                                                                    badgeContent={getBadgeLabel(data.badge)}
-                                                                    color={data.badge === 'POPULAR' ? 'primary' : 'error'}
-                                                                >
-                                                                    <Tooltip title={renderTemplateTooltip(data)} placement='top' arrow>
+                                                    .map((data, index) => {
+                                                        const displayData = getMarketplaceTemplateDisplayData(data)
+
+                                                        return (
+                                                            <Box key={index}>
+                                                                {displayData.badge ? (
+                                                                    <Badge
+                                                                        sx={{
+                                                                            width: '100%',
+                                                                            height: '100%',
+                                                                            '& .MuiBadge-badge': {
+                                                                                right: 20
+                                                                            }
+                                                                        }}
+                                                                        badgeContent={displayData.displayBadge}
+                                                                        color={displayData.badge === 'POPULAR' ? 'primary' : 'error'}
+                                                                    >
+                                                                        <Tooltip
+                                                                            title={renderTemplateTooltip(displayData, theme)}
+                                                                            placement='top'
+                                                                            arrow
+                                                                            {...getTooltipStyleProps(theme)}
+                                                                        >
+                                                                            <Box>
+                                                                                {(displayData.type === 'Chatflow' ||
+                                                                                    displayData.type === 'Agentflow' ||
+                                                                                    displayData.type === 'AgentflowV2') && (
+                                                                                    <ItemCard
+                                                                                        onClick={() => goToCanvas(displayData)}
+                                                                                        data={displayData}
+                                                                                        images={templateImages[displayData.id]}
+                                                                                        icons={templateIcons[displayData.id]}
+                                                                                    />
+                                                                                )}
+                                                                                {displayData.type === 'Tool' && (
+                                                                                    <ItemCard data={displayData} onClick={() => goToTool(displayData)} />
+                                                                                )}
+                                                                            </Box>
+                                                                        </Tooltip>
+                                                                    </Badge>
+                                                                ) : (
+                                                                    <Tooltip
+                                                                        title={renderTemplateTooltip(displayData, theme)}
+                                                                        placement='top'
+                                                                        arrow
+                                                                        {...getTooltipStyleProps(theme)}
+                                                                    >
                                                                         <Box>
-                                                                            {(data.type === 'Chatflow' ||
-                                                                                data.type === 'Agentflow' ||
-                                                                                data.type === 'AgentflowV2') && (
+                                                                            {(displayData.type === 'Chatflow' ||
+                                                                                displayData.type === 'Agentflow' ||
+                                                                                displayData.type === 'AgentflowV2') && (
                                                                                 <ItemCard
-                                                                                    onClick={() => goToCanvas(data)}
-                                                                                    data={data}
-                                                                                    images={templateImages[data.id]}
-                                                                                    icons={templateIcons[data.id]}
+                                                                                    onClick={() => goToCanvas(displayData)}
+                                                                                    data={displayData}
+                                                                                    images={templateImages[displayData.id]}
+                                                                                    icons={templateIcons[displayData.id]}
                                                                                 />
                                                                             )}
-                                                                            {data.type === 'Tool' && (
-                                                                                <ItemCard data={data} onClick={() => goToTool(data)} />
+                                                                            {displayData.type === 'Tool' && (
+                                                                                <ItemCard data={displayData} onClick={() => goToTool(displayData)} />
                                                                             )}
                                                                         </Box>
                                                                     </Tooltip>
-                                                                </Badge>
-                                                            ) : (
-                                                                <Tooltip title={renderTemplateTooltip(data)} placement='top' arrow>
-                                                                    <Box>
-                                                                        {(data.type === 'Chatflow' ||
-                                                                            data.type === 'Agentflow' ||
-                                                                            data.type === 'AgentflowV2') && (
-                                                                            <ItemCard
-                                                                                onClick={() => goToCanvas(data)}
-                                                                                data={data}
-                                                                                images={templateImages[data.id]}
-                                                                                icons={templateIcons[data.id]}
-                                                                            />
-                                                                        )}
-                                                                        {data.type === 'Tool' && <ItemCard data={data} onClick={() => goToTool(data)} />}
-                                                                    </Box>
-                                                                </Tooltip>
-                                                            )}
-                                                        </Box>
-                                                    ))}
+                                                                )}
+                                                            </Box>
+                                                        )
+                                                    })}
                                             </Box>
                                         )}
                                     </>
@@ -1025,7 +1035,6 @@ const Marketplace = () => {
                                         goToTool={goToTool}
                                         goToCanvas={goToCanvas}
                                         isLoading={isLoading}
-                                        setError={setError}
                                         onDelete={hasPermission('templates:custom-delete') ? onDeleteCustomTemplate : null}
                                         onShare={hasPermission('templates:custom-share') ? share : null}
                                     />
