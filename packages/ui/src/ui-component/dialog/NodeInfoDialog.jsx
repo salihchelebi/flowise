@@ -16,6 +16,13 @@ import { baseURL, AGENTFLOW_ICONS } from '@/store/constant'
 // API
 import configApi from '@/api/config'
 import useApi from '@/hooks/useApi'
+import {
+    canvasUIText,
+    getLocalizedNodeDescription,
+    getLocalizedNodeLabel,
+    getNodeWhenToUseText,
+    getVisibleBadgeLabel
+} from '@/views/canvas/canvasI18n'
 
 const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     const portalElement = document.getElementById('portal')
@@ -102,7 +109,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                             </div>
                         )}
                         <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
-                            {dialogProps.data.label}
+                            {getLocalizedNodeLabel(dialogProps.data)}
                             <div style={{ display: 'flex', flexDirection: 'row' }}>
                                 <div
                                     style={{
@@ -136,7 +143,9 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                             marginBottom: 5
                                         }}
                                     >
-                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>sürüm {dialogProps.data.version}</span>
+                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>
+                                            {canvasUIText.version} {dialogProps.data.version}
+                                        </span>
                                     </div>
                                 )}
                                 {dialogProps.data.badge && (
@@ -161,7 +170,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                                 fontSize: '0.825rem'
                                             }}
                                         >
-                                            {dialogProps.data.badge}
+                                            {getVisibleBadgeLabel(dialogProps.data.badge)}
                                         </span>
                                     </div>
                                 )}
@@ -201,27 +210,30 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                             <Button
                                 variant='outlined'
                                 color='primary'
-                                title='Dokümantasyonu Aç'
+                                title={canvasUIText.openDocumentation}
                                 onClick={() => {
                                     window.open(dialogProps.data.documentation, '_blank', 'noopener,noreferrer')
                                 }}
                                 startIcon={<IconBook2 />}
                             >
-                                Dokümantasyon
+                                {canvasUIText.documentation}
                             </Button>
                         )}
                     </div>
                 )}
             </DialogTitle>
             <DialogContent>
-                {dialogProps.data?.description && (
+                {dialogProps.data && (
                     <div
                         style={{
                             padding: 10,
                             marginBottom: 10
                         }}
                     >
-                        <span>{dialogProps.data.description}</span>
+                        <div style={{ fontWeight: 600, marginBottom: 4 }}>{canvasUIText.nodePurpose}</div>
+                        <span>{getLocalizedNodeDescription(dialogProps.data)}</span>
+                        <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.nodeWhenToUse}</div>
+                        <span>{getNodeWhenToUseText(dialogProps.data)}</span>
                     </div>
                 )}
                 {getNodeConfigApi.data && getNodeConfigApi.data.length > 0 && (

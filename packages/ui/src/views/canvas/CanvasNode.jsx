@@ -14,6 +14,7 @@ import NodeInputHandler from './NodeInputHandler'
 import NodeOutputHandler from './NodeOutputHandler'
 import AdditionalParamsDialog from '@/ui-component/dialog/AdditionalParamsDialog'
 import NodeInfoDialog from '@/ui-component/dialog/NodeInfoDialog'
+import { canvasUIText, getLocalizedNodeLabel } from './canvasI18n'
 
 // const
 import { baseURL } from '@/store/constant'
@@ -49,9 +50,10 @@ const CanvasNode = ({ data }) => {
         else return !canvas.canvasDialogShow && open
     }
 
-    const nodeOutdatedMessage = (oldVersion, newVersion) => `Düğüm sürümü ${oldVersion} eski\nEn güncel sürüm: ${newVersion}`
+    const nodeOutdatedMessage = (oldVersion, newVersion) =>
+        `Bu düğümün sürümü eski (${oldVersion})\nEn güncel sürüme geçmen önerilir (${newVersion})`
 
-    const nodeVersionEmptyMessage = (newVersion) => `Düğüm eski\nEn güncel sürüm: ${newVersion}`
+    const nodeVersionEmptyMessage = (newVersion) => `Bu düğümün sürümü eski\nEn güncel sürüme geçmen önerilir (${newVersion})`
 
     const onDialogClicked = () => {
         const dialogProps = {
@@ -79,7 +81,7 @@ const CanvasNode = ({ data }) => {
                 setWarningMessage(nodeOutdatedMessage(data.version, componentNode.version))
             } else if (componentNode.badge === 'DEPRECATING') {
                 setWarningMessage(
-                    componentNode?.deprecateMessage ?? 'Bu düğüm bir sonraki sürümde kullanımdan kalkacak. NEW etiketli yeni düğüme geç.'
+                    componentNode?.deprecateMessage ?? 'Bu düğüm yakında kullanımdan kaldırılacak. NEW etiketli yeni düğüme geç.'
                 )
             } else if (componentNode.warning) {
                 setWarningMessage(componentNode.warning)
@@ -113,7 +115,7 @@ const CanvasNode = ({ data }) => {
                             }}
                         >
                             <IconButton
-                                title='Kopyala'
+                                title={canvasUIText.duplicate}
                                 onClick={() => {
                                     duplicateNode(data.id)
                                 }}
@@ -123,7 +125,7 @@ const CanvasNode = ({ data }) => {
                                 <IconCopy />
                             </IconButton>
                             <IconButton
-                                title='Sil'
+                                title={canvasUIText.delete}
                                 onClick={() => {
                                     deleteNode(data.id)
                                 }}
@@ -133,7 +135,7 @@ const CanvasNode = ({ data }) => {
                                 <IconTrash />
                             </IconButton>
                             <IconButton
-                                title='Bilgi'
+                                title={canvasUIText.info}
                                 onClick={() => {
                                     setInfoDialogProps({ data })
                                     setShowInfoDialog(true)
@@ -176,7 +178,7 @@ const CanvasNode = ({ data }) => {
                                         mr: 2
                                     }}
                                 >
-                                    {data.label}
+                                    {getLocalizedNodeLabel(data)}
                                 </Typography>
                             </Box>
                             <div style={{ flexGrow: 1 }}></div>
@@ -210,14 +212,16 @@ const CanvasNode = ({ data }) => {
                             <>
                                 <Divider />
                                 <Box sx={{ background: theme.palette.asyncSelect.main, p: 1 }}>
-                                    <Typography
-                                        sx={{
-                                            fontWeight: 500,
-                                            textAlign: 'center'
-                                        }}
-                                    >
-                                        Girdiler
-                                    </Typography>
+                                    <Tooltip title={canvasUIText.inputsTooltip} arrow placement='top'>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 500,
+                                                textAlign: 'center'
+                                            }}
+                                        >
+                                            {canvasUIText.inputs}
+                                        </Typography>
+                                    </Tooltip>
                                 </Box>
                                 <Divider />
                             </>
@@ -253,22 +257,26 @@ const CanvasNode = ({ data }) => {
                                             : 0
                                 }}
                             >
-                                <Button sx={{ borderRadius: 25, width: '90%', mb: 2 }} variant='outlined' onClick={onDialogClicked}>
-                                    Ek Parametreler
-                                </Button>
+                                <Tooltip title={canvasUIText.additionalSettingsTooltip} arrow placement='top'>
+                                    <Button sx={{ borderRadius: 25, width: '90%', mb: 2 }} variant='outlined' onClick={onDialogClicked}>
+                                        {canvasUIText.additionalSettings}
+                                    </Button>
+                                </Tooltip>
                             </div>
                         )}
                         {data.outputAnchors.length > 0 && <Divider />}
                         {data.outputAnchors.length > 0 && (
                             <Box sx={{ background: theme.palette.asyncSelect.main, p: 1 }}>
-                                <Typography
-                                    sx={{
-                                        fontWeight: 500,
-                                        textAlign: 'center'
-                                    }}
-                                >
-                                    Çıktı
-                                </Typography>
+                                <Tooltip title={canvasUIText.outputTooltip} arrow placement='top'>
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 500,
+                                            textAlign: 'center'
+                                        }}
+                                    >
+                                        {canvasUIText.output}
+                                    </Typography>
+                                </Tooltip>
                             </Box>
                         )}
                         {data.outputAnchors.length > 0 && <Divider />}
