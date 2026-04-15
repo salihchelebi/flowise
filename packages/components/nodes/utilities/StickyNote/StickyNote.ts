@@ -13,14 +13,14 @@ class StickyNote implements INode {
     inputs: INodeParams[]
 
     constructor() {
-        this.label = 'Yapışkan Not'
+        this.label = 'Not Kutusu'
         this.name = 'stickyNote'
         this.version = 2.0
         this.type = 'StickyNote'
         this.icon = 'stickyNote.svg'
         this.category = 'Utilities'
         this.tags = ['Utilities']
-        this.description = 'Tuvale hızlı bir hatırlatma notu ekler'
+        this.description = 'Akışa kısa bir hatırlatma notu ekler'
         this.inputs = [
             {
                 label: '',

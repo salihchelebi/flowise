@@ -24,14 +24,14 @@ class CustomFunction_Utilities implements INode {
         this.type = 'CustomFunction'
         this.icon = 'customfunction.svg'
         this.category = 'Utilities'
-        this.description = `Özel JavaScript fonksiyonu çalıştırır`
+        this.description = `Akış içinde özel JavaScript kodu çalıştırır`
         this.baseClasses = [this.type, 'Utilities']
         this.tags = ['Utilities']
         this.inputs = [
             {
                 label: 'Girdi Değişkenleri',
                 name: 'functionInputVariables',
-                description: 'Girdi değişkenlerini fonksiyon içinde $ önekiyle kullan. Örn: $var',
+                description: 'Değişkenleri fonksiyon içinde $ önekiyle kullan. Örn: $var',
                 type: 'json',
                 optional: true,
                 acceptVariable: true,
@@ -46,7 +46,7 @@ class CustomFunction_Utilities implements INode {
             },
             {
                 label: 'Ek Araçlar',
-                description: 'Araçları fonksiyonda $tools.{tool_name}.invoke(args) ile kullan',
+                description: 'Araçları fonksiyonda $tools.{tool_name}.invoke(args) ile çağır',
                 name: 'tools',
                 type: 'Tool',
                 list: true,

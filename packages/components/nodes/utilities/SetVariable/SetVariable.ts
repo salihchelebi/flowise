@@ -20,7 +20,7 @@ class SetVariable_Utilities implements INode {
         this.type = 'SetVariable'
         this.icon = 'setvar.svg'
         this.category = 'Utilities'
-        this.description = `Bir değeri akış sırasında saklar ve sonraki adımlarda tekrar kullanmanı sağlar`
+        this.description = `Bir değeri akış sırasında saklar. Sonraki adımlarda tekrar kullanmanı sağlar`
         this.tags = ['Utilities']
         this.baseClasses = [this.type, 'Utilities']
         this.inputs = [

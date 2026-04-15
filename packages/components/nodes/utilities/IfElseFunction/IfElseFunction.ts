@@ -16,20 +16,20 @@ class IfElseFunction_Utilities implements INode {
     outputs: INodeOutputsValue[]
 
     constructor() {
-        this.label = 'Koşul Dallanması'
+        this.label = 'Koşullu Dallanma'
         this.name = 'ifElseFunction'
         this.version = 2.0
         this.type = 'IfElseFunction'
         this.icon = 'ifelsefunction.svg'
         this.category = 'Utilities'
-        this.description = `Akışı koşula göre iki yola ayırır`
+        this.description = `Koşula göre akışı iki farklı yola ayırır`
         this.baseClasses = [this.type, 'Utilities']
         this.tags = ['Utilities']
         this.inputs = [
             {
                 label: 'Girdi Değişkenleri',
                 name: 'functionInputVariables',
-                description: 'Girdi değişkenlerini fonksiyon içinde $ önekiyle kullan. Örn: $var',
+                description: 'Değişkenleri fonksiyon içinde $ önekiyle kullan. Örn: $var',
                 type: 'json',
                 optional: true,
                 acceptVariable: true,

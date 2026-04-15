@@ -73,6 +73,7 @@ const Canvas = () => {
         URLpath[URLpath.length - 1] === 'canvas' || URLpath[URLpath.length - 1] === 'agentcanvas' ? '' : URLpath[URLpath.length - 1]
     const isAgentCanvas = URLpath.includes('agentcanvas') ? true : false
     const canvasTitle = URLpath.includes('agentcanvas') ? 'Agent' : 'Chatflow'
+    const canvasTitleLabel = URLpath.includes('agentcanvas') ? 'Ajan Akışı' : 'Sohbet Akışı'
 
     const { confirm } = useConfirm()
 
@@ -179,7 +180,7 @@ const Canvas = () => {
     const handleDeleteFlow = async () => {
         const confirmPayload = {
             title: 'Sil',
-            description: `${canvasTitle} "${chatflow.name}" silinsin mi?`,
+            description: `${canvasTitleLabel} "${chatflow.name}" silinsin mi?`,
             confirmButtonName: 'Sil',
             cancelButtonName: 'Vazgeç'
         }
@@ -349,7 +350,7 @@ const Canvas = () => {
     const saveChatflowSuccess = () => {
         dispatch({ type: REMOVE_DIRTY })
         enqueueSnackbar({
-            message: `${canvasTitle} kaydedildi`,
+            message: `${canvasTitleLabel} kaydedildi`,
             options: {
                 key: new Date().getTime() + Math.random(),
                 variant: 'success',
@@ -420,7 +421,7 @@ const Canvas = () => {
             setEdges(initialFlow.edges || [])
             dispatch({ type: SET_CHATFLOW, chatflow })
         } else if (getSpecificChatflowApi.error) {
-            errorFailed(`${canvasTitle} alınamadı: ${getSpecificChatflowApi.error.response.data.message}`)
+            errorFailed(`${canvasTitleLabel} alınamadı: ${getSpecificChatflowApi.error.response.data.message}`)
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -434,7 +435,7 @@ const Canvas = () => {
             saveChatflowSuccess()
             window.history.replaceState(state, null, `/${isAgentCanvas ? 'agentcanvas' : 'canvas'}/${chatflow.id}`)
         } else if (createNewChatflowApi.error) {
-            errorFailed(`${canvasTitle} alınamadı: ${createNewChatflowApi.error.response.data.message}`)
+            errorFailed(`${canvasTitleLabel} alınamadı: ${createNewChatflowApi.error.response.data.message}`)
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -447,7 +448,7 @@ const Canvas = () => {
             setLasUpdatedDateTime(updateChatflowApi.data.updatedDate)
             saveChatflowSuccess()
         } else if (updateChatflowApi.error) {
-            errorFailed(`${canvasTitle} alınamadı: ${updateChatflowApi.error.response.data.message}`)
+            errorFailed(`${canvasTitleLabel} alınamadı: ${updateChatflowApi.error.response.data.message}`)
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -511,7 +512,7 @@ const Canvas = () => {
             dispatch({
                 type: SET_CHATFLOW,
                 chatflow: {
-                    name: `Adsız ${canvasTitle}`
+                    name: `Adsız ${canvasTitleLabel}`
                 }
             })
         }

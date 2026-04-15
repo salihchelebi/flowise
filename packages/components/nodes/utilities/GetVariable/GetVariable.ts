@@ -14,13 +14,13 @@ class GetVariable_Utilities implements INode {
     outputs: INodeOutputsValue[]
 
     constructor() {
-        this.label = 'Değişken Getir'
+        this.label = 'Değişkeni Getir'
         this.name = 'getVariable'
         this.version = 2.0
         this.type = 'GetVariable'
         this.icon = 'getvar.svg'
         this.category = 'Utilities'
-        this.description = `Set Variable ile kaydedilen değeri akışta tekrar getirir`
+        this.description = `Set Variable ile kaydedilen değeri akışta geri getirir`
         this.baseClasses = [this.type, 'Utilities']
         this.tags = ['Utilities']
         this.inputs = [
