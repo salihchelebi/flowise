@@ -16,6 +16,7 @@ import { baseURL, AGENTFLOW_ICONS } from '@/store/constant'
 // API
 import configApi from '@/api/config'
 import useApi from '@/hooks/useApi'
+import { getCanvasNodeMeta, getCanvasStaticText } from '@/views/canvas/canvasI18n'
 
 const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     const portalElement = document.getElementById('portal')
@@ -23,6 +24,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     const theme = useTheme()
 
     const getNodeConfigApi = useApi(configApi.getNodeConfig)
+    const localizedNode = getCanvasNodeMeta(dialogProps?.data, { fallbackDescription: dialogProps?.data?.description })
 
     const renderIcon = (node) => {
         const foundIcon = AGENTFLOW_ICONS.find((icon) => icon.name === node.name)
@@ -102,7 +104,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                             </div>
                         )}
                         <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
-                            {dialogProps.data.label}
+                            {localizedNode.label}
                             <div style={{ display: 'flex', flexDirection: 'row' }}>
                                 <div
                                     style={{
@@ -136,7 +138,9 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                             marginBottom: 5
                                         }}
                                     >
-                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>version {dialogProps.data.version}</span>
+                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>
+                                            {getCanvasStaticText('version')} {dialogProps.data.version}
+                                        </span>
                                     </div>
                                 )}
                                 {dialogProps.data.badge && (
@@ -201,27 +205,31 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                             <Button
                                 variant='outlined'
                                 color='primary'
-                                title='Open Documentation'
+                                title={getCanvasStaticText('openDocumentation')}
                                 onClick={() => {
                                     window.open(dialogProps.data.documentation, '_blank', 'noopener,noreferrer')
                                 }}
                                 startIcon={<IconBook2 />}
                             >
-                                Documentation
+                                {getCanvasStaticText('documentation')}
                             </Button>
                         )}
                     </div>
                 )}
             </DialogTitle>
             <DialogContent>
-                {dialogProps.data?.description && (
+                {/* DELILX [4][6]: API/config yaşam döngüsüne dokunmadan sadece görünür açıklama katmanı Türkçeleştirilir. */}
+                {(localizedNode.description || dialogProps.data?.description) && (
                     <div
                         style={{
                             padding: 10,
                             marginBottom: 10
                         }}
                     >
-                        <span>{dialogProps.data.description}</span>
+                        <div style={{ fontWeight: 600, marginBottom: 6 }}>{getCanvasStaticText('whatDoesThisNodeDo')}</div>
+                        <span>{localizedNode.description || dialogProps.data?.description}</span>
+                        <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{getCanvasStaticText('whenToUseThisNode')}</div>
+                        <span>Bu düğüm, akışında bu işlevi ihtiyaç duyduğun adımda kullanılmalıdır.</span>
                     </div>
                 )}
                 {getNodeConfigApi.data && getNodeConfigApi.data.length > 0 && (

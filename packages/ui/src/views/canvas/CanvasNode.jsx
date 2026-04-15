@@ -20,6 +20,7 @@ import { baseURL } from '@/store/constant'
 import { IconTrash, IconCopy, IconInfoCircle, IconAlertTriangle } from '@tabler/icons-react'
 import { flowContext } from '@/store/context/ReactFlowContext'
 import LlamaindexPNG from '@/assets/images/llamaindex.png'
+import { getCanvasNodeMeta, getCanvasStaticText, getCanvasWarningMessage } from './canvasI18n'
 
 // ===========================|| CANVAS NODE ||=========================== //
 
@@ -74,21 +75,25 @@ const CanvasNode = ({ data }) => {
         const componentNode = canvas.componentNodes.find((nd) => nd.name === data.name)
         if (componentNode) {
             if (!data.version) {
-                setWarningMessage(nodeVersionEmptyMessage(componentNode.version))
+                setWarningMessage(getCanvasWarningMessage(nodeVersionEmptyMessage(componentNode.version)))
             } else if (data.version && componentNode.version > data.version) {
-                setWarningMessage(nodeOutdatedMessage(data.version, componentNode.version))
+                setWarningMessage(getCanvasWarningMessage(nodeOutdatedMessage(data.version, componentNode.version)))
             } else if (componentNode.badge === 'DEPRECATING') {
                 setWarningMessage(
-                    componentNode?.deprecateMessage ??
-                        'This node will be deprecated in the next release. Change to a new node tagged with NEW'
+                    getCanvasWarningMessage(
+                        componentNode?.deprecateMessage ??
+                            'This node will be deprecated in the next release. Change to a new node tagged with NEW'
+                    )
                 )
             } else if (componentNode.warning) {
-                setWarningMessage(componentNode.warning)
+                setWarningMessage(getCanvasWarningMessage(componentNode.warning))
             } else {
                 setWarningMessage('')
             }
         }
     }, [canvas.componentNodes, data.name, data.version])
+
+    const localizedNode = getCanvasNodeMeta(data, { fallbackDescription: data.description })
 
     return (
         <>
@@ -114,7 +119,8 @@ const CanvasNode = ({ data }) => {
                             }}
                         >
                             <IconButton
-                                title='Duplicate'
+                                // DELILX [3][6]: Aksiyon davranışı korunur, sadece kullanıcıya görünen başlıklar Türkçeleştirilir.
+                                title={getCanvasStaticText('duplicate')}
                                 onClick={() => {
                                     duplicateNode(data.id)
                                 }}
@@ -124,7 +130,7 @@ const CanvasNode = ({ data }) => {
                                 <IconCopy />
                             </IconButton>
                             <IconButton
-                                title='Delete'
+                                title={getCanvasStaticText('delete')}
                                 onClick={() => {
                                     deleteNode(data.id)
                                 }}
@@ -134,7 +140,7 @@ const CanvasNode = ({ data }) => {
                                 <IconTrash />
                             </IconButton>
                             <IconButton
-                                title='Info'
+                                title={getCanvasStaticText('info')}
                                 onClick={() => {
                                     setInfoDialogProps({ data })
                                     setShowInfoDialog(true)
@@ -177,7 +183,7 @@ const CanvasNode = ({ data }) => {
                                         mr: 2
                                     }}
                                 >
-                                    {data.label}
+                                    {localizedNode.label}
                                 </Typography>
                             </Box>
                             <div style={{ flexGrow: 1 }}></div>
@@ -212,12 +218,13 @@ const CanvasNode = ({ data }) => {
                                 <Divider />
                                 <Box sx={{ background: theme.palette.asyncSelect.main, p: 1 }}>
                                     <Typography
+                                        title={getCanvasStaticText('inputsTooltip')}
                                         sx={{
                                             fontWeight: 500,
                                             textAlign: 'center'
                                         }}
                                     >
-                                        Inputs
+                                        {getCanvasStaticText('inputs')}
                                     </Typography>
                                 </Box>
                                 <Divider />
@@ -255,7 +262,7 @@ const CanvasNode = ({ data }) => {
                                 }}
                             >
                                 <Button sx={{ borderRadius: 25, width: '90%', mb: 2 }} variant='outlined' onClick={onDialogClicked}>
-                                    Additional Parameters
+                                    {getCanvasStaticText('additionalParameters')}
                                 </Button>
                             </div>
                         )}
@@ -263,12 +270,13 @@ const CanvasNode = ({ data }) => {
                         {data.outputAnchors.length > 0 && (
                             <Box sx={{ background: theme.palette.asyncSelect.main, p: 1 }}>
                                 <Typography
+                                    title={getCanvasStaticText('outputTooltip')}
                                     sx={{
                                         fontWeight: 500,
                                         textAlign: 'center'
                                     }}
                                 >
-                                    Output
+                                    {getCanvasStaticText('output')}
                                 </Typography>
                             </Box>
                         )}

@@ -1,213 +1,155 @@
-const STATIC_TEXT = {
-    addNodes: 'Düğüm Ekle',
-    addNode: 'Düğüm ekle',
-    searchNodes: 'Düğümlerde ara',
-    searchHint: 'İpucu: düğüm adı, kategori veya yapmak istediğin işi yazarak ara.',
+// DELILX [1][5][6]: Bu dosya sadece görünür metin eşleme ve güvenli fallback için pure helper içerir.
+
+const canvasStaticTextMap = {
+    addNodesTitle: 'Düğüm Ekle',
+    searchNodesPlaceholder: 'Düğümlerde ara',
     clearSearch: 'Aramayı temizle',
-    generateAgentflow: 'Ajan akışı üret',
-    generateAgentflowTitle: 'Ne oluşturmak istiyorsun?',
-    generateAgentflowDescription:
-        'Aşağıya ne kurmak istediğini yaz. Sistem uygun bir agentflow iskeleti üretsin. Sonrasında her düğümün giriş alanlarını ihtiyacına göre doldurabilirsin.'
+    addNodeFab: 'Düğüm ekle',
+    generateAgentflowFab: 'Ajan akışı üret',
+    agentflowDialogTitle: 'Ne oluşturmak istiyorsun?',
+    agentflowDialogDescription:
+        'İstediğin akışı kısa bir komutla anlat. Sistem önce iskelet bir akış üretir; ardından her düğümün alanlarını sen doldurarak tamamlayabilirsin.',
+    searchHint: 'İpucu: düğüm adı, kategori veya yapmak istediğin işi yazarak ara.',
+    duplicate: 'Kopyala',
+    delete: 'Sil',
+    info: 'Bilgi',
+    inputs: 'Girdiler',
+    output: 'Çıktı',
+    additionalParameters: 'Ek Ayarlar',
+    inputsTooltip: 'Bu düğümün kullandığı alanlar',
+    outputTooltip: 'Bu düğümün ürettiği sonuç',
+    documentation: 'Dokümantasyon',
+    openDocumentation: 'Dokümantasyonu aç',
+    version: 'sürüm',
+    whatDoesThisNodeDo: 'Bu düğüm ne işe yarar?',
+    whenToUseThisNode: 'Ne zaman kullanılır?'
 }
 
-const TAB_META = {
-    0: {
+const tabMetaMap = {
+    LangChain: {
         label: 'LangChain',
-        tooltip: 'Genel sohbet akışları, veri bağlama ve araç kullanımında en sık kullanılan düğümler burada.'
+        tooltip: 'Genel akış, model ve araç düğümleri için ana sekme.'
     },
-    1: {
+    LlamaIndex: {
         label: 'LlamaIndex',
-        tooltip: 'RAG, özel veri sorgulama ve gelişmiş geri getirme odaklı düğümler burada.'
-    },
-    2: {
-        label: 'Yardımcılar',
-        tooltip: 'Koşul, değişken, not ve özel JavaScript gibi destek düğümleri burada.'
-    }
-}
-
-const CATEGORY_META = {
-    Agents: {
-        label: 'Ajanlar',
-        tooltip: 'Karar veren ve gerektiğinde araç kullanan akıllı düğümler.'
-    },
-    Cache: {
-        label: 'Önbellek',
-        tooltip: 'Aynı işlemi tekrar tekrar hesaplamamak için ara sonuçları geçici olarak saklar.'
-    },
-    Chains: {
-        label: 'Zincirler',
-        tooltip: 'Birden fazla adımı hazır mantıkla sıralı şekilde çalıştıran düğümler.'
-    },
-    'Chat Models': {
-        label: 'Sohbet Modelleri',
-        tooltip: 'Sohbet yanıtı üreten model bağlantıları.'
-    },
-    'Document Loaders': {
-        label: 'Belge Yükleyiciler',
-        tooltip: 'Dosya, link veya dış kaynaktan içerik içeri alan düğümler.'
-    },
-    Embeddings: {
-        label: 'Gömme Modelleri',
-        tooltip: 'Metni vektöre çevirir. Anlamsal arama ve benzerlik için kullanılır.'
-    },
-    Engine: {
-        label: 'Motorlar',
-        tooltip: 'Sorgunun veya sohbetin nasıl çalışacağını belirleyen düğümler.'
-    },
-    Graph: {
-        label: 'Graf Veritabanları',
-        tooltip: 'İlişki ağı şeklindeki verilerle çalışmak için kullanılan bağlantılar.'
-    },
-    LLMs: {
-        label: 'Büyük Dil Modelleri',
-        tooltip: 'Temel metin üretimi yapan model bağlantıları.'
-    },
-    Memory: {
-        label: 'Hafıza',
-        tooltip: 'Konuşma veya işlem geçmişini tutar. Bağlam kaybolmasın diye kullanılır.'
-    },
-    Moderation: {
-        label: 'İçerik Denetimi',
-        tooltip: 'Riskli veya uygunsuz girdi ve çıktıları süzen düğümler.'
-    },
-    'Output Parsers': {
-        label: 'Çıktı Ayrıştırıcıları',
-        tooltip: 'Model cevabını JSON, liste veya düzenli veri yapısına çevirir.'
-    },
-    Prompts: {
-        label: 'İstem Şablonları',
-        tooltip: 'Modele verilecek talimat metnini kurar ve düzenler.'
-    },
-    'Record Manager': {
-        label: 'Kayıt Yöneticisi',
-        tooltip: 'İndeksleme ve içerik eşleme kayıtlarını takip eder.'
-    },
-    'Response Synthesizer': {
-        label: 'Yanıt Oluşturucu',
-        tooltip: 'Birden çok parçadan gelen bilgiyi tek ve tutarlı cevaba dönüştürür.'
-    },
-    Retrievers: {
-        label: 'Getiriciler',
-        tooltip: 'En ilgili belge veya içerik parçalarını bulur.'
-    },
-    'Text Splitters': {
-        label: 'Metin Bölücüler',
-        tooltip: 'Uzun metinleri daha küçük ve yönetilebilir parçalara ayırır.'
-    },
-    Tools: {
-        label: 'Araçlar',
-        tooltip: 'Modelin web, hesaplama, dosya veya servis işlemleri yapmasını sağlar.'
-    },
-    'Tools (MCP)': {
-        label: 'MCP Araçları',
-        tooltip: 'MCP üzerinden harici araç ve sistemlere bağlanan düğümler.'
+        tooltip: 'RAG ve veri sorgulama odaklı düğümleri içerir.'
     },
     Utilities: {
-        label: 'Yardımcı Düğümler',
-        tooltip: 'Koşul, değişken, not ve özel JavaScript gibi destek amaçlı düğümler.'
-    },
-    'Vector Stores': {
-        label: 'Vektör Veritabanları',
-        tooltip: 'Vektörleri saklar ve benzerlik araması yapar. RAG altyapısında kullanılır.'
+        label: 'Utilities',
+        tooltip: 'Koşul, değişken, not ve özel JS yardımcı düğümleri.'
     }
 }
 
-const SPECIFIC_NODE_META = {
-    customFunction: {
-        label: 'Özel JS Fonksiyonu',
-        description: 'Kendi JavaScript kodunu çalıştırır. Akışta özel işlem gerektiğinde kullanılır.'
-    },
-    getVariable: {
-        label: 'Değişkeni Getir',
-        description: 'Daha önce kaydedilmiş bir değeri geri alır. Aynı sonucu yeniden üretmemek için kullanılır.'
-    },
-    setVariable: {
-        label: 'Değişken Kaydet',
-        description: 'Bir değeri akış içinde saklar. Sonraki adımlarda tekrar kullanmak için uygundur.'
-    },
-    ifElseFunction: {
-        label: 'Koşullu Dallanma',
-        description: 'Bir koşula göre akışı iki farklı yola ayırır. Karar vermen gereken yerlerde kullanılır.'
-    },
-    stickyNote: {
-        label: 'Not Kutusu',
-        description: 'Akışın içine kısa açıklama notu ekler. Kendine veya ekibine hatırlatma bırakmak için kullanılır.'
-    },
-    stickyNoteAgentflow: {
-        label: 'Not Kutusu',
-        description: 'Ajan akışının içine kısa açıklama notu ekler. Akışı daha okunur hale getirmek için kullanılır.'
-    }
+const categoryMetaMap = {
+    Agents: { label: 'Ajanlar', tooltip: 'Amaç odaklı ajan akışları kurmak için kullanılır.' },
+    Chains: { label: 'Zincirler', tooltip: 'Adım adım çalışan işlem zincirleri oluşturur.' },
+    'Chat Models': { label: 'Sohbet Modelleri', tooltip: 'Sohbet tabanlı LLM sağlayıcıları.' },
+    'Document Loaders': { label: 'Belge Yükleyiciler', tooltip: 'Dosya ve içerik kaynaklarını akışa alır.' },
+    Embeddings: { label: 'Gömme Modelleri', tooltip: 'Metni vektöre dönüştürerek aramayı güçlendirir.' },
+    Graph: { label: 'Graf Veritabanları', tooltip: 'İlişkisel veri grafı ile sorgulama yapar.' },
+    LLMs: { label: 'Büyük Dil Modelleri', tooltip: 'Metin üretiminde kullanılan temel modeller.' },
+    Memory: { label: 'Hafıza', tooltip: 'Konuşma geçmişi ve bağlam saklama düğümleri.' },
+    Moderation: { label: 'İçerik Denetimi', tooltip: 'İçerik güvenlik ve uygunluk kontrolleri.' },
+    'Output Parsers': { label: 'Çıktı Ayrıştırıcıları', tooltip: 'Model çıktısını yapılandırılmış hale getirir.' },
+    Prompts: { label: 'İstem Şablonları', tooltip: 'Modele verilecek istemleri düzenler.' },
+    'Record Manager': { label: 'Kayıt Yöneticisi', tooltip: 'Kayıt tutma ve güncelleme süreçlerini yönetir.' },
+    Retrievers: { label: 'Getiriciler', tooltip: 'Bilgiyi depolardan bulup getirir.' },
+    'Text Splitters': { label: 'Metin Bölücüler', tooltip: 'Uzun metinleri uygun parçalara ayırır.' },
+    Tools: { label: 'Araçlar', tooltip: 'Modelin çağırabileceği araç işlevleri.' },
+    'Tools (MCP)': { label: 'MCP Araçları', tooltip: 'MCP tabanlı harici araç bağlantıları.' },
+    'Vector Stores': { label: 'Vektör Veritabanları', tooltip: 'Vektör verilerini saklar ve arar.' },
+    Engine: { label: 'Motorlar', tooltip: 'Akışın yürütme motorunu belirler.' },
+    'Response Synthesizer': { label: 'Yanıt Oluşturucu', tooltip: 'Parçalı cevapları tek yanıtta birleştirir.' },
+    Utilities: { label: 'Yardımcı Düğümler', tooltip: 'Koşul, değişken, not ve özel işlev düğümleri.' }
 }
 
-const buildGenericDescription = (node) => {
-    const label = node?.label || node?.name || 'Bu düğüm'
-    const category = (node?.category || '').split(';')[0]
-
-    switch (category) {
-        case 'Agents':
-            return `${label} bir ajan düğümüdür. Karar verip araç kullanması gereken akışlarda kullanılır.`
-        case 'Cache':
-            return `${label} sonucu geçici olarak saklar. Aynı işlemi tekrar çalıştırmamak için kullanılır.`
-        case 'Chains':
-            return `${label} bir zincir düğümüdür. Birkaç adımı hazır mantıkla art arda çalıştırmak istediğinde kullanılır.`
-        case 'Chat Models':
-            return `${label} sohbet modeli bağlantısıdır. Model seçip konuşma yanıtı üretmek istediğinde kullanılır.`
-        case 'Document Loaders':
-            return `${label} dış kaynaktan içerik içeri alır. Dosya, web sayfası veya veri kaynağı bağlamak için kullanılır.`
-        case 'Embeddings':
-            return `${label} metni vektöre çevirir. Anlamsal arama ve benzerlik bulma işlerinde kullanılır.`
-        case 'Engine':
-            return `${label} sorgu veya sohbet çalışma biçimini belirler. Yanıt üretme mantığını kontrol etmek için kullanılır.`
-        case 'Graph':
-            return `${label} graf veritabanı bağlantısıdır. İlişkisel düğüm-ağ yapılarıyla çalışırken kullanılır.`
-        case 'LLMs':
-            return `${label} temel dil modeli bağlantısıdır. Metin üretimi ve tamamlama işlerinde kullanılır.`
-        case 'Memory':
-            return `${label} geçmiş bilgiyi tutar. Sohbetin bağlamı kaybolmasın diye kullanılır.`
-        case 'Moderation':
-            return `${label} içerik denetimi yapar. Riskli veya uygunsuz içeriği filtrelemek için kullanılır.`
-        case 'Output Parsers':
-            return `${label} model cevabını düzenli çıktıya çevirir. JSON, liste veya yapılandırılmış çıktı istediğinde kullanılır.`
-        case 'Prompts':
-            return `${label} istem metnini kurar. Modele verilecek talimatı düzenlemek için kullanılır.`
-        case 'Record Manager':
-            return `${label} kayıt takibini yönetir. Tekrarlı indeksleme ve içerik eşleme işlerinde kullanılır.`
-        case 'Response Synthesizer':
-            return `${label} parçalı sonuçları tek cevaba toplar. Birden çok kaynaktan gelen bilgiyi birleştirmek için kullanılır.`
-        case 'Retrievers':
-            return `${label} en ilgili içeriği bulur. Bilgiyi belge havuzundan çekmek istediğinde kullanılır.`
-        case 'Text Splitters':
-            return `${label} uzun metni parçalara böler. Belgeleri indekslemeden önce kullanılır.`
-        case 'Tools':
-            return `${label} dış araç çağırır. Hesaplama, web, dosya veya servis işlemleri gerektiğinde kullanılır.`
-        case 'Tools (MCP)':
-            return `${label} MCP üzerinden araç bağlar. Harici sistemlerle standart araç bağlantısı kurmak için kullanılır.`
-        case 'Utilities':
-            return `${label} yardımcı bir düğümdür. Akış mantığını desteklemek için kullanılır.`
-        case 'Vector Stores':
-            return `${label} vektör verisini saklar. Benzerlik araması ve RAG altyapısında kullanılır.`
-        default:
-            return node?.description || `${label} düğümüdür. Akışında belirli bir işi yerine getirmek için kullanılır.`
-    }
+const nodeLabelMap = {
+    customFunction: 'Özel JS Fonksiyonu',
+    getVariable: 'Değişkeni Getir',
+    setVariable: 'Değişken Kaydet',
+    ifElseFunction: 'Koşullu Dallanma',
+    stickyNote: 'Not Kutusu'
 }
 
-export const getCanvasStaticText = () => STATIC_TEXT
+const nodeDescriptionMap = {
+    customFunction: 'JavaScript ile kendi küçük işlem adımını yazıp akışa eklemeni sağlar.',
+    getVariable: 'Akışta daha önce kaydedilen bir değişkeni geri çağırır ve kullanır.',
+    setVariable: 'Akış içinde kullanacağın bir değeri değişken olarak kaydeder.',
+    ifElseFunction: 'Koşula göre akışı iki farklı yoldan birine yönlendirir.',
+    stickyNote: 'Akışa açıklama notu ekleyerek görsel olarak düzen sağlamana yardımcı olur.'
+}
 
-export const getCanvasTabMeta = (tabIndex) => TAB_META[tabIndex] || { label: 'Sekme', tooltip: '' }
+const categoryDescriptionMap = {
+    Agents: 'Bir hedefe ulaşmak için birden fazla adımı otomatik planlayan ajan düğümleri.',
+    Chains: 'İşlemleri sırayla yürüten temel akış adımları.',
+    'Chat Models': 'Sohbet tarzı yanıt üreten model bağlantıları.',
+    'Document Loaders': 'Dosya, URL veya metin kaynaklarını akışa alan düğümler.',
+    Embeddings: 'Metni benzerlik araması için sayısal vektöre çeviren düğümler.',
+    Graph: 'İlişkisel veri yapılarında gezinme ve sorgulama düğümleri.',
+    LLMs: 'Genel amaçlı metin üretimi için kullanılan dil modeli düğümleri.',
+    Memory: 'Konuşma ve durum bilgisini hatırlatmak için kullanılan düğümler.',
+    Moderation: 'Uygunsuz içerikleri tespit etmeye yardımcı olan güvenlik düğümleri.',
+    'Output Parsers': 'Model çıktısını JSON veya belirli şemaya dönüştürür.',
+    Prompts: 'Model talimatlarını hazır şablonlarla düzenler.',
+    'Record Manager': 'Kayıtları eşleme, güncelleme ve yönetme işlemleri.',
+    Retrievers: 'Gerekli bilgiyi veri kaynaklarından hızlıca getiren düğümler.',
+    'Text Splitters': 'Büyük metinleri uygun parçalara ayırarak işlemeyi kolaylaştırır.',
+    Tools: 'Modelin harici işlem yaptırması için kullandığı araç düğümleri.',
+    'Tools (MCP)': 'MCP protokolü ile bağlı araç servislerini çalıştırır.',
+    'Vector Stores': 'Vektör verilerini depolayıp benzerlik sorgusu yapar.',
+    Engine: 'Akış çalışma şeklini belirleyen yürütme motoru düğümleri.',
+    'Response Synthesizer': 'Birden fazla cevabı anlaşılır tek yanıta dönüştürür.',
+    Utilities: 'Akışı düzenlemek için yardımcı kontrol ve not düğümleri.'
+}
+
+const warningTextMap = {
+    'Node outdated': 'Düğüm güncel değil',
+    'Node version': 'Düğüm sürümü',
+    outdated: 'güncel değil',
+    'Update to latest version': 'En güncel sürüme yükselt',
+    'This node will be deprecated in the next release. Change to a new node tagged with NEW':
+        'Bu düğüm bir sonraki sürümde kaldırılacak. NEW etiketli yeni bir düğüme geçin.',
+    deprecated: 'kullanımdan kaldırılacak'
+}
+
+export const getCanvasStaticText = (key) => canvasStaticTextMap[key] || ''
+
+export const getCanvasTabMeta = (tabName) => tabMetaMap[tabName] || { label: tabName, tooltip: tabName }
 
 export const getCanvasCategoryMeta = (category) => {
-    const cleanCategory = (category || '').split(';')[0]
-    return CATEGORY_META[cleanCategory] || { label: cleanCategory, tooltip: '' }
+    const baseCategory = (category || '').split(';')[0].trim()
+    return categoryMetaMap[baseCategory] || { label: baseCategory, tooltip: baseCategory }
 }
 
-export const getCanvasNodeMeta = (node) => {
-    const specific = SPECIFIC_NODE_META[node?.name] || {}
-    const label = specific.label || node?.label || node?.name || ''
-    const description = specific.description || buildGenericDescription(node)
+const getCategoryDescription = (category, fallbackDescription = '') => {
+    const description = categoryDescriptionMap[(category || '').split(';')[0].trim()]
+    return description || fallbackDescription || ''
+}
+
+export const getCanvasNodeMeta = (node = {}, options = {}) => {
+    const fallbackDescription = options.fallbackDescription ?? node.description ?? ''
+    const label = nodeLabelMap[node.name] || node.label || node.name || ''
+    const description = nodeDescriptionMap[node.name] || getCategoryDescription(node.category, fallbackDescription)
 
     return {
         label,
-        description,
-        tooltip: description
+        description
     }
+}
+
+export const getCanvasWarningMessage = (message = '') => {
+    let localized = `${message}`
+    Object.keys(warningTextMap).forEach((source) => {
+        localized = localized.replaceAll(source, warningTextMap[source])
+    })
+    return localized
+}
+
+export const getCanvasSearchText = (node = {}) => {
+    const nodeMeta = getCanvasNodeMeta(node, { fallbackDescription: node.description })
+    const categoryMeta = getCanvasCategoryMeta(node.category)
+
+    return [node.name, node.label, node.description, nodeMeta.label, nodeMeta.description, node.category, categoryMeta.label]
+        .filter(Boolean)
+        .join(' ')
 }
