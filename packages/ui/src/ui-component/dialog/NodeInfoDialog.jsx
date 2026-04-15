@@ -16,6 +16,14 @@ import { baseURL, AGENTFLOW_ICONS } from '@/store/constant'
 // API
 import configApi from '@/api/config'
 import useApi from '@/hooks/useApi'
+import {
+    canvasUIText,
+    getLocalizedNodeDescription,
+    getLocalizedNodeLabel,
+    getNodeLearnMoreData,
+    getNodeWhenToUseText,
+    getVisibleBadgeLabel
+} from '@/views/canvas/canvasI18n'
 
 const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     const portalElement = document.getElementById('portal')
@@ -23,6 +31,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     const theme = useTheme()
 
     const getNodeConfigApi = useApi(configApi.getNodeConfig)
+    const learnMoreData = getNodeLearnMoreData(dialogProps.data)
 
     const renderIcon = (node) => {
         const foundIcon = AGENTFLOW_ICONS.find((icon) => icon.name === node.name)
@@ -102,7 +111,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                             </div>
                         )}
                         <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
-                            {dialogProps.data.label}
+                            {getLocalizedNodeLabel(dialogProps.data)}
                             <div style={{ display: 'flex', flexDirection: 'row' }}>
                                 <div
                                     style={{
@@ -136,7 +145,9 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                             marginBottom: 5
                                         }}
                                     >
-                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>version {dialogProps.data.version}</span>
+                                        <span style={{ color: '#606c38', fontSize: '0.825rem' }}>
+                                            {canvasUIText.version} {dialogProps.data.version}
+                                        </span>
                                     </div>
                                 )}
                                 {dialogProps.data.badge && (
@@ -161,7 +172,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                                                 fontSize: '0.825rem'
                                             }}
                                         >
-                                            {dialogProps.data.badge}
+                                            {getVisibleBadgeLabel(dialogProps.data.badge)}
                                         </span>
                                     </div>
                                 )}
@@ -201,27 +212,46 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                             <Button
                                 variant='outlined'
                                 color='primary'
-                                title='Open Documentation'
+                                title={canvasUIText.openDocumentation}
                                 onClick={() => {
                                     window.open(dialogProps.data.documentation, '_blank', 'noopener,noreferrer')
                                 }}
                                 startIcon={<IconBook2 />}
                             >
-                                Documentation
+                                {canvasUIText.documentation}
                             </Button>
                         )}
                     </div>
                 )}
             </DialogTitle>
             <DialogContent>
-                {dialogProps.data?.description && (
+                {dialogProps.data && (
                     <div
                         style={{
                             padding: 10,
                             marginBottom: 10
                         }}
                     >
-                        <span>{dialogProps.data.description}</span>
+                        <div style={{ fontWeight: 600, marginBottom: 4 }}>{canvasUIText.nodePurpose}</div>
+                        <span>{getLocalizedNodeDescription(dialogProps.data)}</span>
+                        <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.nodeWhenToUse}</div>
+                        <span>{getNodeWhenToUseText(dialogProps.data)}</span>
+                        {learnMoreData && (
+                            <>
+                                <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.learnMoreSummary}</div>
+                                <span>{learnMoreData.summary}</span>
+                                <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.learnMoreGuide}</div>
+                                <ul style={{ marginTop: 0, marginBottom: 8, paddingLeft: 20 }}>
+                                    {learnMoreData.bullets.map((bullet, index) => (
+                                        <li key={index} style={{ marginBottom: 4 }}>
+                                            {bullet}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div style={{ fontWeight: 600, marginTop: 10, marginBottom: 4 }}>{canvasUIText.learnMoreExample}</div>
+                                <span>{learnMoreData.example}</span>
+                            </>
+                        )}
                     </div>
                 )}
                 {getNodeConfigApi.data && getNodeConfigApi.data.length > 0 && (
