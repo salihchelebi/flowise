@@ -49,16 +49,16 @@ const CanvasNode = ({ data }) => {
         else return !canvas.canvasDialogShow && open
     }
 
-    const nodeOutdatedMessage = (oldVersion, newVersion) => `Node version ${oldVersion} outdated\nUpdate to latest version ${newVersion}`
+    const nodeOutdatedMessage = (oldVersion, newVersion) => `Düğüm sürümü ${oldVersion} eski\nEn güncel sürüm: ${newVersion}`
 
-    const nodeVersionEmptyMessage = (newVersion) => `Node outdated\nUpdate to latest version ${newVersion}`
+    const nodeVersionEmptyMessage = (newVersion) => `Düğüm eski\nEn güncel sürüm: ${newVersion}`
 
     const onDialogClicked = () => {
         const dialogProps = {
             data,
             inputParams: data.inputParams.filter((inputParam) => !inputParam.hidden).filter((param) => param.additionalParams),
-            confirmButtonName: 'Save',
-            cancelButtonName: 'Cancel'
+            confirmButtonName: 'Kaydet',
+            cancelButtonName: 'Vazgeç'
         }
         setDialogProps(dialogProps)
         setShowDialog(true)
@@ -79,8 +79,7 @@ const CanvasNode = ({ data }) => {
                 setWarningMessage(nodeOutdatedMessage(data.version, componentNode.version))
             } else if (componentNode.badge === 'DEPRECATING') {
                 setWarningMessage(
-                    componentNode?.deprecateMessage ??
-                        'This node will be deprecated in the next release. Change to a new node tagged with NEW'
+                    componentNode?.deprecateMessage ?? 'Bu düğüm bir sonraki sürümde kullanımdan kalkacak. NEW etiketli yeni düğüme geç.'
                 )
             } else if (componentNode.warning) {
                 setWarningMessage(componentNode.warning)
@@ -114,7 +113,7 @@ const CanvasNode = ({ data }) => {
                             }}
                         >
                             <IconButton
-                                title='Duplicate'
+                                title='Kopyala'
                                 onClick={() => {
                                     duplicateNode(data.id)
                                 }}
@@ -124,7 +123,7 @@ const CanvasNode = ({ data }) => {
                                 <IconCopy />
                             </IconButton>
                             <IconButton
-                                title='Delete'
+                                title='Sil'
                                 onClick={() => {
                                     deleteNode(data.id)
                                 }}
@@ -134,7 +133,7 @@ const CanvasNode = ({ data }) => {
                                 <IconTrash />
                             </IconButton>
                             <IconButton
-                                title='Info'
+                                title='Bilgi'
                                 onClick={() => {
                                     setInfoDialogProps({ data })
                                     setShowInfoDialog(true)
@@ -217,7 +216,7 @@ const CanvasNode = ({ data }) => {
                                             textAlign: 'center'
                                         }}
                                     >
-                                        Inputs
+                                        Girdiler
                                     </Typography>
                                 </Box>
                                 <Divider />
@@ -255,7 +254,7 @@ const CanvasNode = ({ data }) => {
                                 }}
                             >
                                 <Button sx={{ borderRadius: 25, width: '90%', mb: 2 }} variant='outlined' onClick={onDialogClicked}>
-                                    Additional Parameters
+                                    Ek Parametreler
                                 </Button>
                             </div>
                         )}
@@ -268,7 +267,7 @@ const CanvasNode = ({ data }) => {
                                         textAlign: 'center'
                                     }}
                                 >
-                                    Output
+                                    Çıktı
                                 </Typography>
                             </Box>
                         )}

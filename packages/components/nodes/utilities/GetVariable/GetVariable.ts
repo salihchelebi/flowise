@@ -14,18 +14,18 @@ class GetVariable_Utilities implements INode {
     outputs: INodeOutputsValue[]
 
     constructor() {
-        this.label = 'Get Variable'
+        this.label = 'Değişken Getir'
         this.name = 'getVariable'
         this.version = 2.0
         this.type = 'GetVariable'
         this.icon = 'getvar.svg'
         this.category = 'Utilities'
-        this.description = `Get variable that was saved using Set Variable node`
+        this.description = `Set Variable ile kaydedilen değeri akışta tekrar getirir`
         this.baseClasses = [this.type, 'Utilities']
         this.tags = ['Utilities']
         this.inputs = [
             {
-                label: 'Variable Name',
+                label: 'Değişken Adı',
                 name: 'variableName',
                 type: 'string',
                 placeholder: 'var1'
@@ -33,7 +33,7 @@ class GetVariable_Utilities implements INode {
         ]
         this.outputs = [
             {
-                label: 'Output',
+                label: 'Çıktı',
                 name: 'output',
                 baseClasses: ['string', 'number', 'boolean', 'json', 'array']
             }
