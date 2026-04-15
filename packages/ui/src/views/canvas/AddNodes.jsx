@@ -97,6 +97,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
     const [dialogProps, setDialogProps] = useState({})
     const [showInfoDialog, setShowInfoDialog] = useState(false)
     const [infoDialogProps, setInfoDialogProps] = useState({})
+    const safeNodesData = Array.isArray(nodesData) ? nodesData : []
 
     const isAgentCanvasV2 = window.location.pathname.includes('/v2/agentcanvas')
 
@@ -120,11 +121,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
         let nodes = []
         if (category) {
             const nodeNames = exceptionsForAgentCanvas[category] || []
-            nodes = nodesData.filter((nd) => nd.category === category && nodeNames.includes(nd.name))
+            nodes = safeNodesData.filter((nd) => nd?.category === category && nodeNames.includes(nd?.name))
         } else {
             for (const category in exceptionsForAgentCanvas) {
                 const nodeNames = exceptionsForAgentCanvas[category]
-                nodes.push(...nodesData.filter((nd) => nd.category === category && nodeNames.includes(nd.name)))
+                nodes.push(...safeNodesData.filter((nd) => nd?.category === category && nodeNames.includes(nd?.name)))
             }
         }
         return nodes
@@ -235,11 +236,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
 
     const getSearchedNodes = (value) => {
         if (isAgentCanvas) {
-            const nodes = nodesData.filter((nd) => !blacklistCategoriesForAgentCanvas.includes(nd.category))
+            const nodes = safeNodesData.filter((nd) => !blacklistCategoriesForAgentCanvas.includes(nd?.category))
             nodes.push(...addException())
             return scoreAndSortNodes(nodes, value)
         }
-        let nodes = nodesData.filter((nd) => nd.category !== 'Multi Agents' && nd.category !== 'Sequential Agents')
+        let nodes = safeNodesData.filter((nd) => nd?.category !== 'Multi Agents' && nd?.category !== 'Sequential Agents')
 
         for (const category in blacklistForChatflowCanvas) {
             const nodeNames = blacklistForChatflowCanvas[category]
@@ -257,16 +258,17 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                 groupByCategory(returnData, newTabValue ?? tabValue, true)
                 scrollTop()
             } else if (value === '') {
-                groupByCategory(nodesData, newTabValue ?? tabValue)
+                groupByCategory(safeNodesData, newTabValue ?? tabValue)
                 scrollTop()
             }
         }, 500)
     }
 
-    const groupByTags = (nodes, newTabValue = 0) => {
-        const langchainNodes = nodes.filter((nd) => !nd.tags)
-        const llmaindexNodes = nodes.filter((nd) => nd.tags && nd.tags.includes('LlamaIndex'))
-        const utilitiesNodes = nodes.filter((nd) => nd.tags && nd.tags.includes('Utilities'))
+    const groupByTags = (nodes = [], newTabValue = 0) => {
+        const safeNodes = Array.isArray(nodes) ? nodes : []
+        const langchainNodes = safeNodes.filter((nd) => !nd?.tags)
+        const llmaindexNodes = safeNodes.filter((nd) => nd?.tags && nd.tags.includes('LlamaIndex'))
+        const utilitiesNodes = safeNodes.filter((nd) => nd?.tags && nd.tags.includes('Utilities'))
         if (newTabValue === 0) {
             return langchainNodes
         } else if (newTabValue === 1) {
@@ -276,10 +278,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
         }
     }
 
-    const groupByCategory = (nodes, newTabValue, isFilter) => {
+    const groupByCategory = (nodes = [], newTabValue, isFilter) => {
+        const safeNodes = Array.isArray(nodes) ? nodes.filter(Boolean) : []
         if (isAgentCanvas) {
             const accordianCategories = {}
-            const result = nodes.reduce(function (r, a) {
+            const result = safeNodes.reduce(function (r, a) {
                 r[a.category] = r[a.category] || []
                 r[a.category].push(a)
                 accordianCategories[a.category] = isFilter ? true : false
@@ -318,7 +321,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
             accordianCategories['Agent Flows'] = true
             setCategoryExpanded(accordianCategories)
         } else {
-            const taggedNodes = groupByTags(nodes, newTabValue)
+            const taggedNodes = groupByTags(safeNodes, newTabValue)
             const accordianCategories = {}
             const result = taggedNodes.reduce(function (r, a) {
                 r[a.category] = r[a.category] || []
@@ -396,13 +399,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
     }, [node])
 
     useEffect(() => {
-        if (nodesData) {
-            groupByCategory(nodesData)
-            dispatch({ type: SET_COMPONENT_NODES, componentNodes: nodesData })
-        }
+        groupByCategory(safeNodesData)
+        dispatch({ type: SET_COMPONENT_NODES, componentNodes: safeNodesData })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [nodesData, dispatch])
+    }, [safeNodesData, dispatch])
 
     // Handle dialog open/close
     const handleOpenDialog = () => {
@@ -693,7 +694,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                                 )}
                                                             </AccordionSummary>
                                                             <AccordionDetails>
-                                                                {nodes[category].map((node, index) => (
+                                                                {(nodes[category] || []).map((node, index) => (
                                                                     <div
                                                                         key={node.name}
                                                                         onDragStart={(event) => onDragStart(event, node)}
@@ -810,7 +811,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                                                                                 </Button>
                                                                             </ListItem>
                                                                         </ListItemButton>
-                                                                        {index === nodes[category].length - 1 ? null : <Divider />}
+                                                                        {index === (nodes[category] || []).length - 1 ? null : <Divider />}
                                                                     </div>
                                                                 ))}
                                                             </AccordionDetails>

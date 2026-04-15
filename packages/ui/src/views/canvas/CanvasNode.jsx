@@ -36,6 +36,10 @@ const CanvasNode = ({ data }) => {
     const [warningMessage, setWarningMessage] = useState('')
     const [open, setOpen] = useState(false)
     const [isForceCloseNodeInfo, setIsForceCloseNodeInfo] = useState(null)
+    const inputAnchors = Array.isArray(data?.inputAnchors) ? data.inputAnchors : []
+    const inputParams = Array.isArray(data?.inputParams) ? data.inputParams : []
+    const outputAnchors = Array.isArray(data?.outputAnchors) ? data.outputAnchors : []
+    const tags = Array.isArray(data?.tags) ? data.tags : []
 
     const handleClose = () => {
         setOpen(false)
@@ -58,7 +62,7 @@ const CanvasNode = ({ data }) => {
     const onDialogClicked = () => {
         const dialogProps = {
             data,
-            inputParams: data.inputParams.filter((inputParam) => !inputParam.hidden).filter((param) => param.additionalParams),
+            inputParams: inputParams.filter((inputParam) => !inputParam.hidden).filter((param) => param.additionalParams),
             confirmButtonName: 'Kaydet',
             cancelButtonName: 'Vazgeç'
         }
@@ -182,7 +186,7 @@ const CanvasNode = ({ data }) => {
                                 </Typography>
                             </Box>
                             <div style={{ flexGrow: 1 }}></div>
-                            {data.tags && data.tags.includes('LlamaIndex') && (
+                            {tags.includes('LlamaIndex') && (
                                 <>
                                     <div
                                         style={{
@@ -208,7 +212,7 @@ const CanvasNode = ({ data }) => {
                                 </>
                             )}
                         </div>
-                        {(data.inputAnchors.length > 0 || data.inputParams.length > 0) && (
+                        {(inputAnchors.length > 0 || inputParams.length > 0) && (
                             <>
                                 <Divider />
                                 <Box sx={{ background: theme.palette.asyncSelect.main, p: 1 }}>
@@ -226,10 +230,10 @@ const CanvasNode = ({ data }) => {
                                 <Divider />
                             </>
                         )}
-                        {data.inputAnchors.map((inputAnchor, index) => (
+                        {inputAnchors.map((inputAnchor, index) => (
                             <NodeInputHandler key={index} inputAnchor={inputAnchor} data={data} />
                         ))}
-                        {data.inputParams
+                        {inputParams
                             .filter((inputParam) => !inputParam.hidden)
                             .filter((inputParam) => inputParam.display !== false)
                             .map((inputParam, index) => (
@@ -246,13 +250,13 @@ const CanvasNode = ({ data }) => {
                                     }}
                                 />
                             ))}
-                        {data.inputParams.find((param) => param.additionalParams) && (
+                        {inputParams.find((param) => param.additionalParams) && (
                             <div
                                 style={{
                                     textAlign: 'center',
                                     marginTop:
-                                        data.inputParams.filter((param) => param.additionalParams).length ===
-                                        data.inputParams.length + data.inputAnchors.length
+                                        inputParams.filter((param) => param.additionalParams).length ===
+                                        inputParams.length + inputAnchors.length
                                             ? 20
                                             : 0
                                 }}
@@ -264,8 +268,8 @@ const CanvasNode = ({ data }) => {
                                 </Tooltip>
                             </div>
                         )}
-                        {data.outputAnchors.length > 0 && <Divider />}
-                        {data.outputAnchors.length > 0 && (
+                        {outputAnchors.length > 0 && <Divider />}
+                        {outputAnchors.length > 0 && (
                             <Box sx={{ background: theme.palette.asyncSelect.main, p: 1 }}>
                                 <Tooltip title={canvasUIText.outputTooltip} arrow placement='top'>
                                     <Typography
@@ -279,9 +283,9 @@ const CanvasNode = ({ data }) => {
                                 </Tooltip>
                             </Box>
                         )}
-                        {data.outputAnchors.length > 0 && <Divider />}
-                        {data.outputAnchors.length > 0 &&
-                            data.outputAnchors.map((outputAnchor) => (
+                        {outputAnchors.length > 0 && <Divider />}
+                        {outputAnchors.length > 0 &&
+                            outputAnchors.map((outputAnchor) => (
                                 <NodeOutputHandler key={JSON.stringify(data)} outputAnchor={outputAnchor} data={data} />
                             ))}
                     </Box>
