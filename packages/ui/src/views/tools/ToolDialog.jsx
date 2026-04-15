@@ -65,8 +65,6 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
     const customization = useSelector((state) => state.customization)
     const dispatch = useDispatch()
 
-    // ==============================|| Snackbar ||============================== //
-
     useNotifier()
     const { confirm } = useConfirm()
 
@@ -100,7 +98,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
     const addNewRow = () => {
         setTimeout(() => {
             setToolSchema((prevRows) => {
-                let allRows = [...cloneDeep(prevRows)]
+                const allRows = [...cloneDeep(prevRows)]
                 const lastRowId = allRows.length ? allRows[allRows.length - 1].id + 1 : 1
                 allRows.push({
                     id: lastRowId,
@@ -116,7 +114,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
 
     const onSaveAsTemplate = () => {
         setExportAsTemplateDialogProps({
-            title: 'Export As Template',
+            title: 'Şablon Olarak Kaydet',
             tool: {
                 name: toolName,
                 description: toolDesc,
@@ -131,7 +129,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
     const onRowUpdate = (newRow) => {
         setTimeout(() => {
             setToolSchema((prevRows) => {
-                let allRows = [...cloneDeep(prevRows)]
+                const allRows = [...cloneDeep(prevRows)]
                 const indexToUpdate = allRows.findIndex((row) => row.id === newRow.id)
                 if (indexToUpdate >= 0) {
                     allRows[indexToUpdate] = { ...newRow }
@@ -143,24 +141,22 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
 
     const columns = useMemo(
         () => [
-            { field: 'property', headerName: 'Property', editable: true, flex: 1 },
+            { field: 'property', headerName: 'Alan', editable: true, flex: 1 },
             {
                 field: 'type',
-                headerName: 'Type',
+                headerName: 'Tür',
                 type: 'singleSelect',
                 valueOptions: ['string', 'number', 'boolean', 'date'],
                 editable: true,
                 width: 120
             },
-            { field: 'description', headerName: 'Description', editable: true, flex: 1 },
-            { field: 'required', headerName: 'Required', type: 'boolean', editable: true, width: 80 },
+            { field: 'description', headerName: 'Açıklama', editable: true, flex: 1 },
+            { field: 'required', headerName: 'Zorunlu', type: 'boolean', editable: true, width: 100 },
             {
                 field: 'actions',
                 type: 'actions',
                 width: 80,
-                getActions: (params) => [
-                    <GridActionsCellItem key={'Delete'} icon={<DeleteIcon />} label='Delete' onClick={deleteItem(params.id)} />
-                ]
+                getActions: (params) => [<GridActionsCellItem key={'Delete'} icon={<DeleteIcon />} label='Sil' onClick={deleteItem(params.id)} />]
             }
         ],
         [deleteItem]
@@ -187,12 +183,10 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
         if (getSpecificToolApi.error && setError) {
             setError(getSpecificToolApi.error)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getSpecificToolApi.error])
+    }, [getSpecificToolApi.error, setError])
 
     useEffect(() => {
         if (dialogProps.type === 'EDIT' && dialogProps.data) {
-            // When tool dialog is opened from Tools dashboard
             setToolId(dialogProps.data.id)
             setToolName(dialogProps.data.name)
             setToolDesc(dialogProps.data.description)
@@ -201,10 +195,8 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             if (dialogProps.data.func) setToolFunc(dialogProps.data.func)
             else setToolFunc('')
         } else if (dialogProps.type === 'EDIT' && dialogProps.toolId) {
-            // When tool dialog is opened from CustomTool node in canvas
             getSpecificToolApi.request(dialogProps.toolId)
         } else if (dialogProps.type === 'IMPORT' && dialogProps.data) {
-            // When tool dialog is to import existing tool
             setToolName(dialogProps.data.name)
             setToolDesc(dialogProps.data.description)
             setToolIcon(dialogProps.data.iconSrc)
@@ -212,7 +204,6 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             if (dialogProps.data.func) setToolFunc(dialogProps.data.func)
             else setToolFunc('')
         } else if (dialogProps.type === 'TEMPLATE' && dialogProps.data) {
-            // When tool dialog is a template
             setToolName(dialogProps.data.name)
             setToolDesc(dialogProps.data.description)
             setToolIcon(dialogProps.data.iconSrc)
@@ -220,7 +211,6 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             if (dialogProps.data.func) setToolFunc(dialogProps.data.func)
             else setToolFunc('')
         } else if (dialogProps.type === 'ADD') {
-            // When tool dialog is to add a new tool
             setToolId('')
             setToolName('')
             setToolDesc('')
@@ -228,9 +218,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             setToolSchema([])
             setToolFunc('')
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dialogProps])
+    }, [dialogProps, getSpecificToolApi])
 
     const useToolTemplate = () => {
         onUseTemplate(dialogProps.data)
@@ -244,23 +232,19 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                 delete toolData.id
                 delete toolData.createdDate
                 delete toolData.updatedDate
-                let dataStr = JSON.stringify(toolData, null, 2)
-                //let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
+                const dataStr = JSON.stringify(toolData, null, 2)
                 const blob = new Blob([dataStr], { type: 'application/json' })
                 const dataUri = URL.createObjectURL(blob)
+                const exportFileDefaultName = `${toolName}-CustomTool.json`
 
-                let exportFileDefaultName = `${toolName}-CustomTool.json`
-
-                let linkElement = document.createElement('a')
+                const linkElement = document.createElement('a')
                 linkElement.setAttribute('href', dataUri)
                 linkElement.setAttribute('download', exportFileDefaultName)
                 linkElement.click()
             }
-        } catch (error) {
+        } catch (err) {
             enqueueSnackbar({
-                message: `Failed to export Tool: ${
-                    typeof error.response.data === 'object' ? error.response.data.message : error.response.data
-                }`,
+                message: `Araç dışa aktarılamadı: ${typeof err.response.data === 'object' ? err.response.data.message : err.response.data}`,
                 options: {
                     key: new Date().getTime() + Math.random(),
                     variant: 'error',
@@ -289,7 +273,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             const createResp = await toolsApi.createNewTool(obj)
             if (createResp.data) {
                 enqueueSnackbar({
-                    message: 'New Tool added',
+                    message: 'Yeni araç eklendi',
                     options: {
                         key: new Date().getTime() + Math.random(),
                         variant: 'success',
@@ -302,11 +286,9 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                 })
                 onConfirm(createResp.data.id)
             }
-        } catch (error) {
+        } catch (err) {
             enqueueSnackbar({
-                message: `Failed to add new Tool: ${
-                    typeof error.response.data === 'object' ? error.response.data.message : error.response.data
-                }`,
+                message: `Yeni araç eklenemedi: ${typeof err.response.data === 'object' ? err.response.data.message : err.response.data}`,
                 options: {
                     key: new Date().getTime() + Math.random(),
                     variant: 'error',
@@ -333,7 +315,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             })
             if (saveResp.data) {
                 enqueueSnackbar({
-                    message: 'Tool saved',
+                    message: 'Araç kaydedildi',
                     options: {
                         key: new Date().getTime() + Math.random(),
                         variant: 'success',
@@ -346,11 +328,9 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                 })
                 onConfirm(saveResp.data.id)
             }
-        } catch (error) {
+        } catch (err) {
             enqueueSnackbar({
-                message: `Failed to save Tool: ${
-                    typeof error.response.data === 'object' ? error.response.data.message : error.response.data
-                }`,
+                message: `Araç kaydedilemedi: ${typeof err.response.data === 'object' ? err.response.data.message : err.response.data}`,
                 options: {
                     key: new Date().getTime() + Math.random(),
                     variant: 'error',
@@ -368,10 +348,10 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
 
     const deleteTool = async () => {
         const confirmPayload = {
-            title: `Delete Tool`,
-            description: `Delete tool ${toolName}?`,
-            confirmButtonName: 'Delete',
-            cancelButtonName: 'Cancel'
+            title: 'Aracı Sil',
+            description: `${toolName} aracını silmek istiyor musun?`,
+            confirmButtonName: 'Sil',
+            cancelButtonName: 'İptal'
         }
         const isConfirmed = await confirm(confirmPayload)
 
@@ -380,7 +360,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                 const delResp = await toolsApi.deleteTool(toolId)
                 if (delResp.data) {
                     enqueueSnackbar({
-                        message: 'Tool deleted',
+                        message: 'Araç silindi',
                         options: {
                             key: new Date().getTime() + Math.random(),
                             variant: 'success',
@@ -393,11 +373,9 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     })
                     onConfirm()
                 }
-            } catch (error) {
+            } catch (err) {
                 enqueueSnackbar({
-                    message: `Failed to delete Tool: ${
-                        typeof error.response.data === 'object' ? error.response.data.message : error.response.data
-                    }`,
+                    message: `Araç silinemedi: ${typeof err.response.data === 'object' ? err.response.data.message : err.response.data}`,
                     options: {
                         key: new Date().getTime() + Math.random(),
                         variant: 'error',
@@ -442,7 +420,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                                     startIcon={<IconTemplate />}
                                     color='secondary'
                                 >
-                                    Save As Template
+                                    Şablon Olarak Kaydet
                                 </PermissionButton>
                                 <PermissionButton
                                     permissionId={'tools:export'}
@@ -450,7 +428,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                                     onClick={() => exportTool()}
                                     startIcon={<IconFileDownload />}
                                 >
-                                    Export
+                                    Dışa Aktar
                                 </PermissionButton>
                             </>
                         )}
@@ -462,17 +440,17 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     <Box>
                         <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
                             <Typography variant='overline'>
-                                Tool Name
+                                Araç Adı
                                 <span style={{ color: 'red' }}>&nbsp;*</span>
                             </Typography>
-                            <TooltipWithParser title={'Tool name must be small capital letter with underscore. Ex: my_tool'} />
+                            <TooltipWithParser title={'Araç adını kısa ve düzenli yaz. Örnek: my_tool'} />
                         </Stack>
                         <OutlinedInput
                             id='toolName'
                             type='string'
                             fullWidth
                             disabled={dialogProps.type === 'TEMPLATE'}
-                            placeholder='My New Tool'
+                            placeholder='Yeni Araç'
                             value={toolName}
                             name='toolName'
                             onChange={(e) => setToolName(e.target.value)}
@@ -481,19 +459,17 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     <Box>
                         <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
                             <Typography variant='overline'>
-                                Tool description
+                                Araç Açıklaması
                                 <span style={{ color: 'red' }}>&nbsp;*</span>
                             </Typography>
-                            <TooltipWithParser
-                                title={'Description of what the tool does. This is for ChatGPT to determine when to use this tool.'}
-                            />
+                            <TooltipWithParser title={'Bu araç ne yapıyor? Kısa ve açık şekilde yaz. Sistem bu bilgiyle aracın ne zaman kullanılacağını anlar.'} />
                         </Stack>
                         <OutlinedInput
                             id='toolDesc'
                             type='string'
                             fullWidth
                             disabled={dialogProps.type === 'TEMPLATE'}
-                            placeholder='Description of what the tool does. This is for ChatGPT to determine when to use this tool.'
+                            placeholder='Bu araç ne yapıyor? Kısa ve açık şekilde yaz.'
                             multiline={true}
                             rows={3}
                             value={toolDesc}
@@ -503,14 +479,14 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     </Box>
                     <Box>
                         <Stack sx={{ position: 'relative' }} direction='row'>
-                            <Typography variant='overline'>Tool Icon Source</Typography>
+                            <Typography variant='overline'>Araç İkon Bağlantısı</Typography>
                         </Stack>
                         <OutlinedInput
                             id='toolIcon'
                             type='string'
                             fullWidth
                             disabled={dialogProps.type === 'TEMPLATE'}
-                            placeholder='https://raw.githubusercontent.com/gilbarbara/logos/main/logos/airtable.svg'
+                            placeholder='https://.../icon.svg'
                             value={toolIcon}
                             name='toolIcon'
                             onChange={(e) => setToolIcon(e.target.value)}
@@ -519,16 +495,16 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     <Box>
                         <Stack sx={{ position: 'relative', justifyContent: 'space-between' }} direction='row'>
                             <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
-                                <Typography variant='overline'>Input Schema</Typography>
-                                <TooltipWithParser title={'What is the input format in JSON?'} />
+                                <Typography variant='overline'>Girdi Şeması</Typography>
+                                <TooltipWithParser title={'Bu araç hangi verileri bekliyor? Her alanın adını ve türünü burada tanımla.'} />
                             </Stack>
                             {dialogProps.type !== 'TEMPLATE' && (
                                 <Stack direction='row' spacing={1}>
                                     <Button variant='outlined' onClick={() => setShowPasteJSONDialog(true)} startIcon={<IconCode />}>
-                                        Paste JSON
+                                        JSON Yapıştır
                                     </Button>
                                     <Button variant='outlined' onClick={addNewRow} startIcon={<IconPlus />}>
-                                        Add Item
+                                        Alan Ekle
                                     </Button>
                                 </Stack>
                             )}
@@ -538,8 +514,8 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     <Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
-                                <Typography variant='overline'>Javascript Function</Typography>
-                                <TooltipWithParser title='Function to execute when tool is being used. You can use properties specified in Input Schema as variables. For example, if the property is <code>userid</code>, you can use as <code>$userid</code>. Return value must be a string. You can also override the code from API by following this <a target="_blank" href="https://docs.flowiseai.com/tools/custom-tool#override-function-from-api">guide</a>' />
+                                <Typography variant='overline'>Javascript Fonksiyonu</Typography>
+                                <TooltipWithParser title='Araç çalıştığında bu kod çalışır. Girdi şemasında yazdığın alanları burada değişken olarak kullanabilirsin. Sonunda metin dönmelidir.' />
                             </Stack>
                             <Stack direction='row'>
                                 <Button
@@ -548,11 +524,11 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                                     variant='text'
                                     onClick={() => setShowHowToDialog(true)}
                                 >
-                                    How to use Function
+                                    Fonksiyon Nasıl Kullanılır
                                 </Button>
                                 {dialogProps.type !== 'TEMPLATE' && (
                                     <Button style={{ marginBottom: 10 }} variant='outlined' onClick={() => setToolFunc(exampleAPIFunc)}>
-                                        See Example
+                                        Örneği Göster
                                     </Button>
                                 )}
                             </Stack>
@@ -570,13 +546,13 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             <DialogActions sx={{ p: 3 }}>
                 {dialogProps.type === 'EDIT' && (
                     <StyledPermissionButton permissionId={'tools:delete'} color='error' variant='contained' onClick={() => deleteTool()}>
-                        Delete
+                        Sil
                     </StyledPermissionButton>
                 )}
                 {dialogProps.type === 'TEMPLATE' && (
                     <Available permission={'tools:view,tools:create'}>
                         <StyledButton color='secondary' variant='contained' onClick={useToolTemplate}>
-                            Use Template
+                            Bu Şablonu Kullan
                         </StyledButton>
                     </Available>
                 )}
