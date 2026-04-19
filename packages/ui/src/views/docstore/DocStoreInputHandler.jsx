@@ -46,6 +46,10 @@ const DocStoreInputHandler = ({ inputParam, data, disabled = false, onNodeDataCh
         }
     }
 
+    const addAsyncOption = () => {
+        setReloadTimestamp(Date.now().toString())
+    }
+
     const onExpandDialogClicked = (value, inputParam) => {
         const dialogProps = {
             value,
