@@ -1,0 +1,17 @@
+{
+  "AgentFlow": [],
+  "AgentFlowV2": [],
+  "AssistantFlow": [],
+  "AssistantCustom": [],
+  "AssistantOpenAI": [],
+  "AssistantAzure": [],
+  "ChatFlow": [],
+  "ChatMessage": [],
+  "ChatMessageFeedback": [],
+  "CustomTemplate": [],
+  "DocumentStore": [],
+  "DocumentStoreFileChunk": [],
+  "Execution": [],
+  "Tool": [],
+  "Variable": []
+}
