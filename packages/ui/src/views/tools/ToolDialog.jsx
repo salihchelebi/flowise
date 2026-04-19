@@ -156,7 +156,9 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                 field: 'actions',
                 type: 'actions',
                 width: 80,
-                getActions: (params) => [<GridActionsCellItem key={'Delete'} icon={<DeleteIcon />} label='Sil' onClick={deleteItem(params.id)} />]
+                getActions: (params) => [
+                    <GridActionsCellItem key={'Delete'} icon={<DeleteIcon />} label='Sil' onClick={deleteItem(params.id)} />
+                ]
             }
         ],
         [deleteItem]
@@ -197,15 +199,15 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
         } else if (dialogProps.type === 'EDIT' && dialogProps.toolId) {
             getSpecificToolApi.request(dialogProps.toolId)
         } else if (dialogProps.type === 'IMPORT' && dialogProps.data) {
-            setToolName(dialogProps.data.name)
-            setToolDesc(dialogProps.data.description)
+            setToolName(dialogProps.data.displayTitle || dialogProps.data.name)
+            setToolDesc(dialogProps.data.displayDescription || dialogProps.data.description)
             setToolIcon(dialogProps.data.iconSrc)
             setToolSchema(formatDataGridRows(dialogProps.data.schema))
             if (dialogProps.data.func) setToolFunc(dialogProps.data.func)
             else setToolFunc('')
         } else if (dialogProps.type === 'TEMPLATE' && dialogProps.data) {
-            setToolName(dialogProps.data.name)
-            setToolDesc(dialogProps.data.description)
+            setToolName(dialogProps.data.displayTitle || dialogProps.data.name)
+            setToolDesc(dialogProps.data.displayDescription || dialogProps.data.description)
             setToolIcon(dialogProps.data.iconSrc)
             setToolSchema(formatDataGridRows(dialogProps.data.schema))
             if (dialogProps.data.func) setToolFunc(dialogProps.data.func)
@@ -462,7 +464,11 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                                 Araç Açıklaması
                                 <span style={{ color: 'red' }}>&nbsp;*</span>
                             </Typography>
-                            <TooltipWithParser title={'Bu araç ne yapıyor? Kısa ve açık şekilde yaz. Sistem bu bilgiyle aracın ne zaman kullanılacağını anlar.'} />
+                            <TooltipWithParser
+                                title={
+                                    'Bu araç ne yapıyor? Kısa ve açık şekilde yaz. Sistem bu bilgiyle aracın ne zaman kullanılacağını anlar.'
+                                }
+                            />
                         </Stack>
                         <OutlinedInput
                             id='toolDesc'

@@ -14,6 +14,7 @@ import NodeInputHandler from './NodeInputHandler'
 import NodeOutputHandler from './NodeOutputHandler'
 import AdditionalParamsDialog from '@/ui-component/dialog/AdditionalParamsDialog'
 import NodeInfoDialog from '@/ui-component/dialog/NodeInfoDialog'
+import { canvasUIText, getLocalizedNodeLabel } from './canvasI18n'
 
 // const
 import { baseURL } from '@/store/constant'
@@ -35,6 +36,10 @@ const CanvasNode = ({ data }) => {
     const [warningMessage, setWarningMessage] = useState('')
     const [open, setOpen] = useState(false)
     const [isForceCloseNodeInfo, setIsForceCloseNodeInfo] = useState(null)
+    const inputAnchors = Array.isArray(data?.inputAnchors) ? data.inputAnchors : []
+    const inputParams = Array.isArray(data?.inputParams) ? data.inputParams : []
+    const outputAnchors = Array.isArray(data?.outputAnchors) ? data.outputAnchors : []
+    const tags = Array.isArray(data?.tags) ? data.tags : []
 
     const handleClose = () => {
         setOpen(false)
@@ -49,16 +54,17 @@ const CanvasNode = ({ data }) => {
         else return !canvas.canvasDialogShow && open
     }
 
-    const nodeOutdatedMessage = (oldVersion, newVersion) => `Node version ${oldVersion} outdated\nUpdate to latest version ${newVersion}`
+    const nodeOutdatedMessage = (oldVersion, newVersion) =>
+        `Bu düğümün sürümü eski (${oldVersion})\nEn güncel sürüme geçmen önerilir (${newVersion})`
 
-    const nodeVersionEmptyMessage = (newVersion) => `Node outdated\nUpdate to latest version ${newVersion}`
+    const nodeVersionEmptyMessage = (newVersion) => `Bu düğümün sürümü eski\nEn güncel sürüme geçmen önerilir (${newVersion})`
 
     const onDialogClicked = () => {
         const dialogProps = {
             data,
-            inputParams: data.inputParams.filter((inputParam) => !inputParam.hidden).filter((param) => param.additionalParams),
-            confirmButtonName: 'Save',
-            cancelButtonName: 'Cancel'
+            inputParams: inputParams.filter((inputParam) => !inputParam.hidden).filter((param) => param.additionalParams),
+            confirmButtonName: 'Kaydet',
+            cancelButtonName: 'Vazgeç'
         }
         setDialogProps(dialogProps)
         setShowDialog(true)
@@ -79,8 +85,7 @@ const CanvasNode = ({ data }) => {
                 setWarningMessage(nodeOutdatedMessage(data.version, componentNode.version))
             } else if (componentNode.badge === 'DEPRECATING') {
                 setWarningMessage(
-                    componentNode?.deprecateMessage ??
-                        'This node will be deprecated in the next release. Change to a new node tagged with NEW'
+                    componentNode?.deprecateMessage ?? 'Bu düğüm yakında kullanımdan kaldırılacak. NEW etiketli yeni düğüme geç.'
                 )
             } else if (componentNode.warning) {
                 setWarningMessage(componentNode.warning)
@@ -114,7 +119,7 @@ const CanvasNode = ({ data }) => {
                             }}
                         >
                             <IconButton
-                                title='Duplicate'
+                                title={canvasUIText.duplicate}
                                 onClick={() => {
                                     duplicateNode(data.id)
                                 }}
@@ -124,7 +129,7 @@ const CanvasNode = ({ data }) => {
                                 <IconCopy />
                             </IconButton>
                             <IconButton
-                                title='Delete'
+                                title={canvasUIText.delete}
                                 onClick={() => {
                                     deleteNode(data.id)
                                 }}
@@ -134,7 +139,7 @@ const CanvasNode = ({ data }) => {
                                 <IconTrash />
                             </IconButton>
                             <IconButton
-                                title='Info'
+                                title={canvasUIText.info}
                                 onClick={() => {
                                     setInfoDialogProps({ data })
                                     setShowInfoDialog(true)
@@ -177,11 +182,11 @@ const CanvasNode = ({ data }) => {
                                         mr: 2
                                     }}
                                 >
-                                    {data.label}
+                                    {getLocalizedNodeLabel(data)}
                                 </Typography>
                             </Box>
                             <div style={{ flexGrow: 1 }}></div>
-                            {data.tags && data.tags.includes('LlamaIndex') && (
+                            {tags.includes('LlamaIndex') && (
                                 <>
                                     <div
                                         style={{
@@ -207,26 +212,28 @@ const CanvasNode = ({ data }) => {
                                 </>
                             )}
                         </div>
-                        {(data.inputAnchors.length > 0 || data.inputParams.length > 0) && (
+                        {(inputAnchors.length > 0 || inputParams.length > 0) && (
                             <>
                                 <Divider />
                                 <Box sx={{ background: theme.palette.asyncSelect.main, p: 1 }}>
-                                    <Typography
-                                        sx={{
-                                            fontWeight: 500,
-                                            textAlign: 'center'
-                                        }}
-                                    >
-                                        Inputs
-                                    </Typography>
+                                    <Tooltip title={canvasUIText.inputsTooltip} arrow placement='top'>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 500,
+                                                textAlign: 'center'
+                                            }}
+                                        >
+                                            {canvasUIText.inputs}
+                                        </Typography>
+                                    </Tooltip>
                                 </Box>
                                 <Divider />
                             </>
                         )}
-                        {data.inputAnchors.map((inputAnchor, index) => (
+                        {inputAnchors.map((inputAnchor, index) => (
                             <NodeInputHandler key={index} inputAnchor={inputAnchor} data={data} />
                         ))}
-                        {data.inputParams
+                        {inputParams
                             .filter((inputParam) => !inputParam.hidden)
                             .filter((inputParam) => inputParam.display !== false)
                             .map((inputParam, index) => (
@@ -243,38 +250,42 @@ const CanvasNode = ({ data }) => {
                                     }}
                                 />
                             ))}
-                        {data.inputParams.find((param) => param.additionalParams) && (
+                        {inputParams.find((param) => param.additionalParams) && (
                             <div
                                 style={{
                                     textAlign: 'center',
                                     marginTop:
-                                        data.inputParams.filter((param) => param.additionalParams).length ===
-                                        data.inputParams.length + data.inputAnchors.length
+                                        inputParams.filter((param) => param.additionalParams).length ===
+                                        inputParams.length + inputAnchors.length
                                             ? 20
                                             : 0
                                 }}
                             >
-                                <Button sx={{ borderRadius: 25, width: '90%', mb: 2 }} variant='outlined' onClick={onDialogClicked}>
-                                    Additional Parameters
-                                </Button>
+                                <Tooltip title={canvasUIText.additionalSettingsTooltip} arrow placement='top'>
+                                    <Button sx={{ borderRadius: 25, width: '90%', mb: 2 }} variant='outlined' onClick={onDialogClicked}>
+                                        {canvasUIText.additionalSettings}
+                                    </Button>
+                                </Tooltip>
                             </div>
                         )}
-                        {data.outputAnchors.length > 0 && <Divider />}
-                        {data.outputAnchors.length > 0 && (
+                        {outputAnchors.length > 0 && <Divider />}
+                        {outputAnchors.length > 0 && (
                             <Box sx={{ background: theme.palette.asyncSelect.main, p: 1 }}>
-                                <Typography
-                                    sx={{
-                                        fontWeight: 500,
-                                        textAlign: 'center'
-                                    }}
-                                >
-                                    Output
-                                </Typography>
+                                <Tooltip title={canvasUIText.outputTooltip} arrow placement='top'>
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 500,
+                                            textAlign: 'center'
+                                        }}
+                                    >
+                                        {canvasUIText.output}
+                                    </Typography>
+                                </Tooltip>
                             </Box>
                         )}
-                        {data.outputAnchors.length > 0 && <Divider />}
-                        {data.outputAnchors.length > 0 &&
-                            data.outputAnchors.map((outputAnchor) => (
+                        {outputAnchors.length > 0 && <Divider />}
+                        {outputAnchors.length > 0 &&
+                            outputAnchors.map((outputAnchor) => (
                                 <NodeOutputHandler key={JSON.stringify(data)} outputAnchor={outputAnchor} data={data} />
                             ))}
                     </Box>
