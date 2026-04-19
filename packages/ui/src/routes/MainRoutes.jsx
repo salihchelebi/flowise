@@ -72,6 +72,8 @@ const WorkspaceDetails = Loadable(lazy(() => import('@/views/workspace/Workspace
 const SSOConfig = Loadable(lazy(() => import('@/views/auth/ssoConfig')))
 const SSOSuccess = Loadable(lazy(() => import('@/views/auth/ssoSuccess')))
 
+
+const SeoEngineerLanding = Loadable(lazy(() => import('@/views/sectoral-agents/seo-engineer')))
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
