@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, memo } from 'react'
+import { useState, useRef, useEffect, useMemo, memo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 
@@ -98,7 +98,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
     const [dialogProps, setDialogProps] = useState({})
     const [showInfoDialog, setShowInfoDialog] = useState(false)
     const [infoDialogProps, setInfoDialogProps] = useState({})
-    const safeNodesData = Array.isArray(nodesData) ? nodesData : []
+    const safeNodesData = useMemo(() => (Array.isArray(nodesData) ? nodesData : []), [nodesData])
 
     const isAgentCanvasV2 = window.location.pathname.includes('/v2/agentcanvas')
 
