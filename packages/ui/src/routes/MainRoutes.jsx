@@ -10,6 +10,7 @@ import { DefaultRedirect } from '@/routes/DefaultRedirect'
 // chatflows routing
 const Chatflows = Loadable(lazy(() => import('@/views/chatflows')))
 const SectoralAgents = Loadable(lazy(() => import('@/views/sectoral-agents')))
+const SectoralSeoEngineer = Loadable(lazy(() => import('@/views/sectoral-agents/SeoEngineer')))
 
 // agents routing
 const Agentflows = Loadable(lazy(() => import('@/views/agentflows')))
@@ -80,6 +81,14 @@ const MainRoutes = {
         {
             path: '/',
             element: <DefaultRedirect />
+        },
+        {
+            path: '/sectoral-agents/seo-engineer',
+            element: (
+                <RequireAuth permission={'agentflows:view'}>
+                    <SectoralSeoEngineer />
+                </RequireAuth>
+            )
         },
         {
             path: '/sectoral-agents',
