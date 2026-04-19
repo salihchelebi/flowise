@@ -1,5 +1,17 @@
 import { useMemo, useState } from 'react'
-import './seo-engineer.css'import heroSeoEngineerSystem from "@/assets/images/sectoral-agents/seo-engineer/hero-seo-engineer-system.webp"import seoChaosProblem from "@/assets/images/sectoral-agents/seo-engineer/seo-chaos-problem.webp"import seoFlowOrchestration from "@/assets/images/sectoral-agents/seo-engineer/seo-flow-orchestration.webp"import seoControlDashboard from "@/assets/images/sectoral-agents/seo-engineer/seo-control-dashboard.webp"import seoKnowledgeHub from "@/assets/images/sectoral-agents/seo-engineer/seo-knowledge-hub.webp"import seoCanvasBuilder from "@/assets/images/sectoral-agents/seo-engineer/seo-canvas-builder.webp"import seoSpecialistAgentTeam from "@/assets/images/sectoral-agents/seo-engineer/seo-specialist-agent-team.webp"import seoApiControlCenter from "@/assets/images/sectoral-agents/seo-engineer/seo-api-control-center.webp"import seoExecutionMonitoring from "@/assets/images/sectoral-agents/seo-engineer/seo-execution-monitoring.webp"import seoLegalDirectoryCaseStudy from "@/assets/images/sectoral-agents/seo-engineer/seo-legal-directory-case-study.webp"const routeCards = [
+import './seo-engineer.css'
+import heroSeoEngineerSystem from "@/assets/images/sectoral-agents/seo-engineer/hero-seo-engineer-system.webp"
+import seoChaosProblem from "@/assets/images/sectoral-agents/seo-engineer/seo-chaos-problem.webp"
+import seoFlowOrchestration from "@/assets/images/sectoral-agents/seo-engineer/seo-flow-orchestration.webp"
+import seoControlDashboard from "@/assets/images/sectoral-agents/seo-engineer/seo-control-dashboard.webp"
+import seoKnowledgeHub from "@/assets/images/sectoral-agents/seo-engineer/seo-knowledge-hub.webp"
+import seoCanvasBuilder from "@/assets/images/sectoral-agents/seo-engineer/seo-canvas-builder.webp"
+import seoSpecialistAgentTeam from "@/assets/images/sectoral-agents/seo-engineer/seo-specialist-agent-team.webp"
+import seoApiControlCenter from "@/assets/images/sectoral-agents/seo-engineer/seo-api-control-center.webp"
+import seoExecutionMonitoring from "@/assets/images/sectoral-agents/seo-engineer/seo-execution-monitoring.webp"
+import seoLegalDirectoryCaseStudy from "@/assets/images/sectoral-agents/seo-engineer/seo-legal-directory-case-study.webp"
+
+const routeCards = [
     {
         route: '/chatflows',
         title: 'Mini SEO motorlarını kur',
